@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Ronin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <h1>Ronin</h1>
+
+        <ul>
+            <li>
+                <label>Name: </label>
+                <select id="genderSelect" onchange="loadNames()">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <select id="nameSelect"></select>
+                <button onclick="nameRandom()">Random</button>
+            </li>
+            <li>
+                <label>Appearance: </label>
+                <select id="appearanceSelect" onchange="checkExtraAppearance()"></select>
+                <select id="extraAppearance1" onchange="checkExtraAppearance2()"></select>
+                <select id="extraAppearance2"></select>
+                <button onclick="randomAppearance()">Random</button>
+            </li>
+            <li>
+                <label>Technique: </label>
+                <select id="techniqueSelect" onchange="checkTechnique()">
+                    <option value="">Select Fighting Style</option>
+                </select>
+                <button onclick="randomTech()">Random</button>
+                <ul>
+                    <li>
+                        <span id="fightDesc"></span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <label>Determination: </label>
+                <span id="determinationStat">2</span>
+            </li>
+            <li>
+                <label>Compassion: </label>
+                <span id="compassionStat">2</span>
+            </li>
+            <li>
+                <label>Reputation: </label>
+                <span id="reputationStat">0</span>
+            </li>
+        </ul>
+        <button onclick="saveStats()">Save Character</button>
+
+
+        <script src="generation.js" defer></script>
+        <script src="stats.js" defer></script>
+    </body>
+</html>
