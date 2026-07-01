@@ -7,8 +7,6 @@ const routeEvents = [
     "Roll for a Road Encounter."
 ];
 
-const roadEncounters = [];
-
 const encounterHeader = document.getElementById("encounterHeader");
 const encounterText = document.getElementById("encounterText");
 const encounterButtons = document.getElementById("encounterButtons");
@@ -17,7 +15,7 @@ const roninStats = {
     reputation: 2
 }
 
-
+const roadEncounters = ["temple"];
 
 const rooms = {
     temple: {
@@ -80,8 +78,6 @@ function renderEncounter(encounter) {
     encounterHeader.innerHTML = rooms[encounter].header;
     encounterText.innerHTML = rooms[encounter].text;
     encounterButtons.innerHTML = "";
-
-    console.log(roninStats.reputation);
 
     if(rooms[encounter].buttons.length === 0) {
         return;
