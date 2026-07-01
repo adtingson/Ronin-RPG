@@ -1,0 +1,208 @@
+* {
+    font-family: "JetBrains Mono", "Blobs", "Blobmoji";
+    color: #454545;
+    font-size: 1rem;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #222;
+}
+
+h2, h3, h4, h5, h6 {
+    color: #222;
+}
+
+.numberInput {
+    width: 32px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
+}
+
+b {
+    color: #862D2D;
+}
+
+p {
+    line-height: 2rem;
+    margin: 1rem 0;
+}
+
+header,
+section {
+    border-bottom: 1px solid grey;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+footer {
+    margin: 2rem 0;
+}
+
+.not-list {
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+
+.not-list li {
+    float: left;
+    margin-right: 1rem;
+}
+
+.not-list + p {
+    clear: left;
+    padding-top: 1rem;
+}
+
+li {
+    line-height: 2rem;
+}
+
+#boxMap {
+    display: grid;
+    width: 300px;
+    height: 300px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border: 1px solid #000;
+    margin: 0 auto;
+}
+
+#boxMap div {
+    border: 1px solid #000;
+    padding: 10px;
+    background-color: #fff;
+}
+
+nav ul {
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li ul li::before {
+    content: ">";
+    padding-right: 1em;
+}
+
+nav ul li {
+    list-style-type: none;
+    display: flex;
+}
+
+nav ul li ul {
+    padding: 0;
+    padding-left: 1em;
+    min-width: max-content;
+}
+
+.activepage {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: -1em;
+    background-color: white;
+    z-index: 1;
+    box-shadow: 0px 5px 5px gray;
+    visibility: hidden;
+    padding-bottom: 1em;
+    padding-right: 2em;
+    width: 100%;
+    max-height: 0;
+    transition: max-height 1s ease-out;
+    overflow: hidden;
+}
+
+.optbreak {
+    display: none;
+}
+
+label {
+    color: #862D2D;
+    font-weight: bolder;
+}
+
+.activepage:hover > .dropdown {
+    visibility: visible;
+    max-height: 500px;
+}
+
+input[type="number"] {
+    width: 2em;
+    text-align: center;
+}
+
+input[type="button"],
+button {
+    background-color: transparent;
+    border: 1px solid grey;
+    cursor: pointer;
+}
+
+input[type="button"]:active,
+button:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+input {
+    border: 1px solid grey;
+}
+
+select {
+    border: 1px solid grey;
+    padding: 1px 0;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 616px) {
+    main {
+        margin: 0 1rem;
+    }
+
+    h1 {
+        text-align: left;
+    }
+
+    .not-list li {
+        float: none;
+    }
+
+    .not-list + p {
+        padding-top: 0;
+    }
+
+    header {
+        margin: 0 1em;
+    }
+
+    .optbreak {
+        display: block;
+    }
+
+    nav {
+        overflow-wrap: break-word;
+    }
+
+    nav ul li ul {
+        min-width: auto;
+    }
+}
