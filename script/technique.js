@@ -70,7 +70,8 @@ const techniques = [
         desc: "Naginata (Fight +2; Block 2)",
         weapon: "Naginata",
         fight: 2,
-        block: 2},
+        block: 2
+    },
     {
         id: "Jitte",
         desc: "Jitte (Fight +1; If it ties, it destroys the opponent’s blade; Block 2)",
