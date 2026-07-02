@@ -66,7 +66,4 @@ const secondVillain = {
     status: "Active"
 }
 
-
-console.log(finalVillain);
-console.log(firstVillain);
-console.log(secondVillain);
+const villainsList = [firstVillain, secondVillain, finalVillain];

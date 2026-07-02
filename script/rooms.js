@@ -1,0 +1,132 @@
+
+function rolld6() {
+    return Math.floor(Math.random() * 6);
+}
+
+const rooms = {
+    enRoute: {
+        header: "En route to next destination...",
+	    text: "",
+        function: () => {routeBuilder()}
+    },
+    endRoute: {
+        header: "End of Route",
+        text: "You have reached the end of the route.",
+        buttons: [
+            {
+                text: "Continue to Destination",
+                goto: "destination"
+            }
+        ],
+        function: () => {endOfRouteCheck()}
+    },
+    destination: {
+        header: "Destination",
+        text: "",
+        buttons: [],
+        function: () => {setWindowContext("inDestination")}
+    },
+    inDestination: {
+        header: "Somewhere in the destination",
+        text: "What do you do?",
+        buttons: [
+            {
+                text: "Leave to Next Destination",
+                goto: "enRoute"
+            },
+            {
+                text: "Find Something"
+            }
+        ],
+        function: () => {setWindowContext("inDestination")}
+    },
+    characterOver: {
+        header: "The Ronin’s Death",
+	    text: `${roninStats.name} has officially reached the end of their story and of their life. However, this is not the end of this story if you'd like.`,
+	    buttons: [
+		    {
+			    text: "New Character"
+		    },
+            {
+			    text: "Continue Game using an Ally"
+		    }
+        ]
+    },
+    lostSomewhereLoss: {
+        header: "You have been Spared.",
+	    text: "You have lost the fight, but you have been spared. You find yourself <i>Wounded</i> in a ditch somewhere. Your <i>Determination</i> is down.",
+	    buttons: [
+		    {
+			    text: "Continue"
+		    }
+        ]
+    },
+    lostSomewhereSurrender: {
+        header: "You have been Spared.",
+	    text: "You have given up the fight, but you have been spared. You find yourself <i>Wounded</i> in a ditch somewhere. But your <i>Determination</i> is in tact.",
+	    buttons: [
+		    {
+			    text: "Continue"
+		    }
+        ]
+    },
+    combatRoom: {
+        header: "Combat",
+        text: "",
+        buttons: [],
+        function: () => {renderCombatRoom()}
+
+    },
+    temple: {
+        header: "Temple",
+        text: "You have found a Buddhist temple. There, a monk invited you to spend a few days meditating.",
+        buttons: [
+            {
+                text: "Stay for a week.",
+                goto: ["temple1","temple26","temple26","temple26","temple26","temple26"][rolld6()]
+            },
+            {
+                text: "Leave",
+                goto: "templeLeave"
+            }
+        ]
+    },
+    templeLeave : {
+        header: "You Left",
+	    text: "You refused the monk's offer, and continued your journey to the next destination.",
+	    buttons: [
+            {
+                text: "Continue Journey",
+                goto: "endRoute"
+            }
+        ]
+    },
+    temple26: {
+        header: "After a week...",
+	    text: "Your reputation is reduced by 1.",
+	    buttons: [
+            {
+                text: "Continue Journey",
+                goto: "endRoute"
+            }
+        ],
+        function: () => {updateStat("reputation",-1);}
+    },
+    temple1: {
+        header: "After a week...",
+	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
+	    buttons: [
+            {
+                text: "Talk"
+            },
+            {
+                text: "Intimidate"
+            },
+            {
+                text: "Fight",
+                function: () => {renderCombatRoom()}
+            }
+        ],
+        function: () => {addEnemyToQueue("Spirit", "sword", 1, 0);addEnemyToEndRoute();setWindowContext("destination")}
+    }
+};

@@ -8,24 +8,20 @@ function resolveFight() {
             roninWinCleanUp();
         }
         else if (enemyBlockSuccess == "proceed") {
-            encounterText.innerHTML +=
+            renderCombatRoom();
+
+            combatText.innerHTML +=
             `<p>
                 ${enemyQueue[0].name} blocks the hit. Fight continues.
             </p>
             `;
-            encounterButtons.innerHTML =
-            `<button onclick="renderEncounter('combatRoom')">Continue Fight</button>
-            `;
         }
     }
     else if (fightWinner == "draw") {
-        encounterText.innerHTML +=
+        combatText.innerHTML +=
         `<p>
             This round of combat is a draw. Fight continues.
         </p>
-        `;
-        encounterButtons.innerHTML =
-        `<button onclick="renderEncounter('combatRoom')">Continue Fight</button>
         `;
     }
     else if (fightWinner == "enemy") {
@@ -60,13 +56,27 @@ function checkEnemyBlock() {
 
 function roninWinCleanUp() {
     encounterText.innerHTML =
+    `${roninStats.name} Stats:
+    <ul>
+        <li>Fight: ${roninStats.technique.fight}</li>
+        <li>Block: ${roninBlock}</li>
+    </ul>
+    <s>${enemyQueue[0].name} Stats:</s>
+    <ul>
+        <li><s>Fight: ${enemyQueue[0].fight}</s></li>
+        <li><s>Block: ${enemyBlock}</s></li>
+    </ul>
+    `;
+
+    combatText.innerHTML =
     `${enemyQueue[0].name} is defeated.<br>
     How would you like this to end?
     `;
 
     encounterButtons.innerHTML =
-    `<button onclick="slayEnemy()">Slay</button>
-    <button onclick="spareEnemy()">Spare</button>
+    `<button onclick="slayEnemy()">Kill</button>
+    <button onclick="spareEnemy()">Knock Out</button>
+    <button onclick="talkTo('enemy')">Talk</button>
     `;
 }
 
@@ -75,13 +85,15 @@ function slayEnemy() {
     updateStat("compassion",-1);
     
     if (enemyQueue.length === 0) {
-        renderEncounter("encounterMain");
+        renderEncounter(windowContext);
         roninBlock = roninStats.technique.block;
         return;
     }
 
     enemyBlock = enemyQueue[0].block;
-    renderEncounter("combatRoom");
+    renderCombatRoom();
+
+    combatText.innerHTML = "<p>Next enemy is here. Be ready.</p>";
 }
 
 function spareEnemy() {
@@ -92,17 +104,19 @@ function spareEnemy() {
     updateStat("reputation",+1);
 
     if (enemyQueue.length === 0) {
-        renderEncounter("encounterMain");
+        renderEncounter(windowContext);
         roninBlock = roninStats.technique.block;
         return;
     }
 
     enemyBlock = enemyQueue[0].block;
-    renderEncounter("combatRoom");
+    renderCombatRoom();
+
+    combatText.innerHTML = "<p>Next enemy is here. Be ready.</p>";
 }
 
 function renderBlockDeterminationOption() {
-    encounterText.innerHTML +=
+    combatText.innerHTML +=
     `<p>
         ${enemyQueue[0].name} will hit you. What do you do?
     </p>
@@ -117,13 +131,13 @@ function renderBlockDeterminationOption() {
 function extraEffort() {
     if (roninStats.determination > 0) {
         updateStat("determination",-1);
-        encounterText.innerHTML +=
+
+        renderCombatRoom();
+
+        combatText.innerHTML +=
         `<p>
             You're changing your fate. The fight continues.
         </p>
-        `;
-        encounterButtons.innerHTML =
-        `<button onclick="renderEncounter('combatRoom')">Continue Fight</button>
         `;
     }
     else if (roninStats.determination == 0) {
@@ -132,7 +146,7 @@ function extraEffort() {
             return;
         }
 
-        encounterText.innerHTML +=
+        combatText.innerHTML +=
         `<p>
             You already ran out of determination. Try something else.
         </p>
@@ -146,13 +160,13 @@ function extraEffort() {
 function blockHit() {
     if (roninBlock > 0) {
         roninBlock += -1;
-        encounterText.innerHTML +=
+
+        renderCombatRoom();
+
+        combatText.innerHTML +=
         `<p>
             You've blocked the hit. The fight continues.
         </p>
-        `;
-        encounterButtons.innerHTML =
-        `<button onclick="renderEncounter('combatRoom')">Continue Fight</button>
         `;
     }
     else if (roninBlock == 0) {
@@ -161,7 +175,7 @@ function blockHit() {
             return;
         }
 
-        encounterText.innerHTML +=
+        combatText.innerHTML +=
         `<p>
             You already ran out of blocks. Try something else.
         </p>
@@ -173,7 +187,28 @@ function blockHit() {
 }
 
 function roninLossCleanUp() {
-    //work on this later kay tire na ka. ok?
-    encounterText.innerHTML = "You lose. Kini sa lamang kay gikapuy na ka hahaha";
-    encounterButtons.innerHTML = "";
+    const lossOutcome = rolld6() + 1;
+
+    if (lossOutcome >= 2) {
+        roninStats.status = "wounded";
+        updateStat("determination",-999999);
+        renderEncounter("lostSomewhereLoss");
+    }
+    else {
+        roninStats.status = "dead";
+        renderEncounter("characterOver");
+    }
+}
+
+function surrenderFight() {
+    const lossOutcome = rolld6() + 1;
+
+    if (lossOutcome >= 2) {
+        roninStats.status = "wounded";
+        renderEncounter("lostSomewhereSurrender");
+    }
+    else {
+        roninStats.status = "dead";
+        renderEncounter("characterOver");
+    }
 }
