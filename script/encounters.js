@@ -6,12 +6,12 @@ let windowContext;
 const encounterHeader = document.getElementById("encounterHeader");
 const encounterText = document.getElementById("encounterText");
 const encounterButtons = document.getElementById("encounterButtons");
-const combatText = document.getElementById("combatText");
+const interactText = document.getElementById("interactText");
 
 const roadEncounters = ["temple"];
 
 function renderEncounter(encounter) {
-    combatText.innerHTML = "";
+    interactText.innerHTML = "";
     encounterHeader.innerHTML = rooms[encounter].header;
     encounterText.innerHTML = rooms[encounter].text;
     encounterButtons.innerHTML = "";
@@ -59,34 +59,61 @@ function updateStat(stat,change) {
     roninStats[stat] += change;
 }
 
+function renderTechniqueSelection() {
+    if (roninStats.technique.length === 1) {
+        renderCombatRoom();
+        return;
+    }
+
+    encounterHeader.innerHTML = "Select your technique";
+
+    encounterText.innerHTML = "It seems that you have multiple techniques under your belt. Select one to use for the following combat.";
+
+    roninStats.technique.forEach(
+        (technique, index) => {
+        encounterButtons.innerHTML +=
+        `<button onclick="setCombatStats(${index})">${technique.id}</button>
+        `;
+        }
+    );
+}
+
+function setCombatStats(techniqueIndex) {
+    roninStats.weapon = roninStats.technique[techniqueIndex].weapon;
+    roninStats.fight = roninStats.technique[techniqueIndex].fight;
+    roninStats.block = roninStats.technique[techniqueIndex].block;
+    renderCombatRoom();
+}
+
 function renderCombatRoom() {
+    roninBlock = roninStats.firstStrike == "available" ? roninStats.block:roninBlock;
+
     encounterText.innerHTML =
     `${roninStats.name} Stats:
     <ul>
-        <li>Fight: ${roninStats.technique.fight(roninStats)}</li>
+        <li>Fight: ${roninStats.fight(roninStats,enemyQueue[0])}</li>
         <li>Block: ${roninBlock}</li>
     </ul>
     ${enemyQueue[0].name} Stats:
     <ul>
-        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0])}</li>
+        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],roninStats)}</li>
         <li>Block: ${enemyBlock}</li>
     </ul>
     `;
 
     encounterButtons.innerHTML = 
-    `<button onclick="resolveFight()">Fight</button>
-    <button onclick="surrenderFight()">Surrender</button>
+    `<button onclick="fight()">Fight</button>
     `;
 }
 
-function addEnemyToQueue(name,weapon,fight,block) {
+function addEnemyToQueue({name,weapon,fight,block,technique}={}) {
     const addedEnemy = {
         name: name,
         weapon: weapon,
-        fight: () => fight,
+        fight: fight,
         block: block,
-        relationship: "none",
-        firstStrike = "available",
+        technique: technique,
+        firstStrike: "available"
     }
     
     enemyQueue.push(addedEnemy);
@@ -192,8 +219,5 @@ function addPossibleAlly({name,appearance,technique,occupation}={}) {
     possibleAllies.push(possibleAlly);
 }
 
-renderEncounter("endRoute");
-
-
-addPossibleAlly({occupation: "Blacksmith"});
-console.log(possibleAllies);
+addEnemyToQueue({name:"TestDummy",fight:() => 2,block:2,weapon:"Sword"});
+renderTechniqueSelection();
