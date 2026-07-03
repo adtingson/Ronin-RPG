@@ -44,7 +44,6 @@ function fight() {
 }
 
 function checkFightWinner() {
-    console.log(roninStats.fight(roninStats, enemyQueue[0]));
     const roninFight = rolld6() + roninStats.fight(roninStats, enemyQueue[0]);
     const enemyFight = rolld6() + enemyQueue[0].fight(enemyQueue[0], roninStats);
 

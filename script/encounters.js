@@ -69,6 +69,8 @@ function renderTechniqueSelection() {
 
     encounterText.innerHTML = "It seems that you have multiple techniques under your belt. Select one to use for the following combat.";
 
+    encounterButtons.innerHTML = "";
+
     roninStats.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
@@ -219,5 +221,4 @@ function addPossibleAlly({name,appearance,technique,occupation}={}) {
     possibleAllies.push(possibleAlly);
 }
 
-addEnemyToQueue({name:"TestDummy",fight:() => 2,block:2,weapon:"Sword"});
-renderTechniqueSelection();
+renderEncounter("temple");
