@@ -63,12 +63,12 @@ function renderCombatRoom() {
     encounterText.innerHTML =
     `${roninStats.name} Stats:
     <ul>
-        <li>Fight: ${roninStats.technique.fight}</li>
+        <li>Fight: ${roninStats.technique.fight(roninStats)}</li>
         <li>Block: ${roninBlock}</li>
     </ul>
     ${enemyQueue[0].name} Stats:
     <ul>
-        <li>Fight: ${enemyQueue[0].fight}</li>
+        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0])}</li>
         <li>Block: ${enemyBlock}</li>
     </ul>
     `;
@@ -83,9 +83,10 @@ function addEnemyToQueue(name,weapon,fight,block) {
     const addedEnemy = {
         name: name,
         weapon: weapon,
-        fight: fight,
+        fight: () => fight,
         block: block,
-        relationship: "none"
+        relationship: "none",
+        firstStrike = "available",
     }
     
     enemyQueue.push(addedEnemy);
@@ -173,4 +174,26 @@ function setWindowContext(destination) {
     windowContext = destination;
 }
 
-renderEncounter("enRoute");
+function addPossibleAlly({name,appearance,technique,occupation}={}) {
+    const occupationList = ["Mentor", "Blacksmith", "Healer", "Fighter", "Innocent"];
+    const allyName = name !== undefined ? name : finalName();
+    const allyAppearance = appearance !== undefined ? appearance : normalizeText(randoAppearance());
+    const allyTechnique = technique !== undefined ? technique : randomTechnique();
+    const allyOccupation = occupation !== undefined ? occupation : occupationList[Math.floor(Math.random() * occupationList.length)];
+
+
+    const possibleAlly = {
+        name: allyName,
+        appearance: allyAppearance,
+        technique: allyTechnique,
+        occupation: allyOccupation
+    };
+
+    possibleAllies.push(possibleAlly);
+}
+
+renderEncounter("endRoute");
+
+
+addPossibleAlly({occupation: "Blacksmith"});
+console.log(possibleAllies);

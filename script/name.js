@@ -18,5 +18,3 @@ function nameFunc(roninGender) {
     const index = Math.floor(Math.random() * nameSet.length);
     return nameSet[index];
 }
-
-document.getElementById("roninName").innerHTML = finalName();

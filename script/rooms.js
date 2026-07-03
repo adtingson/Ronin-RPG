@@ -4,6 +4,17 @@ function rolld6() {
 }
 
 const rooms = {
+    searchRoom: {
+        header: "Leaving the Trail",
+        text: "You went out of your way to search for something. What is it?",
+        buttons: [
+            {
+                text: "Nothing",
+                function: () => {renderEncounter(windowContext)}
+            },
+            
+        ]
+    },
     enRoute: {
         header: "En route to next destination...",
 	    text: "",
@@ -16,6 +27,11 @@ const rooms = {
             {
                 text: "Continue to Destination",
                 goto: "destination"
+            },
+            {
+                text: "Search",
+                goto: 'searchRoom',
+                function: () => {setWindowContext("endRoute")}
             }
         ],
         function: () => {endOfRouteCheck()}
@@ -69,13 +85,6 @@ const rooms = {
 			    text: "Continue"
 		    }
         ]
-    },
-    combatRoom: {
-        header: "Combat",
-        text: "",
-        buttons: [],
-        function: () => {renderCombatRoom()}
-
     },
     temple: {
         header: "Temple",

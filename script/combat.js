@@ -1,6 +1,14 @@
 function resolveFight() {
+    enemyQueue[0].enemyWeapon = roninStats.technique.weapon;
+    roninStats.enemyWeapon = enemyQueue[0].weapon;
+
     const fightWinner = checkFightWinner();
-    
+
+    roninStats.blockState = "attacked";
+    roninStats.firstStrike = "done";
+    enemyQueue[0].blockState = "attacked";
+    enemyQueue[0].firstStrike = "done";
+
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();
 
@@ -23,6 +31,15 @@ function resolveFight() {
             This round of combat is a draw. Fight continues.
         </p>
         `;
+
+        if (roninStats.technique.id == "Jitte") {
+            enemyQueue[0].fight = 0;
+            combatText.innerHTML +=
+            `<p>
+                However. You have broken their weapon.
+            </p>
+            `;
+        }
     }
     else if (fightWinner == "enemy") {
         renderBlockDeterminationOption();
@@ -30,8 +47,8 @@ function resolveFight() {
 }
 
 function checkFightWinner() {
-    const roninFight = rolld6() + roninStats.technique.fight;
-    const enemyFight = rolld6() + enemyQueue[0].fight;
+    const roninFight = rolld6() + roninStats.technique.fight(roninStats);
+    const enemyFight = rolld6() + enemyQueue[0].fight(enemyQueue[0]);
 
     if (roninFight > enemyFight) {
         return "ronin";
@@ -47,6 +64,7 @@ function checkFightWinner() {
 function checkEnemyBlock() {
     if (enemyBlock > 0) {
         enemyBlock += -1;
+        enemyQueue[0].blockState = "blocked";
         return "proceed";
     }
     else {
@@ -58,12 +76,12 @@ function roninWinCleanUp() {
     encounterText.innerHTML =
     `${roninStats.name} Stats:
     <ul>
-        <li>Fight: ${roninStats.technique.fight}</li>
+        <li>Fight: ${roninStats.technique.fight(roninStats)}</li>
         <li>Block: ${roninBlock}</li>
     </ul>
     <s>${enemyQueue[0].name} Stats:</s>
     <ul>
-        <li><s>Fight: ${enemyQueue[0].fight}</s></li>
+        <li><s>Fight: ${enemyQueue[0].fight(enemyQueue[0])}</s></li>
         <li><s>Block: ${enemyBlock}</s></li>
     </ul>
     `;
@@ -87,6 +105,7 @@ function slayEnemy() {
     if (enemyQueue.length === 0) {
         renderEncounter(windowContext);
         roninBlock = roninStats.technique.block;
+        roninStats.firstStrike = "available";
         return;
     }
 
@@ -106,6 +125,7 @@ function spareEnemy() {
     if (enemyQueue.length === 0) {
         renderEncounter(windowContext);
         roninBlock = roninStats.technique.block;
+        roninStats.firstStrike = "available";
         return;
     }
 
@@ -160,6 +180,8 @@ function extraEffort() {
 function blockHit() {
     if (roninBlock > 0) {
         roninBlock += -1;
+
+        roninStats.blockState = "blocked";
 
         renderCombatRoom();
 

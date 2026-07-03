@@ -33,5 +33,3 @@ function randoAppearance() {
 function normalizeText(text) {
     return text.replaceAll(" *", "");
 }
-
-document.getElementById("roninAppearance").innerHTML = normalizeText(randoAppearance());

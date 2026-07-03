@@ -4,6 +4,7 @@ const roninStats = {
     compassion: 2,
     determination: 2,
     status: "alive",
+    firstStrike = "available",
     technique: {
         id: "Kenjutsu",
         desc: "Kenjutsu [Katana] (Fight +2; Block 2)",
