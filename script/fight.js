@@ -1,10 +1,11 @@
 function fight() {
     const fightWinner = checkFightWinner();
 
-    roninStats.blockState = "attacked";
-    roninStats.firstStrike = "done";
+    ronin.blockState = "attacked";
+    ronin.firstStrike = "done";
     enemyQueue[0].blockState = "attacked";
     enemyQueue[0].firstStrike = "done";
+    enemyQueue[0].morale.morale = "normal";
 
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();
@@ -29,7 +30,7 @@ function fight() {
         </p>
         `;
 
-        if (roninStats.technique.id == "Jitte") {
+        if (ronin.technique.id == "Jitte") {
             enemyQueue[0].fight = 0;
             interactText.innerHTML +=
             `<p>
@@ -44,8 +45,8 @@ function fight() {
 }
 
 function checkFightWinner() {
-    const roninFight = rolld6() + roninStats.fight(roninStats, enemyQueue[0]);
-    const enemyFight = rolld6() + enemyQueue[0].fight(enemyQueue[0], roninStats);
+    const roninFight = rolld6() + ronin.fight(ronin, enemyQueue[0]);
+    const enemyFight = rolld6() + enemyQueue[0].fight(enemyQueue[0], ronin) + (enemyQueue[0].morale == "emboldened" ? 1:0);
 
     if (roninFight > enemyFight) {
         return "ronin";
@@ -71,14 +72,14 @@ function checkEnemyBlock() {
 
 function roninWinCleanUp() {
     encounterText.innerHTML =
-    `${roninStats.name} Stats:
+    `${ronin.name} Stats:
     <ul>
-        <li>Fight: ${roninStats.fight(roninStats,enemyQueue[0])}</li>
+        <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
         <li>Block: ${roninBlock}</li>
     </ul>
     <s>${enemyQueue[0].name} Stats:</s>
     <ul>
-        <li><s>Fight: ${enemyQueue[0].fight(enemyQueue[0],roninStats)}</s></li>
+        <li><s>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</s></li>
         <li><s>Block: ${enemyBlock}</s></li>
     </ul>
     `;
@@ -101,8 +102,8 @@ function slayEnemy() {
     
     if (enemyQueue.length === 0) {
         renderEncounter(windowContext);
-        roninBlock = roninStats.block;
-        roninStats.firstStrike = "available";
+        roninBlock = ronin.block;
+        ronin.firstStrike = "available";
         return;
     }
 
@@ -121,8 +122,8 @@ function spareEnemy() {
 
     if (enemyQueue.length === 0) {
         renderEncounter(windowContext);
-        roninBlock = roninStats.block;
-        roninStats.firstStrike = "available";
+        roninBlock = ronin.block;
+        ronin.firstStrike = "available";
         return;
     }
 
@@ -146,7 +147,7 @@ function renderBlockDeterminationOption() {
 }
 
 function extraEffort() {
-    if (roninStats.determination > 0) {
+    if (ronin.determination > 0) {
         updateStat("determination",-1);
 
         renderCombatRoom();
@@ -157,7 +158,7 @@ function extraEffort() {
         </p>
         `;
     }
-    else if (roninStats.determination == 0) {
+    else if (ronin.determination == 0) {
         if (roninBlock == 0) {
             roninLossCleanUp();
             return;
@@ -178,7 +179,7 @@ function blockHit() {
     if (roninBlock > 0) {
         roninBlock += -1;
 
-        roninStats.blockState = "blocked";
+        ronin.blockState = "blocked";
 
         renderCombatRoom();
 
@@ -189,7 +190,7 @@ function blockHit() {
         `;
     }
     else if (roninBlock == 0) {
-        if (roninStats.determination == 0) {
+        if (ronin.determination == 0) {
             roninLossCleanUp();
             return;
         }
@@ -209,12 +210,12 @@ function roninLossCleanUp() {
     const lossOutcome = rolld6() + 1;
 
     if (lossOutcome >= 2) {
-        roninStats.status = "wounded";
+        ronin.status = "wounded";
         updateStat("determination",-999999);
         renderEncounter("lostSomewhereLoss");
     }
     else {
-        roninStats.status = "dead";
+        ronin.status = "dead";
         renderEncounter("characterOver");
     }
 }
@@ -223,11 +224,11 @@ function surrenderFight() {
     const lossOutcome = rolld6() + 1;
 
     if (lossOutcome >= 2) {
-        roninStats.status = "wounded";
+        ronin.status = "wounded";
         renderEncounter("lostSomewhereSurrender");
     }
     else {
-        roninStats.status = "dead";
+        ronin.status = "dead";
         renderEncounter("characterOver");
     }
 }

@@ -1,4 +1,14 @@
 function intimidate(person) {
+    if (person == undefined) {
+        interactText.innerHTML = "They already left.";
+        return;
+    }
+
+    if(person.morale == "emboldened") {
+        interactText.innerHTML = `You cannot intimidate this person. They are emboldened to fight you!`;
+        return;
+    }
+
     const result = intimidateAttempt();
     let intimidateMessage;
 
@@ -9,14 +19,14 @@ function intimidate(person) {
     }
     else {
         intimidateMessage = `${person.name} is not intimidated by you. He becomes emboldened to fight!`;
-        person.morale = "emboldened"; // this gives +1 to next fight roll then this stat turns into something else
+        person.morale = "emboldened";
     }
 
-    interactText.innerHTML = intimidateMessage;
+    interactText.innerHTML = `<p>${intimidateMessage}</p>`;
 }
 
 function intimidateAttempt() {
-    const intimidate = rolld6() + roninStats.reputation;
+    const intimidate = rolld6() + ronin.reputation;
     const resistance = rolld6();
 
     if (intimidate > resistance) {

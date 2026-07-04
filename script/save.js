@@ -1,4 +1,4 @@
-let roninStats = {
+let ronin = {
     name: "",
     appearance: [],
     styles: [],
@@ -9,28 +9,28 @@ let roninStats = {
 }
 
 function saveStats() {
-    roninStats.name = nameSelect.value;
-    roninStats.appearance.push(appearanceSelect.value);
-    roninStats.appearance.push(extraAppearance1.value);
-    roninStats.appearance.push(extraAppearance2.value);
+    ronin.name = nameSelect.value;
+    ronin.appearance.push(appearanceSelect.value);
+    ronin.appearance.push(extraAppearance1.value);
+    ronin.appearance.push(extraAppearance2.value);
     if (techniqueSelect.value == "Uncommon") {
-        roninStats.styles.push(techniquePlaceholderforUncommon);
+        ronin.styles.push(techniquePlaceholderforUncommon);
     }
     else {
-        roninStats.styles.push(techniqueSelect.value);
+        ronin.styles.push(techniqueSelect.value);
     }
-    roninStats.determination = determinationStat.innerHTML;
-    roninStats.compassion = compassionStat.innerHTML;
-    roninStats.reputation = reputationStat.innerHTML;
-    localStorage.setItem("roninStats", JSON.stringify(roninStats));
+    ronin.determination = determinationStat.innerHTML;
+    ronin.compassion = compassionStat.innerHTML;
+    ronin.reputation = reputationStat.innerHTML;
+    localStorage.setItem("ronin", JSON.stringify(ronin));
 }
 
 function loadStat() {
-    roninStats = JSON.parse(localStorage.getItem("roninStats"));
-    document.getElementById("namePlace").innerHTML = roninStats.name;
-    document.getElementById("appearancePlace").innerHTML = roninStats.appearance;
-    document.getElementById("techniquePlace").innerHTML = roninStats.styles;
-    document.getElementById("detPlace").innerHTML = roninStats.determination;
-    document.getElementById("compPlace").innerHTML = roninStats.compassion;
-    document.getElementById("repPlace").innerHTML = roninStats.reputation;
+    ronin = JSON.parse(localStorage.getItem("ronin"));
+    document.getElementById("namePlace").innerHTML = ronin.name;
+    document.getElementById("appearancePlace").innerHTML = ronin.appearance;
+    document.getElementById("techniquePlace").innerHTML = ronin.styles;
+    document.getElementById("detPlace").innerHTML = ronin.determination;
+    document.getElementById("compPlace").innerHTML = ronin.compassion;
+    document.getElementById("repPlace").innerHTML = ronin.reputation;
 }

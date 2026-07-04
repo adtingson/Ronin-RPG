@@ -13,20 +13,69 @@
         <link rel="stylesheet" href="styles/JetBrains Mono.css">
         <link rel="stylesheet" href="styles/Blobmoji.css">
     </head>
+    <header>
+        <h1>Ronin</h1>
+    </header>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+        <div id="game">
+            <aside id="ronin">
+                <section>
+                    <h3>The Ronin</h3>
+                    <ul>
+                        <li><b>Name</b> <span id="roninName"></span></li>
+                        <li><b>Appearance</b> <span id="roninAppearance"></span></li>
+                        <li><b>Technique</b>
+                            <ul id="roninTechniques">
+                            </ul>
+                        </li>
+                        <li><b>Family</b> <span id="roninFamily"></span></li>
+                        <li><b>Nightmare</b> <span id="roninNightmare"></span></li>
+                        <li><b>Scar</b> <span id="roninScar"></span></li>
+                        <li><b>Meaning</b> <span id="roninScarMeaning"></span></li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Stats</h3>
+                    <ul>
+                        <li><b>Compassion</b> <span id="roninCompassion"></span></li>
+                        <li><b>Determination</b> <span id="roninDetermination"></span></li>
+                        <li><b>Reputation</b> <span id="roninReputation"></span></li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Allies</h3>
+                </section>
+                <section>
+                    <h3>Possible Allies</h3>
+                </section>
+            </aside>
+            <main id="encounter">
+                <h2 id="encounterHeader"></h2>
 
-        <h1>Ronin</h1>
-        
-        <h2 id="encounterHeader"></h2>
+                <p id="encounterText"></p>
 
-        <p id="encounterText"></p>
+                <div id="interactText" style="text-align: center;"></div>
 
-        <div id="interactText" style="text-align: center;"></div>
+                <p style="text-align: center;" id="encounterButtons"></p>
+            </main>
+            <aside id="queues">
+                <section>
+                    <h3>Current Enemies</h3>
+                    <ol id="activeEnemy">
 
-        <p style="text-align: center;" id="encounterButtons"></p>
+                    </ol>
+                </section>
+                <section>
+                    <h3>Living Enemies</h3>
+                </section>
+                <section>
+                    <h3>Villains</h3>
+                </section>
+            </aside>
+        </div>
 
 
         <script src="script/name.js" defer></script>

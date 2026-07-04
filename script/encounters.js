@@ -13,12 +13,16 @@ const roadEncounters = ["temple"];
 function renderEncounter(encounter) {
     interactText.innerHTML = "";
     encounterHeader.innerHTML = rooms[encounter].header;
-    encounterText.innerHTML = rooms[encounter].text;
+    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
+
+    renderDisplay();
 
     if(rooms[encounter].function !== undefined){
         rooms[encounter].function();
     }
+
+     renderDisplay();
 
     if(rooms[encounter].buttons == undefined || rooms[encounter].buttons.length === 0) {
         return;
@@ -31,6 +35,8 @@ function renderEncounter(encounter) {
 
         btn.onclick = () => {
             if (rooms[encounter].buttons[index].goto !== undefined) {
+                typeof rooms[encounter].buttons[index].goto === "function" ? 
+                renderEncounter(rooms[encounter].buttons[index].goto()):
                 renderEncounter(rooms[encounter].buttons[index].goto);
             }
 
@@ -45,22 +51,27 @@ function renderEncounter(encounter) {
 }
 
 function updateStat(stat,change) {
-    const futureStat = roninStats[stat] + change;
+    const futureStat = ronin[stat] + change;
 
     if (futureStat > 6) {
-        roninStats[stat] = 6;
+        ronin[stat] = 6;
         return;
     }
     else if (futureStat < 0) {
-        roninStats[stat] = 0;
+        ronin[stat] = 0;
         return;
     }
 
-    roninStats[stat] += change;
+    ronin[stat] += change;
 }
 
 function renderTechniqueSelection() {
-    if (roninStats.technique.length === 1) {
+    if (!enemyQueue.length) {
+        interactText.innerHTML = "There is no one to fight.";
+        return;
+    }
+
+    if (ronin.technique.length === 1) {
         renderCombatRoom();
         return;
     }
@@ -71,7 +82,7 @@ function renderTechniqueSelection() {
 
     encounterButtons.innerHTML = "";
 
-    roninStats.technique.forEach(
+    ronin.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
         `<button onclick="setCombatStats(${index})">${technique.id}</button>
@@ -81,24 +92,24 @@ function renderTechniqueSelection() {
 }
 
 function setCombatStats(techniqueIndex) {
-    roninStats.weapon = roninStats.technique[techniqueIndex].weapon;
-    roninStats.fight = roninStats.technique[techniqueIndex].fight;
-    roninStats.block = roninStats.technique[techniqueIndex].block;
+    ronin.weapon = ronin.technique[techniqueIndex].weapon;
+    ronin.fight = ronin.technique[techniqueIndex].fight;
+    ronin.block = ronin.technique[techniqueIndex].block;
     renderCombatRoom();
 }
 
 function renderCombatRoom() {
-    roninBlock = roninStats.firstStrike == "available" ? roninStats.block:roninBlock;
+    roninBlock = ronin.firstStrike == "available" ? ronin.block:roninBlock;
 
     encounterText.innerHTML =
-    `${roninStats.name} Stats:
+    `${ronin.name} Stats:
     <ul>
-        <li>Fight: ${roninStats.fight(roninStats,enemyQueue[0])}</li>
+        <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
         <li>Block: ${roninBlock}</li>
     </ul>
     ${enemyQueue[0].name} Stats:
     <ul>
-        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],roninStats)}</li>
+        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</li>
         <li>Block: ${enemyBlock}</li>
     </ul>
     `;
@@ -135,7 +146,7 @@ function route0() {
 }
 
 function route1() {
-    if (roninStats.reputation >= 4) {
+    if (ronin.reputation >= 4) {
         encounterText.innerHTML = `${villainsList[0].name} has found you.`;
         encounterButtons.innerHTML =
         `<button>Face this Villain</button>
@@ -147,7 +158,7 @@ function route1() {
 }
 
 function route2() {
-    if (roninStats.reputation >= 5) {
+    if (ronin.reputation >= 5) {
         encounterText.innerHTML = `${villainsList[0].name} has found you.`;
         encounterButtons.innerHTML =
         `<button>Face this Villain</button>
@@ -169,7 +180,7 @@ function randomRoadEncounter() {
 }
 
 function route3() {
-    if (roninStats.reputation >= 6) {
+    if (ronin.reputation >= 6) {
         encounterText.innerHTML = `${villainsList[0].name} has found you.`;
         encounterButtons.innerHTML =
         `<button>Face this Villain</button>
@@ -221,4 +232,14 @@ function addPossibleAlly({name,appearance,technique,occupation}={}) {
     possibleAllies.push(possibleAlly);
 }
 
-renderEncounter("temple");
+
+function checkInteractions(person) {
+    if (person !== undefined) {
+        interactText.innerHTML = "It is rude to ignore someone that is already in front of you. Try to interact."
+    }
+    else {
+        renderEncounter(windowContext);
+    }
+}
+
+renderEncounter("temple1");

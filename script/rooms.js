@@ -58,7 +58,7 @@ const rooms = {
     },
     characterOver: {
         header: "The Ronin’s Death",
-	    text: `${roninStats.name} has officially reached the end of their story and of their life. However, this is not the end of this story if you'd like.`,
+	    text: () => `${ronin.name} has officially reached the end of their story and of their life. However, this is not the end of this story if you'd like.`,
 	    buttons: [
 		    {
 			    text: "New Character"
@@ -92,7 +92,7 @@ const rooms = {
         buttons: [
             {
                 text: "Stay for a week.",
-                goto: ["temple1","temple26","temple26","temple26","temple26","temple26"][rolld6()]
+                goto: () => rolld6() > 1 ?  "temple26":"temple1"
             },
             {
                 text: "Leave",
@@ -136,6 +136,10 @@ const rooms = {
             {
                 text: "Fight",
                 function: () => {renderTechniqueSelection()}
+            },
+            {
+                text: "Proceed",
+                function: () => {checkInteractions(enemyQueue[0])}
             }
         ],
         function: () => {addEnemyToQueue({name: "Spirit", weapon: "Sword", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination")}

@@ -1,4 +1,14 @@
 function talkTo(person) {
+    if (person == undefined) {
+        interactText.innerHTML = "There is no one to talk to.";
+        return;
+    }
+    
+    if (person.morale == "emboldened") {
+        interactText.innerHTML = "Trying to talk to this person is pointless. They are eager to fight you!";
+        return;
+    }
+
     let talkMessage;
 
     if (person.background == undefined) {
@@ -49,7 +59,7 @@ function talkTo(person) {
 
 function talkForPastInformation() {
     const pastInformationTable = ["They tell about the secret of another person or clan. Possibly, someone you don’t know well or haven’t met yet.", "They tell you something about their past that makes you understand his actions in the present.", "You realize that despite doing what they do, they have a certain hatred of their condition.", "They are a fervent idealist and will die defending what they think is right.", "They say almost nothing. They are very cold, but lets slip that they have some connection with some of your allies.", "They have no interesting background or pertinent information."];
-    const articulate = rolld6() + roninStats.determination;
+    const articulate = rolld6() + ronin.determination;
     const resistance = rolld6();
 
     if (articulate > resistance) {
@@ -62,7 +72,7 @@ function talkForPastInformation() {
 
 function talkForDarkSecret() {
     const darkSecretTable = ["They fought in a war and lost someone very important in it.", "They were the victim of a tragedy similar to yours.", "They are related to someone who has caused you pain in your past.", "They were the cause of a lot of pain, but today they are sorry.", "They have a crazy dream, but it may not be impossible.", "They’re in love with you."];
-    const articulate = rolld6() + roninStats.determination;
+    const articulate = rolld6() + ronin.determination;
     const resistance = rolld6() + 2;
 
     if (articulate > resistance) {
