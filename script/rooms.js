@@ -111,8 +111,8 @@ const rooms = {
         ]
     },
     temple26: {
-        header: "After a week...",
-	    text: "Your reputation is reduced by 1.",
+        header: "A week later...",
+	    text: "You spent your days at the temple meditating.<br><br>Your reputation is reduced by 1.",
 	    buttons: [
             {
                 text: "Continue Journey",
@@ -122,12 +122,16 @@ const rooms = {
         function: () => {updateStat("reputation",-1);}
     },
     temple1: {
-        header: "After a week...",
+        header: "A Ghost from the Past",
 	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
 	    buttons: [
             {
                 text: "Talk",
                 function: () => {talkTo(enemyQueue[0])}
+            },
+            {
+                text: "Charm",
+                function: () => {charm(enemyQueue[0])}
             },
             {
                 text: "Intimidate",
@@ -142,6 +146,6 @@ const rooms = {
                 function: () => {checkInteractions(enemyQueue[0])}
             }
         ],
-        function: () => {addEnemyToQueue({name: "Spirit", weapon: "Sword", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination")}
+        function: () => {addEnemyToQueue({name: "The Spirit of your Victim", weapon: "Sword", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination");}
     }
 };

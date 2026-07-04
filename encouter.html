@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
     <head>
         <meta charset="utf-8">
@@ -17,15 +13,13 @@
         <h1>Ronin</h1>
     </header>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
         <div id="game">
             <aside id="ronin">
                 <section>
                     <h3>The Ronin</h3>
                     <ul>
                         <li><b>Name</b> <span id="roninName"></span></li>
+                        <li><b>Gender</b> <span id="roninGender"></span></li>
                         <li><b>Appearance</b> <span id="roninAppearance"></span></li>
                         <li><b>Technique</b>
                             <ul id="roninTechniques">
@@ -64,12 +58,11 @@
             <aside id="queues">
                 <section>
                     <h3>Current Enemies</h3>
-                    <ol id="activeEnemy">
-
-                    </ol>
+                    <table id="activeEnemy"></table>
                 </section>
                 <section>
                     <h3>Living Enemies</h3>
+                    <table id="livingEnemy"></table>
                 </section>
                 <section>
                     <h3>Villains</h3>
@@ -81,11 +74,13 @@
         <script src="script/name.js" defer></script>
         <script src="script/appearance.js" defer></script>
         <script src="script/technique.js" defer></script>
+        <script src="script/villain.js" defer></script>
         <script src="script/character sheet.js" defer></script>
         <script src="script/rooms.js" defer></script>
         <script src="script/encounters.js" defer></script>
         <script src="script/fight.js" defer></script>
         <script src="script/talk.js" defer></script>
         <script src="script/intimidate.js" defer></script>
+        <script src="script/charm.js" defer></script>
     </body>
 </html>

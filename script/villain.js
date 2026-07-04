@@ -12,7 +12,14 @@ const finalVillainTypes = [
     "The Final Villain reveals himself as the first Possible Ally you met. If he became your ally, it would only have been to deceive you. You find out now that he has a scar too. Roll a Scar Meaning and you are one of the possible causes of it."
 ];
 
-const uniquePowers = ["This Villain is very observant and gains +1 in Fight each time he spends a Block point.", "This Villain is very fast and has 2 extra Block points.", "This Villain can manipulate fire and gains +1 in Fight. But if your scar is a burn, this number becomes +2 instead.", "Before facing this Villain, you will have to face one of his servants. The last Possible Ally you fail to become ally appears to protect the Final Villain.", "This Final Villain has one of your Allies (random) as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.", "One of your Allies (random) reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now."];
+const uniquePowers = [
+    "This Villain is very observant and gains +1 in Fight each time he spends a Block point.",
+    "This Villain is very fast and has 2 extra Block points.",
+    "This Villain can manipulate fire and gains +1 in Fight. But if your scar is a burn, this number becomes +2 instead.",
+    "Before facing this Villain, you will have to face one of his servants. The last Possible Ally you fail to become ally appears to protect the Final Villain.",
+    "This Final Villain has one of your Allies (random) as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.",
+    "One of your Allies (random) reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now."
+];
 
 function generateExoticLocation() {
     const thePlace = exoticlocations.place[Math.floor(Math.random() * exoticlocations.place.length)];
@@ -43,11 +50,11 @@ const villainTypes = [
     `This villain is a mercenary hired by ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
     "This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.",
     "This villain is your brother. You didn’t expect this. But now you find out that he was there, along with you, when you got your scar. However, he blames you for everything and now he wants your death.",
-    `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
+    () => `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
 ];
 
 function villainBG() {
-    return villainTypes[Math.floor(Math.random() * villainTypes.length)];
+    return villainTypes[Math.floor(Math.random() * villainTypes.length)]; // villainTypes all function so you can do wonderful things with them
 }
 
 const firstVillain = {
@@ -65,5 +72,3 @@ const secondVillain = {
     background: villainBG(),
     status: "Active"
 }
-
-const villainsList = [firstVillain, secondVillain, finalVillain];

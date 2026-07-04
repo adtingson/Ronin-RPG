@@ -76,8 +76,6 @@ function renderTechniqueSelection() {
         return;
     }
 
-    encounterHeader.innerHTML = "Select your technique";
-
     encounterText.innerHTML = "It seems that you have multiple techniques under your belt. Select one to use for the following combat.";
 
     encounterButtons.innerHTML = "";
@@ -101,17 +99,27 @@ function setCombatStats(techniqueIndex) {
 function renderCombatRoom() {
     roninBlock = ronin.firstStrike == "available" ? ronin.block:roninBlock;
 
+    interactText.innerHTML = "";
+
+    renderDisplay();
+
     encounterText.innerHTML =
-    `${ronin.name} Stats:
-    <ul>
-        <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
-        <li>Block: ${roninBlock}</li>
-    </ul>
-    ${enemyQueue[0].name} Stats:
-    <ul>
-        <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</li>
-        <li>Block: ${enemyBlock}</li>
-    </ul>
+    `<div class="half-half">
+        <div>
+            ${ronin.name}:
+            <ul>
+                <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
+                <li>Block: ${roninBlock}</li>
+            </ul>
+        </div>
+        <div>
+            ${enemyQueue[0].name}:
+            <ul>
+                <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</li>
+                <li>Block: ${enemyBlock}</li>
+            </ul>
+        </div>
+    </div>
     `;
 
     encounterButtons.innerHTML = 
@@ -214,25 +222,6 @@ function setWindowContext(destination) {
     windowContext = destination;
 }
 
-function addPossibleAlly({name,appearance,technique,occupation}={}) {
-    const occupationList = ["Mentor", "Blacksmith", "Healer", "Fighter", "Innocent"];
-    const allyName = name !== undefined ? name : finalName();
-    const allyAppearance = appearance !== undefined ? appearance : normalizeText(randoAppearance());
-    const allyTechnique = technique !== undefined ? technique : randomTechnique();
-    const allyOccupation = occupation !== undefined ? occupation : occupationList[Math.floor(Math.random() * occupationList.length)];
-
-
-    const possibleAlly = {
-        name: allyName,
-        appearance: allyAppearance,
-        technique: allyTechnique,
-        occupation: allyOccupation
-    };
-
-    possibleAllies.push(possibleAlly);
-}
-
-
 function checkInteractions(person) {
     if (person !== undefined) {
         interactText.innerHTML = "It is rude to ignore someone that is already in front of you. Try to interact."
@@ -241,5 +230,32 @@ function checkInteractions(person) {
         renderEncounter(windowContext);
     }
 }
+
+function generatePossibleAlly({name,appearance,gender,technique,occupation,background,pastInfo,darkSecret}={}) {
+    const occupationList = ["Mentor", "Blacksmith", "Healer", "Fighter", "Innocent"];
+    const generatedGender = gender !== undefined ? gender : genderFunc();
+    const generatedName = name !== undefined ? name : nameFunc(generatedGender);
+    const allyAppearance = appearance !== undefined ? appearance : normalizeText(randoAppearance());
+    const allyTechnique = technique !== undefined ? technique : randomTechnique();
+    const allyOccupation = occupation !== undefined ? occupation : occupationList[Math.floor(Math.random() * occupationList.length)];
+
+
+    const possibleAlly = {
+        name: generatedName,
+        gender: generatedGender,
+        appearance: allyAppearance,
+        technique: allyTechnique,
+        occupation: allyOccupation,
+        background: background !== undefined ? background : undefined,
+        pastInfo: pastInfo !== undefined ? pastInfo : undefined,
+        darkSecret: darkSecret !== undefined ? darkSecret : undefined,
+        firstStrike: "available"
+    };
+
+    possibleAlly.technique.block += -1;
+
+    possibleAllies.push(possibleAlly);
+}
+
 
 renderEncounter("temple1");

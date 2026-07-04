@@ -1,4 +1,13 @@
 function charm(person) {
+    if (allies.includes(person)) {
+        interactText.innerHTML = `There is no point in charming ${person.name}. ${person.name} is already devoted to your cause.`;
+        return;
+    }
+    else if (villainsList.includes(person)) {
+        interactText.innerHTML = `You can be charming all you want. ${person.name} doesn't care. ${person.name} is devoted to your downfall.`;
+        return;
+    }
+
     let charmMessage;
 
     if (!possibleAllies.includes(person)) {

@@ -16,7 +16,7 @@ function talkTo(person) {
 
         if (result == "Failed") {
             person.background = "talkFailed";
-            talkMessage = "You learned nothing."
+            talkMessage = "Nothing about their past."
         }
         else {
             person.background = "pastInfo";
@@ -25,22 +25,44 @@ function talkTo(person) {
         }
     }
     else if (person.background == "talkFailed") {
-        talkMessage = "They are not interested in talking right now.<br>Try interacting in other ways.";
+        talkMessage = "They are not interested in talking right now.<br><br>Try interacting in other ways.";
     }
     else if (person.background == "pastInfo") {
         const result = talkForDarkSecret();
 
         if (result == "Failed") {
             person.background = "darkSecretFailed";
-            talkMessage = "You were not able to learn their dark secret.";
+            talkMessage = "Nothing about their dark secret.";
         }
         else {
             person.background = "darkSecret";
             person.darkSecret = result;
-            talkMessage = `${result}<p>And now that you learned their dark secret, they are now a possible ally.</p>`;
-            createPossibleAlly();
-            if (enemyQueue.length !== 0 && enemyQueue[0] == person) {
-                enemyQueue.splice(0,1);
+            if (villainsList.includes(person) || allies.includes(person)) {
+                talkMessage = `${result}<p>There is nothing left important to learn about them.</p>`;
+            }
+            else if (possibleAllies.includes(person)) {
+                talkMessage = `${result}<p>You now seem to know what is important to them. You can charm them to be your ally!</p>`;
+            }
+            else {
+                generatePossibleAlly({background:person.background,pastInfo:person.pastInfo,darkSecret:person.darkSecret,gender:person.gender});
+                if (enemyQueue.length !== 0 && enemyQueue[0] == person) {
+                    enemyQueue.splice(0,1);
+                }
+
+                const newAlly = possibleAllies.at(-1);
+
+                talkMessage =
+                `${result}<p>And now that you learned their dark secret, they are now a possible ally.</p>
+                <ul>
+                    <li>Name: ${newAlly.name}</li>
+                    <li>Gender: ${newAlly.gender}</li>
+                    <li>Appearance: ${newAlly.appearance}</li>
+                    <li>Occupation: ${newAlly.occupation}</li>
+                    <li>Past Information: ${newAlly.pastInfo}</li>
+                    <li>Dark Secret: ${newAlly.darkSecret}</li>
+                    <li>Technique: ${newAlly.technique.desc}</li>
+                </ul>
+                `;
             }
         }
     }
@@ -48,11 +70,16 @@ function talkTo(person) {
         talkMessage = `They have enough talking for now.<p>Try interacting in other ways.</p>`;
     }
     else if (person.background == "darkSecret") {
-        talkMessage = "There is nothing left important to learn about them.<p>You can charm them to be your ally!</p>";
+        if (villainsList.includes(person) || allies.includes(person)) {
+            talkMessage = "There is nothing left important to learn about them.";
+        }
+        else {
+            talkMessage = "There is nothing left important to learn about them.<p>You can charm them to be your ally!</p>";
+        }
     }
 
     interactText.innerHTML =
-    `You tried talking to ${person.name} and...
+    `You tried talking to ${person.name} and you learned...
     <br>
     ${talkMessage}`;
 }

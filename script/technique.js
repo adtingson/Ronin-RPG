@@ -93,10 +93,10 @@ const techniques = [
 ];
 
 function randomUncommon() {
-    return uncommonTechniques[Math.floor(Math.random() * uncommonTechniques.length)];
+    return {...uncommonTechniques[Math.floor(Math.random() * uncommonTechniques.length)]};
 }
 
 function randomTechnique() {
-    return techniques[Math.floor(Math.random() * techniques.length)]
+    return {...techniques[Math.floor(Math.random() * techniques.length)]};
 }
 

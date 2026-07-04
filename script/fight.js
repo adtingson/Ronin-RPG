@@ -5,7 +5,7 @@ function fight() {
     ronin.firstStrike = "done";
     enemyQueue[0].blockState = "attacked";
     enemyQueue[0].firstStrike = "done";
-    enemyQueue[0].morale.morale = "normal";
+    enemyQueue[0].morale = "normal";
 
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();

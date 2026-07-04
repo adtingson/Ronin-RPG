@@ -32,12 +32,15 @@ const roninLivingEnemies = [];
 
 const endRouteEnemies = [];
 
+const villainsList = [firstVillain, secondVillain, finalVillain];
+
 let roninBlock;
 
 let enemyBlock;
 
 function renderRoninSheet() {
     const roninName = document.getElementById("roninName");
+    const roninGender = document.getElementById("roninGender");
     const roninAppearance = document.getElementById("roninAppearance");
     const roninFamily = document.getElementById("roninFamily");
     const roninNightmare = document.getElementById("roninNightmare");
@@ -49,6 +52,7 @@ function renderRoninSheet() {
     const roninReputation = document.getElementById("roninReputation");
     
     roninName.innerHTML = ronin.name;
+    roninGender.innerHTML = ronin.gender;
     roninAppearance.innerHTML = ronin.appearance;
     roninFamily.innerHTML = ronin.family;
     roninNightmare.innerHTML = ronin.nightmare;
@@ -72,15 +76,58 @@ function renderRoninSheet() {
 function renderEnemyQueue() {
     const activeEnemy = document.getElementById("activeEnemy");
 
-    console.log(enemyQueue);
-
-
     activeEnemy.innerHTML = "";
+
+    if(enemyQueue.length === 0) {
+        return;
+    }
+
+    activeEnemy.innerHTML =
+    `<tr>
+        <th>Name</th>
+        <th>Fight</th>
+        <th>Block</th>
+    </tr>
+    `;
 
     enemyQueue.forEach(
         enemy => {
             activeEnemy.innerHTML +=
-            `<li>${enemy.name}</li>
+            `<tr>
+                <td>${enemy.name}</td>
+                <td>${enemy.fight(enemy,ronin)}</td>
+                <td>${enemy.block}</td>
+            </tr>
+            `;
+        }
+    );
+}
+
+function renderLivingEnemies() {
+    const livingEnemy = document.getElementById("livingEnemy");
+
+    livingEnemy.innerHTML = "";
+
+    if(roninLivingEnemies.length === 0) {
+        return;
+    }
+
+    livingEnemy.innerHTML =
+    `<tr>
+        <th>Name</th>
+        <th>Fight</th>
+        <th>Block</th>
+    </tr>
+    `;
+
+    roninLivingEnemies.forEach(
+        enemy => {
+            livingEnemy.innerHTML +=
+            `<tr>
+                <td>${enemy.name}</td>
+                <td>${enemy.fight(enemy,ronin)}</td>
+                <td>${enemy.block}</td>
+            </tr>
             `;
         }
     );
@@ -88,5 +135,6 @@ function renderEnemyQueue() {
 
 function renderDisplay() {
     renderEnemyQueue();
+    renderLivingEnemies()
     renderRoninSheet();
 }

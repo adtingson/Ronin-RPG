@@ -5,7 +5,10 @@ const namesList = {
 
 function finalName() {
     const roninGender = genderFunc();
-    return `${nameFunc(roninGender)}`;
+    return {
+        name: nameFunc(roninGender),
+        gender: roninGender
+    };
 }
 
 function genderFunc() {
