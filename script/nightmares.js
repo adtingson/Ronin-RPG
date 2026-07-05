@@ -4,5 +4,3 @@ function nightmare() {
     const index = Math.floor(Math.random() * nightmares.length);
     return nightmares[index];
 }
-
-document.getElementById("nightmare").innerHTML = nightmare();

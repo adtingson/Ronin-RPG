@@ -42,6 +42,8 @@ function fight() {
     else if (fightWinner == "enemy") {
         renderBlockDeterminationOption();
     }
+
+    renderDisplay();
 }
 
 function checkFightWinner() {

@@ -126,26 +126,14 @@ const rooms = {
 	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
 	    buttons: [
             {
-                text: "Talk",
-                function: () => {talkTo(enemyQueue[0])}
-            },
-            {
-                text: "Charm",
-                function: () => {charm(enemyQueue[0])}
-            },
-            {
                 text: "Intimidate",
                 function: () => {intimidate(enemyQueue[0])}
             },
             {
                 text: "Fight",
                 function: () => {renderTechniqueSelection()}
-            },
-            {
-                text: "Proceed",
-                function: () => {checkInteractions(enemyQueue[0])}
             }
         ],
-        function: () => {addEnemyToQueue({name: "The Spirit of your Victim", weapon: "Sword", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination");}
+        function: () => {addEnemyToQueue({name: "The Spirit of your Victim", weapon: "none", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination");}
     }
 };

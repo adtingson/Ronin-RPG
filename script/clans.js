@@ -10,28 +10,22 @@ const clanFeatures = [
 
 const nobleClans = [];
 
+generateClan();
+generateClan();
+generateClan();
+generateClan();
+
+
 function generateClan() {
-    const nameIndex = Math.floor(Math.random() * clanNames.length);
     const featIndex = Math.floor(Math.random() * clanFeatures.length);
 
     const nobleClan = {
-        id: clanNames[nameIndex],
+        name: uniqueClan(),
         feature: clanFeatures[featIndex]
     }
 
     nobleClans.push(nobleClan);
 }
-
-generateClan();
-generateClan();
-generateClan();
-generateClan();
-
-nobleClans.forEach(clan => {
-    const ul = document.getElementById("nobleClans");
-    
-    ul.innerHTML += "<li><label>" + clan.id + "</label><ul><li>" + clan.feature + "</li></ul></li>"
-});
 
 function generateClanName() {
     const nameIndex = Math.floor(Math.random() * clanNames.length);
@@ -42,7 +36,7 @@ function uniqueClan() {
     let name;
     do {
         name = generateClanName();
-    } while (nobleClans.some(clan => clan.id == generateClanName()))
+    } while (nobleClans.some(clan => clan.name == name))
     
     return name;
 }

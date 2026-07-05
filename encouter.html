@@ -17,33 +17,15 @@
             <aside id="ronin">
                 <section>
                     <h3>The Ronin</h3>
-                    <ul>
-                        <li><b>Name</b> <span id="roninName"></span></li>
-                        <li><b>Gender</b> <span id="roninGender"></span></li>
-                        <li><b>Appearance</b> <span id="roninAppearance"></span></li>
-                        <li><b>Technique</b>
-                            <ul id="roninTechniques">
-                            </ul>
-                        </li>
-                        <li><b>Family</b> <span id="roninFamily"></span></li>
-                        <li><b>Nightmare</b> <span id="roninNightmare"></span></li>
-                        <li><b>Scar</b> <span id="roninScar"></span></li>
-                        <li><b>Meaning</b> <span id="roninScarMeaning"></span></li>
-                    </ul>
-                </section>
-                <section>
-                    <h3>Stats</h3>
-                    <ul>
-                        <li><b>Compassion</b> <span id="roninCompassion"></span></li>
-                        <li><b>Determination</b> <span id="roninDetermination"></span></li>
-                        <li><b>Reputation</b> <span id="roninReputation"></span></li>
-                    </ul>
+                    <ul id="stats"></ul>
                 </section>
                 <section>
                     <h3>Allies</h3>
+                    <div id="allies"></div>
                 </section>
                 <section>
                     <h3>Possible Allies</h3>
+                    <div id="possibleallies"></div>
                 </section>
             </aside>
             <main id="encounter">
@@ -58,23 +40,33 @@
             <aside id="queues">
                 <section>
                     <h3>Current Enemies</h3>
-                    <table id="activeEnemy"></table>
+                    <div id="enemyqueue"></div>
                 </section>
                 <section>
                     <h3>Living Enemies</h3>
-                    <table id="livingEnemy"></table>
+                    <div id="enemies"></div>
+                </section>
+                <section>
+                    <h3>End of the Route Enemies</h3>
+                    <div id="endrouteenemies"></div>
                 </section>
                 <section>
                     <h3>Villains</h3>
+                    <div id="villains"></div>
                 </section>
             </aside>
         </div>
 
 
+        
+        <script src="script/clans.js" defer></script>
+        <script src="script/family.js" defer></script>
         <script src="script/name.js" defer></script>
         <script src="script/appearance.js" defer></script>
         <script src="script/technique.js" defer></script>
         <script src="script/villain.js" defer></script>
+        <script src="script/nightmares.js" defer></script>
+        <script src="script/scar.js" defer></script>
         <script src="script/character sheet.js" defer></script>
         <script src="script/rooms.js" defer></script>
         <script src="script/encounters.js" defer></script>

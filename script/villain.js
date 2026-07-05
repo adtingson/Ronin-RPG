@@ -72,3 +72,5 @@ const secondVillain = {
     background: villainBG(),
     status: "Active"
 }
+
+const villainsList = [firstVillain, secondVillain, finalVillain];

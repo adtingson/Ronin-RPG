@@ -1,9 +1,11 @@
+const swords = ["Odachi", "Katana", "Katana e Wakizashi"];
+
 const uncommonTechniques = [
     {
         id: "Bojutsu",
         desc: "Bojutsu [Staff] (Fight +4 against Swords; Block 2)",
         weapon: "Staff",
-        fight: (user,enemy) => enemy.weapon == "Sword" ? 4:0,
+        fight: (user,enemy) => swords.includes(enemy.weapon) ? 4:0,
         block: 2
     },
     {
@@ -34,13 +36,13 @@ const uncommonTechniques = [
         id: "Kanabo",
         desc: "Kanabo (Fight +2 against any weapon but Swords; Block 3)",
         weapon: "Kanabo",
-        fight: (user,enemy) => enemy.weapon !== "Sword" ? 2:0,
+        fight: (user,enemy) => !swords.includes(enemy.weapon) ? 2:0,
         block: 3
     },
     {
         id: "Odachi",
         desc: "Odachi (Fight +3; Block 1)",
-        weapon: "Sword",
+        weapon: "Odachi",
         fight: (user,enemy) => 3,
         block: 1
     },
@@ -57,21 +59,21 @@ const techniques = [
     {
         id: "Kenjutsu",
         desc: "Kenjutsu [Katana] (Fight +2; Block 2)",
-        weapon: "Sword",
+        weapon: "Katana",
         fight: (user,enemy) => 2,
         block: 2
     },
     {
         id: "Iaijutsu",
         desc: "Iaijutsu [Katana] (Fight +4 in the first roll; Block 2)",
-        weapon: "Sword",
+        weapon: "Katana",
         fight: (user,enemy) => user.firstStrike == "available" ? 4:0,
         block: 2
     },
     {
         id: "Niten Ichi-ryu",
         desc: "Niten Ichi-ryu [Katana e Wakizashi] (Fight +1; Block 3)",
-        weapon: "Sword",
+        weapon: "Katana e Wakizashi",
         fight: (user,enemy) => 1,
         block: 3
     },
@@ -88,8 +90,7 @@ const techniques = [
         weapon: "Jitte",
         fight: (user,enemy) => 1,
         block: 2
-    },
-    randomUncommon()
+    }
 ];
 
 function randomUncommon() {
@@ -97,6 +98,12 @@ function randomUncommon() {
 }
 
 function randomTechnique() {
-    return {...techniques[Math.floor(Math.random() * techniques.length)]};
+    const randomIndex = Math.floor(Math.random() * (techniques.length + 1));
+
+    if (randomIndex == techniques.length) {
+        return randomUncommon();
+    }
+
+    return {...techniques[randomIndex]};
 }
 

@@ -9,8 +9,12 @@ html {
 }
 
 body {
-    max-width: 1500px;
     margin: 0 auto;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 h1,
@@ -167,11 +171,11 @@ select {
 }
 
 #queues {
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
 }
 
 #ronin {
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
 }
 
 aside,

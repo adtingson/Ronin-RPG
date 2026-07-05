@@ -1,26 +1,23 @@
-const ronin = {
-    name: "Kira",
-    reputation: 2,
-    compassion: 2,
-    determination: 2,
-    firstStrike: "available",
-    technique: [
-        {
-            id: "Bojutsu",
-            desc: "Bojutsu [Staff] (Fight +4 against Swords; Block 2)",
-            weapon: "Staff",
-            fight: (user,enemy) => enemy.weapon == "Sword" ? 4:0,
-            block: 2
-        },
-        {
-            id: "Kenjutsu",
-            desc: "Kenjutsu [Katana] (Fight +2; Block 2)",
-            weapon: "Sword",
-            fight: (user,enemy) => 2,
-            block: 2
-        }
-    ]
-}
+const ronin = {};
+generateRonin();
+
+function generateRonin() {
+    const gender = genderFunc();
+    const name = nameFunc(gender);
+
+    ronin.name = name,
+    ronin.gender = gender,
+    ronin.appearance = normalizeText(randoAppearance()),
+    ronin.family = generateFamilyBG(),
+    ronin.nightmare = nightmare(),
+    ronin.scar = generateScar(),
+    ronin.meaning = generateScarMeaning(),
+    ronin.technique = [randomTechnique()],
+    ronin.firstStrike = "available",
+    ronin.reputation = 0,
+    ronin.compassion = 2,
+    ronin.determination = 2    
+};
 
 const enemyQueue = [];
 
@@ -32,109 +29,50 @@ const roninLivingEnemies = [];
 
 const endRouteEnemies = [];
 
-const villainsList = [firstVillain, secondVillain, finalVillain];
-
 let roninBlock;
 
 let enemyBlock;
 
 function renderRoninSheet() {
-    const roninName = document.getElementById("roninName");
-    const roninGender = document.getElementById("roninGender");
-    const roninAppearance = document.getElementById("roninAppearance");
-    const roninFamily = document.getElementById("roninFamily");
-    const roninNightmare = document.getElementById("roninNightmare");
-    const roninScar = document.getElementById("roninScar");
-    const roninScarMeaning = document.getElementById("roninScarMeaning");
-    const roninTechniques = document.getElementById("roninTechniques");
-    const roninCompassion = document.getElementById("roninCompassion");
-    const roninDetermination = document.getElementById("roninDetermination");
-    const roninReputation = document.getElementById("roninReputation");
-    
-    roninName.innerHTML = ronin.name;
-    roninGender.innerHTML = ronin.gender;
-    roninAppearance.innerHTML = ronin.appearance;
-    roninFamily.innerHTML = ronin.family;
-    roninNightmare.innerHTML = ronin.nightmare;
-    roninScar.innerHTML = ronin.scar;
-    roninScarMeaning.innerHTML = ronin.meaning;
-    roninCompassion.innerHTML = ronin.compassion;
-    roninDetermination.innerHTML = ronin.determination;
-    roninReputation.innerHTML = ronin.reputation;
-    
-    roninTechniques.innerHTML = "";
+    document.getElementById("stats").innerHTML = "";
 
-    ronin.technique.forEach(
-        technique => {
-            roninTechniques.innerHTML +=
-            `<li>${technique.id}</li>
-            `;
+    Object.entries(ronin).forEach(
+        ([key,data]) => {
+            document.getElementById("stats").innerHTML += `<li>${key}: ${data}</li>`;
         }
     );
+}
+
+function renderAllies() {
+    document.getElementById("allies").innerHTML = JSON.stringify(allies, null, 4);
+}
+
+function renderPossibleAllies() {
+    document.getElementById("possibleallies").innerHTML = JSON.stringify(possibleAllies, null, 4);
 }
 
 function renderEnemyQueue() {
-    const activeEnemy = document.getElementById("activeEnemy");
-
-    activeEnemy.innerHTML = "";
-
-    if(enemyQueue.length === 0) {
-        return;
-    }
-
-    activeEnemy.innerHTML =
-    `<tr>
-        <th>Name</th>
-        <th>Fight</th>
-        <th>Block</th>
-    </tr>
-    `;
-
-    enemyQueue.forEach(
-        enemy => {
-            activeEnemy.innerHTML +=
-            `<tr>
-                <td>${enemy.name}</td>
-                <td>${enemy.fight(enemy,ronin)}</td>
-                <td>${enemy.block}</td>
-            </tr>
-            `;
-        }
-    );
+    document.getElementById("enemyqueue").innerHTML = JSON.stringify(enemyQueue, null, 4);
 }
 
 function renderLivingEnemies() {
-    const livingEnemy = document.getElementById("livingEnemy");
+    document.getElementById("enemies").innerHTML = JSON.stringify(roninLivingEnemies, null, 4);
+}
 
-    livingEnemy.innerHTML = "";
+function renderEndRouteEnemies() {
+    document.getElementById("endrouteenemies").innerHTML = JSON.stringify(endRouteEnemies, null, 4);
+}
 
-    if(roninLivingEnemies.length === 0) {
-        return;
-    }
-
-    livingEnemy.innerHTML =
-    `<tr>
-        <th>Name</th>
-        <th>Fight</th>
-        <th>Block</th>
-    </tr>
-    `;
-
-    roninLivingEnemies.forEach(
-        enemy => {
-            livingEnemy.innerHTML +=
-            `<tr>
-                <td>${enemy.name}</td>
-                <td>${enemy.fight(enemy,ronin)}</td>
-                <td>${enemy.block}</td>
-            </tr>
-            `;
-        }
-    );
+function renderVillains() {
+    document.getElementById("villains").innerHTML = JSON.stringify(villainsList, null, 4);
 }
 
 function renderDisplay() {
-    renderEnemyQueue();
-    renderLivingEnemies()
     renderRoninSheet();
+    renderAllies();
+    renderPossibleAllies();
+    renderEnemyQueue();
+    renderLivingEnemies();
+    renderEndRouteEnemies();
+    renderVillains();
 }

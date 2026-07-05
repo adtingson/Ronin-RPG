@@ -22,8 +22,6 @@ function renderEncounter(encounter) {
         rooms[encounter].function();
     }
 
-     renderDisplay();
-
     if(rooms[encounter].buttons == undefined || rooms[encounter].buttons.length === 0) {
         return;
     }
@@ -72,7 +70,7 @@ function renderTechniqueSelection() {
     }
 
     if (ronin.technique.length === 1) {
-        renderCombatRoom();
+        setCombatStats(0);
         return;
     }
 
@@ -210,6 +208,7 @@ function endOfRouteCheck() {
     else {
         endRouteEnemies.forEach(
             enemy => {
+                enemy.firstStrike = "available";
                 enemyQueue.push(enemy);
             }
         )
