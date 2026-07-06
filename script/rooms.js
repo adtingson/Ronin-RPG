@@ -3,6 +3,8 @@ function rolld6() {
     return Math.floor(Math.random() * 6);
 }
 
+const roadEncounters = ["re66"];
+
 const rooms = {
     searchRoom: {
         header: "Leaving the Trail",
@@ -86,8 +88,8 @@ const rooms = {
 		    }
         ]
     },
-    temple: {
-        header: "Temple",
+    re66: {
+        header: "Buddhist Temple",
         text: "You have found a Buddhist temple. There, a monk invited you to spend a few days meditating.",
         buttons: [
             {
@@ -111,7 +113,7 @@ const rooms = {
         ]
     },
     temple26: {
-        header: "A week later...",
+        header: "A Week of Meditation",
 	    text: "You spent your days at the temple meditating.<br><br>Your reputation is reduced by 1.",
 	    buttons: [
             {
@@ -126,14 +128,91 @@ const rooms = {
 	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
 	    buttons: [
             {
-                text: "Intimidate",
-                function: () => {intimidate(enemyQueue[0])}
-            },
-            {
                 text: "Fight",
-                function: () => {renderTechniqueSelection()}
+                function: () => renderTechniqueSelection()
             }
         ],
-        function: () => {addEnemyToQueue({name: "The Spirit of your Victim", weapon: "none", fight: () => 1, block: 0});addEnemyToEndRoute();setWindowContext("destination");}
+        persons: [
+            {
+                name: "The Spirit of your Victim",
+                weapon: "None",
+                fight: () => 1,
+                block: 0,
+                class: "fightOnly"
+            }
+        ],
+        function: () => {addEnemyToEndRoute();setWindowContext("destination");}
+    },
+    re65: {
+        header: "A Wild Animal",
+        text: "There is a large wild animal on the loose. Some farmers say that he has already killed several animals and attacked some inhabitants of the region.",
+        buttons: [
+            {
+                text: "Ignore",
+                goto: "ignore65"
+            },
+            {
+                text: "Investigate",
+                goto: () => rolld6() > 1 ?  "investigate652":"investigate651"
+            }
+        ]
+    },
+    ignore65: {
+        header: "Not my problem",
+        text: "You have decided that this is not a problem that you have to face. You continued your journey.",
+        buttons: [
+            {
+                text: "Continue",
+                goto: "endRoute"
+            }
+        ]
+    },
+    investigate652: {
+        header: "A Wolf",
+        text: "You found that it was a Wolf (Fight +0; Block 1) and, if you defeat it, you will gain 1 Reputation.",
+        buttons: [
+            {
+                text: "Get rid of this menace",
+                function: () => {addEnemyToQueue({name: "The Wolf", fight: () => 0, block: 1});renderTechniqueSelection();}
+            },
+            {
+                text: "This is not my problem",
+                goto: "ignore65"
+            }
+        ],
+        function: () => {setWindowContext("investigate652W")}
+    },
+    investigate651: {
+        header: "A Yokai",
+        text: "You have found a Yokai named Nue (Fight +2; Block 2), a dangerous chimeric creature.",
+        buttons: [
+            {
+                text: "I have seen enough"
+            },
+            {
+                text: "Get rid of this menace"
+            }
+        ]
+    },
+    investigate652W: {
+        header: "The Wolf is Gone",
+        text: "You successfully got rid of the Wolf that was causing trouble to the people of this region. You gained +1 Reputation",
+        buttons: [
+            {
+                text: "It is my honor",
+                goto: "endRoute"
+            }
+        ],
+        function: () => updateStat("reputation",+1)
+    },
+    template: {
+        header: "",
+        text: "",
+        buttons: [
+            {
+                text: "",
+                goto: ""
+            }
+        ]
     }
 };

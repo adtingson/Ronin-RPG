@@ -7,39 +7,67 @@ const encounterHeader = document.getElementById("encounterHeader");
 const encounterText = document.getElementById("encounterText");
 const encounterButtons = document.getElementById("encounterButtons");
 const interactText = document.getElementById("interactText");
-
-const roadEncounters = ["temple"];
+const combatHeader = document.getElementById("combatHeader");
 
 function renderEncounter(encounter) {
     interactText.innerHTML = "";
+    combatHeader.innerHTML = "";
     encounterHeader.innerHTML = rooms[encounter].header;
     encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
 
-    renderDisplay();
+    if (rooms[encounter].persons !== undefined) {
+        rooms[encounter].persons.forEach(
+            person => {
+                const multiEnemyFormatMatch = person.class.match(/^multiEnemy-(\d+)$/);
+
+                if (multiEnemyFormatMatch) {
+                    const enemyNumber = Number(multiEnemyFormatMatch[1]);
+                    let enemySpawned = 0;
+
+                    do {
+                        addEnemyToQueue(person);
+                        enemySpawned += 1;
+                    } while(enemySpawned !== enemyNumber);
+
+                    setTarget(enemyQueue[0]);
+                }
+                else if (person.class == "enemy" || person.class == "fightOnly") {
+                    addEnemyToQueue(person);
+                    setTarget(enemyQueue[0]);
+                }
+                else if (person.class == "possibleAlly") {
+                    generatePossibleAlly(person);
+                    setTarget(possibleAllies.at(-1));
+                }
+            }
+        );
+    }
 
     if(rooms[encounter].function !== undefined){
         rooms[encounter].function();
     }
 
-    if(rooms[encounter].buttons == undefined || rooms[encounter].buttons.length === 0) {
+    renderDisplay();
+
+    if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
         return;
     }
 
-    rooms[encounter].buttons.forEach((button, index) => {
+    rooms[encounter].buttons.forEach(button => {
         const btn = document.createElement("button");
 
-        btn.textContent = rooms[encounter].buttons[index].text;
+        btn.textContent = button.text;
 
         btn.onclick = () => {
-            if (rooms[encounter].buttons[index].goto !== undefined) {
-                typeof rooms[encounter].buttons[index].goto === "function" ? 
-                renderEncounter(rooms[encounter].buttons[index].goto()):
-                renderEncounter(rooms[encounter].buttons[index].goto);
+            if (button.goto !== undefined) {
+                typeof button.goto === "function" ? 
+                renderEncounter(button.goto()):
+                renderEncounter(button.goto);
             }
 
-            if (rooms[encounter].buttons[index].function !== undefined) {
-                rooms[encounter].buttons[index].function();
+            if (button.function !== undefined) {
+                button.function();
             }
 
         };
@@ -88,50 +116,22 @@ function renderTechniqueSelection() {
 }
 
 function setCombatStats(techniqueIndex) {
+    ronin.techniqueID = ronin.technique[techniqueIndex].id;
     ronin.weapon = ronin.technique[techniqueIndex].weapon;
     ronin.fight = ronin.technique[techniqueIndex].fight;
     ronin.block = ronin.technique[techniqueIndex].block;
-    renderCombatRoom();
+
+    fight();
 }
 
-function renderCombatRoom() {
-    roninBlock = ronin.firstStrike == "available" ? ronin.block:roninBlock;
-
-    interactText.innerHTML = "";
-
-    renderDisplay();
-
-    encounterText.innerHTML =
-    `<div class="half-half">
-        <div>
-            ${ronin.name}:
-            <ul>
-                <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
-                <li>Block: ${roninBlock}</li>
-            </ul>
-        </div>
-        <div>
-            ${enemyQueue[0].name}:
-            <ul>
-                <li>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</li>
-                <li>Block: ${enemyBlock}</li>
-            </ul>
-        </div>
-    </div>
-    `;
-
-    encounterButtons.innerHTML = 
-    `<button onclick="fight()">Fight</button>
-    `;
-}
-
-function addEnemyToQueue({name,weapon,fight,block,technique}={}) {
+function addEnemyToQueue({name,weapon,fight,block,technique,type}={}) {
     const addedEnemy = {
         name: name,
         weapon: weapon,
         fight: fight,
         block: block,
         technique: technique,
+        type: type !== undefined ? type : "generic",
         firstStrike: "available"
     }
     
@@ -212,8 +212,9 @@ function endOfRouteCheck() {
                 enemyQueue.push(enemy);
             }
         )
+        setTarget(enemyQueue[0]);
 
-        renderCombatRoom();
+        fight();
     }
 }
 
@@ -256,5 +257,8 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
     possibleAllies.push(possibleAlly);
 }
 
+function setTarget(person) {
+    target = person;
+}
 
 renderEncounter("temple1");

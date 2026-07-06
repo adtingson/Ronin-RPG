@@ -1,54 +1,62 @@
-function talkTo(person) {
-    if (person == undefined) {
+function talkTo() {
+    if (target == undefined) {
         interactText.innerHTML = "There is no one to talk to.";
         return;
     }
     
-    if (person.morale == "emboldened") {
+    if (target.morale == "emboldened") {
         interactText.innerHTML = "Trying to talk to this person is pointless. They are eager to fight you!";
         return;
     }
 
     let talkMessage;
 
-    if (person.background == undefined) {
+    if (target.background == undefined || target.background == "interactedWith") {
         const result = talkForPastInformation();
 
         if (result == "Failed") {
-            person.background = "talkFailed";
+            target.background = "talkFailed";
             talkMessage = "Nothing about their past."
         }
         else {
-            person.background = "pastInfo";
-            person.pastInfo = result;
+            target.background = "pastInfo";
+            target.pastInfo = result;
             talkMessage = `${result}<p>You can try talking to them again to learn their dark secret.</p>`;
         }
     }
-    else if (person.background == "talkFailed") {
+    else if (target.background == "talkFailed") {
         talkMessage = "They are not interested in talking right now.<br><br>Try interacting in other ways.";
     }
-    else if (person.background == "pastInfo") {
+    else if (target.background == "pastInfo") {
         const result = talkForDarkSecret();
 
         if (result == "Failed") {
-            person.background = "darkSecretFailed";
+            target.background = "darkSecretFailed";
             talkMessage = "Nothing about their dark secret.";
         }
         else {
-            person.background = "darkSecret";
-            person.darkSecret = result;
-            if (villainsList.includes(person) || allies.includes(person)) {
+            target.background = "darkSecret";
+            target.darkSecret = result;
+            if (villainsList.includes(target) || allies.includes(target)) {
                 talkMessage = `${result}<p>There is nothing left important to learn about them.</p>`;
             }
-            else if (possibleAllies.includes(person)) {
+            else if (possibleAllies.includes(target)) {
                 talkMessage = `${result}<p>You now seem to know what is important to them. You can charm them to be your ally!</p>`;
             }
             else {
-                generatePossibleAlly({background:person.background,pastInfo:person.pastInfo,darkSecret:person.darkSecret,gender:person.gender});
-                if (enemyQueue.length !== 0 && enemyQueue[0] == person) {
+                if (enemyQueue.includes(target) && target.type == "named") {
+                    generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender, name:target.name});
+                }
+                else {
+                    generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender});
+                }
+
+                if (enemyQueue.length !== 0 && enemyQueue[0] == target) {
                     enemyQueue.splice(0,1);
                 }
 
+                encounterButtons.innerHTML = encounterButtons.innerHTML.replace(`<button onclick="talkTo(enemyQueue[0])">Talk</button>`,`<button onclick="charm(possibleAllies.at(-1))">Charm</button>`);
+                
                 const newAlly = possibleAllies.at(-1);
 
                 talkMessage =
@@ -66,11 +74,11 @@ function talkTo(person) {
             }
         }
     }
-    else if (person.background == "darkSecretFailed") {
+    else if (target.background == "darkSecretFailed") {
         talkMessage = `They have enough talking for now.<p>Try interacting in other ways.</p>`;
     }
-    else if (person.background == "darkSecret") {
-        if (villainsList.includes(person) || allies.includes(person)) {
+    else if (target.background == "darkSecret") {
+        if (villainsList.includes(target) || allies.includes(target)) {
             talkMessage = "There is nothing left important to learn about them.";
         }
         else {
@@ -79,7 +87,7 @@ function talkTo(person) {
     }
 
     interactText.innerHTML =
-    `You tried talking to ${person.name} and you learned...
+    `You tried talking to ${target.name} and you learned...
     <br>
     ${talkMessage}`;
 }

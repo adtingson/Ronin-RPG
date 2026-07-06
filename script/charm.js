@@ -1,30 +1,30 @@
-function charm(person) {
-    if (allies.includes(person)) {
-        interactText.innerHTML = `There is no point in charming ${person.name}. ${person.name} is already devoted to your cause.`;
+function charm() {
+    if (allies.includes(target)) {
+        interactText.innerHTML = `There is no point in charming ${target.name}. ${target.name} is already devoted to your cause.`;
         return;
     }
-    else if (villainsList.includes(person)) {
-        interactText.innerHTML = `You can be charming all you want. ${person.name} doesn't care. ${person.name} is devoted to your downfall.`;
+    else if (villainsList.includes(target)) {
+        interactText.innerHTML = `You can be charming all you want. ${target.name} doesn't care. ${target.name} is devoted to your downfall.`;
         return;
     }
 
     let charmMessage;
 
-    if (!possibleAllies.includes(person)) {
-        interactText.innerHTML = `You cannot charm ${person.name}.<br>Try other interactions with them first, and make them a possible ally.`;
+    if (!possibleAllies.includes(target)) {
+        interactText.innerHTML = `You cannot charm ${target.name}.<br>Try other interactions with them first, and make them a possible ally.`;
         return;
     }
 
     const result = charmAttempt();
 
     if (result == "Charmed") {
-        allies.push(person);
-        const index = possibleAllies.indexOf(person);
+        allies.push(target);
+        const index = possibleAllies.indexOf(target);
         possibleAllies.splice(index,1);
-        charmMessage = `${person.name} is now your ally! Since they are a ${person.occupation}, they give you the following benefits:<p>${allyRoleDesc(person.occupation)}</p>`;
+        charmMessage = `${target.name} is now your ally! Since they are a ${target.occupation}, they give you the following benefits:<p>${allyRoleDesc(target.occupation)}</p>`;
     }
     else {
-        charmMessage = `You failed to convince ${person.name} to become an ally. Maybe you can try again someday.`;
+        charmMessage = `You failed to convince ${target.name} to become an ally. Maybe you can try again someday.`;
     }
 
     interactText.innerHTML = charmMessage;

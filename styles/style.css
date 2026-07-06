@@ -188,15 +188,6 @@ main {
     display: grid;
 }
 
-td {
-    text-align: center;
-}
-
-th:first-child,
-td:first-child {
-    text-align: left;
-}
-
 @media screen and (max-width: 616px) {
     main {
         margin: 0 1rem;

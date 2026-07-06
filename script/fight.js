@@ -1,54 +1,58 @@
 function fight() {
+    let fightMessage;
+
+    roninBlock = ronin.firstStrike == "available" ? ronin.block:roninBlock;
+    enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
+
+    combatHeader.innerHTML = `<b>${ronin.name}</b>[${ronin.weapon}](Fight: ${ronin.fight(ronin,target)}${ronin.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+
     const fightWinner = checkFightWinner();
 
     ronin.blockState = "attacked";
     ronin.firstStrike = "done";
-    enemyQueue[0].blockState = "attacked";
-    enemyQueue[0].firstStrike = "done";
-    enemyQueue[0].morale = "normal";
+    target.blockState = "attacked";
+    target.firstStrike = "done";
+    target.morale = "normal";
 
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();
 
         if (enemyBlockSuccess == "roninWin") {
             roninWinCleanUp();
+            combatHeader.innerHTML = `<b>${ronin.name}</b>[${ronin.weapon}](Fight: ${ronin.fight(ronin,target)}${ronin.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
+            fightMessage = `<br>${target.name} is defeated.<br>
+            How would you like this to end?`;
         }
         else if (enemyBlockSuccess == "proceed") {
-            renderCombatRoom();
-
-            interactText.innerHTML +=
-            `<p>
-                ${enemyQueue[0].name} blocks the hit. Fight continues.
-            </p>
-            `;
+            fightMessage = `${target.name} blocks the hit. Fight continues.`;
         }
     }
     else if (fightWinner == "draw") {
-        interactText.innerHTML +=
-        `<p>
-            This round of combat is a draw. Fight continues.
-        </p>
-        `;
+        fightMessage = `This round of combat is a draw. Fight continues.`;
 
-        if (ronin.technique.id == "Jitte") {
-            enemyQueue[0].fight = 0;
-            interactText.innerHTML +=
-            `<p>
-                However. You have broken their weapon.
-            </p>
-            `;
+        if (ronin.techniqueID == "Jitte") {
+            target.fight = 0;
+            fightMessage += `However, you had broken their weapon broken.`;
+            target.weapon = `<s>${target.weapon}</s>`;
         }
     }
     else if (fightWinner == "enemy") {
+        fightMessage = `${target.name} will hit you. What do you do?`;
         renderBlockDeterminationOption();
     }
 
     renderDisplay();
+
+    interactText.innerHTML +=
+    `<p>
+        ${fightMessage}
+    </p>
+    `;
 }
 
 function checkFightWinner() {
-    const roninFight = rolld6() + ronin.fight(ronin, enemyQueue[0]);
-    const enemyFight = rolld6() + enemyQueue[0].fight(enemyQueue[0], ronin) + (enemyQueue[0].morale == "emboldened" ? 1:0);
+    const roninFight = rolld6() + ronin.fight(ronin, target) - (ronin.status == "wounded" ? 1:0);
+    const enemyFight = rolld6() + target.fight(target, ronin) + (target.morale == "emboldened" ? 1:0);
 
     if (roninFight > enemyFight) {
         return "ronin";
@@ -64,7 +68,7 @@ function checkFightWinner() {
 function checkEnemyBlock() {
     if (enemyBlock > 0) {
         enemyBlock += -1;
-        enemyQueue[0].blockState = "blocked";
+        target.blockState = "blocked";
         return "proceed";
     }
     else {
@@ -73,28 +77,11 @@ function checkEnemyBlock() {
 }
 
 function roninWinCleanUp() {
-    encounterText.innerHTML =
-    `${ronin.name} Stats:
-    <ul>
-        <li>Fight: ${ronin.fight(ronin,enemyQueue[0])}</li>
-        <li>Block: ${roninBlock}</li>
-    </ul>
-    <s>${enemyQueue[0].name} Stats:</s>
-    <ul>
-        <li><s>Fight: ${enemyQueue[0].fight(enemyQueue[0],ronin)}</s></li>
-        <li><s>Block: ${enemyBlock}</s></li>
-    </ul>
-    `;
-
-    interactText.innerHTML =
-    `${enemyQueue[0].name} is defeated.<br>
-    How would you like this to end?
-    `;
+    target.background = "interactedWith";
 
     encounterButtons.innerHTML =
     `<button onclick="slayEnemy()">Kill</button>
     <button onclick="spareEnemy()">Knock Out</button>
-    <button onclick="talkTo(enemyQueue[0])">Talk</button>
     `;
 }
 
@@ -109,19 +96,16 @@ function slayEnemy() {
         return;
     }
 
-    enemyBlock = enemyQueue[0].block;
-    renderCombatRoom();
+    setTarget(enemyQueue[0]);
 
     interactText.innerHTML = "<p>Next enemy is here. Be ready.</p>";
 }
 
 function spareEnemy() {
-    const spared = enemyQueue[0];
-
-    roninLivingEnemies.push(spared);
+    roninLivingEnemies.push(target);
     enemyQueue.splice(0,1);
     updateStat("reputation",+1);
-
+    
     if (enemyQueue.length === 0) {
         renderEncounter(windowContext);
         roninBlock = ronin.block;
@@ -129,19 +113,12 @@ function spareEnemy() {
         return;
     }
 
-    enemyBlock = enemyQueue[0].block;
-    renderCombatRoom();
+    setTarget(enemyQueue[0]);
 
     interactText.innerHTML = "<p>Next enemy is here. Be ready.</p>";
 }
 
 function renderBlockDeterminationOption() {
-    interactText.innerHTML +=
-    `<p>
-        ${enemyQueue[0].name} will hit you. What do you do?
-    </p>
-    `;
-
     encounterButtons.innerHTML =
     `<button onclick="extraEffort()">Extra Effort</button>
     <button onclick="blockHit()">Block</button>
@@ -151,8 +128,6 @@ function renderBlockDeterminationOption() {
 function extraEffort() {
     if (ronin.determination > 0) {
         updateStat("determination",-1);
-
-        renderCombatRoom();
 
         interactText.innerHTML +=
         `<p>
@@ -182,8 +157,6 @@ function blockHit() {
         roninBlock += -1;
 
         ronin.blockState = "blocked";
-
-        renderCombatRoom();
 
         interactText.innerHTML +=
         `<p>

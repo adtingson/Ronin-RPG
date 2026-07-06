@@ -29,6 +29,8 @@ const roninLivingEnemies = [];
 
 const endRouteEnemies = [];
 
+let target;
+
 let roninBlock;
 
 let enemyBlock;
