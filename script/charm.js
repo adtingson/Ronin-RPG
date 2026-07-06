@@ -1,4 +1,6 @@
 function charm() {
+    const target = getTarget();
+
     if (allies.includes(target)) {
         interactText.innerHTML = `There is no point in charming ${target.name}. ${target.name} is already devoted to your cause.`;
         return;
@@ -10,7 +12,7 @@ function charm() {
 
     let charmMessage;
 
-    if (!possibleAllies.includes(target)) {
+    if (enemies.includes(target)) {
         interactText.innerHTML = `You cannot charm ${target.name}.<br>Try other interactions with them first, and make them a possible ally.`;
         return;
     }
@@ -42,8 +44,7 @@ function charmAttempt() {
     }
 }
 
-function allyRoleDesc(occupation) {
-    const allyRoleTable = {
+const allyRoleTable = {
         Mentor: "If he becomes an ally, you can be trained by him and add his technique to your card (so you can choose which technique to use when you fight enemies or villains).",
         Blacksmith: "If he becomes an ally, he can manufacture a Special Weapon (same as yours, but with a +1 Fight bonus) that will be delivered to you in the next “city” you encounter.",
         Healer: "If he becomes an ally, you cannot die when you are defeated in combat.",
@@ -51,5 +52,6 @@ function allyRoleDesc(occupation) {
         Innocent: "If he becomes your ally, you will always get +1 in Fight. However, when you encounter a Villain, roll a die. If the result is 1 or 2, the villain killed this ally and you lose 2 of Determination."
     }
 
+function allyRoleDesc(occupation) {
     return allyRoleTable[occupation];
 }

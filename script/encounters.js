@@ -12,6 +12,7 @@ const combatHeader = document.getElementById("combatHeader");
 function renderEncounter(encounter) {
     interactText.innerHTML = "";
     combatHeader.innerHTML = "";
+    encounterPersons = [];
     encounterHeader.innerHTML = rooms[encounter].header;
     encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
@@ -26,19 +27,17 @@ function renderEncounter(encounter) {
                     let enemySpawned = 0;
 
                     do {
-                        addEnemyToQueue(person);
+                        const newEnemy = generateEnemy(person);
+                        encounterPersons.push(newEnemy);
                         enemySpawned += 1;
                     } while(enemySpawned !== enemyNumber);
-
-                    setTarget(enemyQueue[0]);
                 }
                 else if (person.class == "enemy" || person.class == "fightOnly") {
-                    addEnemyToQueue(person);
-                    setTarget(enemyQueue[0]);
+                    const newEnemy = generateEnemy(person);
+                    encounterPersons.push(newEnemy);
                 }
                 else if (person.class == "possibleAlly") {
                     generatePossibleAlly(person);
-                    setTarget(possibleAllies.at(-1));
                 }
             }
         );
@@ -92,7 +91,7 @@ function updateStat(stat,change) {
 }
 
 function renderTechniqueSelection() {
-    if (!enemyQueue.length) {
+    if (!encounterPersons.length) {
         interactText.innerHTML = "There is no one to fight.";
         return;
     }
@@ -124,7 +123,7 @@ function setCombatStats(techniqueIndex) {
     fight();
 }
 
-function addEnemyToQueue({name,weapon,fight,block,technique,type}={}) {
+function generateEnemy({name,weapon,fight,block,technique,type}={}) {
     const addedEnemy = {
         name: name,
         weapon: weapon,
@@ -134,9 +133,9 @@ function addEnemyToQueue({name,weapon,fight,block,technique,type}={}) {
         type: type !== undefined ? type : "generic",
         firstStrike: "available"
     }
-    
-    enemyQueue.push(addedEnemy);
-    enemyBlock = enemyQueue[0].block;
+
+    enemies.push(addedEnemy);
+    return addedEnemy;
 }
 
 function routeBuilder() {
@@ -198,7 +197,7 @@ function route3() {
 }
 
 function addEnemyToEndRoute() {
-    endRouteEnemies.push(enemyQueue[0]);
+    endRouteEnemies.push(getTarget());
 }
 
 function endOfRouteCheck() {
@@ -212,7 +211,6 @@ function endOfRouteCheck() {
                 enemyQueue.push(enemy);
             }
         )
-        setTarget(enemyQueue[0]);
 
         fight();
     }
@@ -257,8 +255,4 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
     possibleAllies.push(possibleAlly);
 }
 
-function setTarget(person) {
-    target = person;
-}
-
-renderEncounter("temple1");
+renderEncounter("re66");

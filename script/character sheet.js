@@ -19,17 +19,19 @@ function generateRonin() {
     ronin.determination = 2    
 };
 
-const enemyQueue = [];
+let encounterPersons = [];
 
 const possibleAllies = [];
 
 const allies = [];
 
-const roninLivingEnemies = [];
+const enemies = [];
 
 const endRouteEnemies = [];
 
-let target;
+function getTarget() {
+    return encounterPersons[0];
+}
 
 let roninBlock;
 
@@ -53,12 +55,12 @@ function renderPossibleAllies() {
     document.getElementById("possibleallies").innerHTML = JSON.stringify(possibleAllies, null, 4);
 }
 
-function renderEnemyQueue() {
-    document.getElementById("enemyqueue").innerHTML = JSON.stringify(enemyQueue, null, 4);
+function renderEncounterPersons() {
+    document.getElementById("encounterpersons").innerHTML = JSON.stringify(encounterPersons, null, 4);
 }
 
 function renderLivingEnemies() {
-    document.getElementById("enemies").innerHTML = JSON.stringify(roninLivingEnemies, null, 4);
+    document.getElementById("enemies").innerHTML = JSON.stringify(enemies, null, 4);
 }
 
 function renderEndRouteEnemies() {
@@ -73,7 +75,7 @@ function renderDisplay() {
     renderRoninSheet();
     renderAllies();
     renderPossibleAllies();
-    renderEnemyQueue();
+    renderEncounterPersons();
     renderLivingEnemies();
     renderEndRouteEnemies();
     renderVillains();

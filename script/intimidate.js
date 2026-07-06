@@ -1,10 +1,12 @@
 function intimidate() {
+    const target = getTarget();
+
     if (target == undefined) {
-        interactText.innerHTML = "Their is no one left to intimidate.";
+        interactText.innerHTML = "There is no one left to intimidate.";
         return;
     }
 
-    if (!enemyQueue.includes(target)) {
+    if (!enemies.includes(target)) {
         interactText.innerHTML = `You cannot intimidate ${target.name}. ${target.name} is ${(allies.includes(target)?`an ally.`:possibleAllies.includes(target)?`a possible ally.`:`a villain!`)}`;
         return;
     }
@@ -19,9 +21,8 @@ function intimidate() {
 
     if (result == "Intimidated") {
         intimidateMessage = `${target.name} realizes that it is not worth fighting you and leaves.`;
-        roninLivingEnemies.push(target);
-        enemyQueue.splice(0,1);
-        target = undefined;
+        target.status = "lost";
+        encounterPersons.splice(0,1);
         renderDisplay();
     }
     else {

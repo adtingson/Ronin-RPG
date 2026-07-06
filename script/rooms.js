@@ -42,7 +42,7 @@ const rooms = {
         header: "Destination",
         text: "",
         buttons: [],
-        function: () => {setWindowContext("inDestination")}
+        function: () => {setWindowContext("inDestination");healWounds();}
     },
     inDestination: {
         header: "Somewhere in the destination",
