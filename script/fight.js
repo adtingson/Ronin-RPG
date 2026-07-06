@@ -226,7 +226,7 @@ function healWounds() {
 
     const heal = rolld6();
 
-    if (heal >= 4) {
+    if (heal >= 3) {
         ronin.status = "alive";
         encounterText.innerHTML += `<br><br>After quite some time, you suddenly felt light and free. Your wounds healed.`;
     }

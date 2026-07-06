@@ -1,6 +1,11 @@
 function charm() {
     const target = getTarget();
 
+    if (target == undefined) {
+        interactText.innerHTML = `There is no one to charm. Maybe they left?`;
+        return;
+    }
+
     if (allies.includes(target)) {
         interactText.innerHTML = `There is no point in charming ${target.name}. ${target.name} is already devoted to your cause.`;
         return;
@@ -28,6 +33,8 @@ function charm() {
     else {
         charmMessage = `You failed to convince ${target.name} to become an ally. Maybe you can try again someday.`;
     }
+
+    encounterPersons.splice(0,1);
 
     interactText.innerHTML = charmMessage;
 }

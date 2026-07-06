@@ -46,16 +46,16 @@ function talk() {
                 talkMessage = `${result}<p>You now seem to know what is important to them. You can charm them to be your ally!</p>`;
             }
             else {
+                let newAlly;
+
                 if (target.type == "named") {
-                    generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender, name:target.name});
+                    newAlly = generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender, name:target.name});
                 }
                 else {
-                    generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender});
+                    newAlly = generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender});
                 }
 
                 enemies.splice(enemies.indexOf(target),1);
-
-                const newAlly = possibleAllies.at(-1);
 
                 talkMessage =
                 `${result}<p>And now that you learned their dark secret, they are now a possible ally.</p>
@@ -73,7 +73,7 @@ function talk() {
         }
     }
     else if (target.background == "darkSecretFailed") {
-        talkMessage = `They have enough talking for now.<p>Try interacting in other ways.</p>`;
+        talkMessage = `They've had enough talking for now.<p>Try interacting in other ways.</p>`;
     }
     else if (target.background == "darkSecret") {
         if (villainsList.includes(target) || allies.includes(target)) {

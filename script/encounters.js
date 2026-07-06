@@ -37,7 +37,8 @@ function renderEncounter(encounter) {
                     encounterPersons.push(newEnemy);
                 }
                 else if (person.class == "possibleAlly") {
-                    generatePossibleAlly(person);
+                    const newPossibleAlly = generatePossibleAlly(person);
+                    encounterPersons.push(newPossibleAlly);
                 }
             }
         );
@@ -48,6 +49,8 @@ function renderEncounter(encounter) {
     }
 
     renderDisplay();
+
+    renderInteractions();
 
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
         return;
@@ -220,8 +223,10 @@ function setWindowContext(destination) {
     windowContext = destination;
 }
 
-function checkInteractions(person) {
-    if (person !== undefined) {
+function checkInteractions() {
+    const target = getTarget();
+
+    if (target !== undefined) {
         interactText.innerHTML = "It is rude to ignore someone that is already in front of you. Try to interact."
     }
     else {
@@ -253,6 +258,40 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
     possibleAlly.technique.block += -1;
 
     possibleAllies.push(possibleAlly);
+
+    return possibleAlly;
 }
 
-renderEncounter("re66");
+function renderInteractions() {
+    const target = getTarget();
+
+    if (target == undefined) {
+        return;
+    }
+
+    if (["talkFailed", "darkSecretFailed", "darkSecret"].includes(target.background) && !enemies.includes(target) || ["dead", "lost"].includes(target.status)) {
+        encounterButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
+        return;
+    }
+
+    if (allies.includes(target) || possibleAllies.includes(target) || villainsList.includes(target) || enemies.includes(target)) {
+        encounterButtons.innerHTML += `<button onclick="talk()">Talk</button>`;
+    }
+
+    if ((possibleAllies.includes(target) || enemies.includes(target)) && target.background == "darkSecret") {
+        encounterButtons.innerHTML += `<button onclick="charm()">Charm</button>`;
+    }
+
+    if (enemies.includes(target)) {
+        encounterButtons.innerHTML += `<button onclick="intimidate()">Intimidate</button>`;
+    }
+
+    if ((villainsList.includes(target) || enemies.includes(target)) && target.status == "fighting") {
+        encounterButtons.innerHTML += `<button onclick="fight()">Fight</button>`;
+        return;
+    }
+
+    if (villainsList.includes(target) || enemies.includes(target)) {
+        encounterButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
+    }
+}
