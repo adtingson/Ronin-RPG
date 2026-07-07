@@ -1,8 +1,3 @@
-
-function rolld6() {
-    return Math.floor(Math.random() * 6);
-}
-
 const roadEncounters = ["re66"];
 
 const rooms = {
@@ -19,8 +14,8 @@ const rooms = {
     },
     villain: {
         header: "villainHeader",
-        text: () => `You face the mighty`, // WIP
-        function: () => setWindowContext("endRoute")
+        text: "",
+        function: () => {setWindowContext("endRoute");villainFight()}
     },
     enRoute: {
         header: "En route to next destination...",

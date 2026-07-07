@@ -7,16 +7,16 @@ const exoticlocations = {
 
 const finalVillainTraits = [
     () => {
-        finalVillain.trait = `They're to blame for your scar. Now you discover that they always knew and may even have planned your misfortune. They laugh at your existence and the fight will be fun for them.`;
+        finalVillain.trait = `${finalVillain.gender == "Male" ? "He" : "She"} is to blame for your scar. Now you discover that ${finalVillain.gender == "Male" ? "he" : "she"} always knew and may even have planned your misfortune. ${finalVillain.gender == "Male" ? "He" : "She"} laughs at your existence and the fight will be fun for ${finalVillain.gender == "Male" ? "him" : "her"}.`;
     },
     () => {
-        finalVillain.trait = `This villain was your former master. Now they reveal themself as a megalomaniac who wants power, who, theoretically, you were supposed to be by. But if you don’t collaborate, you should be eliminated.`;
+        finalVillain.trait = `${finalVillain.gender == "Male" ? "He" : "She"} was your former master. Now ${finalVillain.gender == "Male" ? "he" : "she"} reveals ${finalVillain.gender == "Male" ? "him" : "her"}self as a megalomaniac who wants power, who, theoretically, you were supposed to be by. But if you don’t collaborate, you should be eliminated.`;
     },
     () => {
-        finalVillain.trait = `Several tragedies and conflicts that you witnessed on your journey were caused by this Final Villain. He was behind the curtains pulling the strings. And now, you are an obstacle to his plans.`;
+        finalVillain.trait = `Several tragedies and conflicts that you witnessed on your journey were caused by ${finalVillain.gender == "Male" ? "him" : "her"}. ${finalVillain.gender == "Male" ? "He" : "She"} was behind the curtains pulling the strings. And now, you are an obstacle to ${finalVillain.gender == "Male" ? "his" : "her"} plans.`;
     },
     () => {
-        finalVillain.trait = `This Final Villain is a powerful and tyrannical Daimio of ${generateClanName()}, who dominates a neighboring region and wants to provoke a war. For some reason, you are in his way and need to be eliminated.`;
+        finalVillain.trait = `${finalVillain.gender == "Male" ? "He" : "She"} is a powerful and tyrannical Daimio of ${generateClanName()}, who dominates a neighboring region and wants to provoke a war. For some reason, you are in ${finalVillain.gender == "Male" ? "his" : "her"} way and need to be eliminated.`;
     },
     () => {
         finalVillain.trait = `You meet the Final Villain and discover that they are, in fact, ${firstVillain.name}, the first Villain who had appeared. However, now it has changed, changed its shape or revealed itself, having a new trick.`;
@@ -72,17 +72,16 @@ function generateExoticLocation() {
 }
 
 const villainTraits = [
-    () => `This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.`,
-    () => `This villain is a Minion of ${villainNames[2].name}. He talks about his master and his motivations.`,
-    () => `This villain is a mercenary hired by ${villainNames[2].name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
-    () => `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`,
-    () => `This villain is your brother. You didn’t expect this. But now you find out that he was there, along with you, when you got your scar. However, he blames you for everything and now he wants your death.`,
-    () => `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
+    (villain) => villain.trait = `This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.`,
+    (villain) => villain.trait = `This villain is a Minion of ${finalVillain.name}. He talks about his master and his motivations.`,
+    (villain) => villain.trait = `This villain is a mercenary hired by ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
+    (villain) => villain.trait = `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`,
+    (villain) => villain.trait = `This villain is your ${villain.gender == "Male" ? "brother" : "sister"}. You didn’t expect this. But now you find out that ${villain.gender == "Male" ? "he" : "she"} was there, along with you, when you got your scar. However, ${villain.gender == "Male" ? "he" : "she"} blames you for everything and now ${villain.gender == "Male" ? "he" : "she"} wants your death.`,
+    (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
 ];
 
 const villainNames = [];
 const villainGenders = [];
-const villainsList = [];
 
 generateVillainNames();
 
@@ -112,6 +111,18 @@ function generateVillainNames() {
     villainGenders.push(gender3);
 }
 
+const finalVillain = {
+    name: villainNames[2],
+    gender: villainGenders[2],
+    appearance: normalizeText(randoAppearance()),
+    technique: randomTechnique(),
+    trait: finalVillainTraits[rolld6()],
+    status: "active",
+    scar: generateScar(),
+    meaning: generateScarMeaning(),
+    power: uniquePowers[rolld6()]
+}
+
 const firstVillain = {
     name: villainNames[0],
     gender: villainGenders[0],
@@ -130,14 +141,4 @@ const secondVillain = {
     status: "active"
 };
 
-const finalVillain = {
-    name: villainNames[2],
-    gender: villainGenders[2],
-    appearance: normalizeText(randoAppearance()),
-    technique: randomTechnique(),
-    trait: finalVillainTraits[rolld6()],
-    status: "active",
-    scar: generateScar(),
-    meaning: generateScarMeaning(),
-    power: uniquePowers[rolld6()]
-}
+const villainsList = [firstVillain, secondVillain, finalVillain];

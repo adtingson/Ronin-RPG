@@ -310,4 +310,33 @@ function renderUI() {
     renderDisplay();
 }
 
+function villainFight() {
+    const villainToFight = villainsList.find(villain => villain.status == "active");
+    
+    if (typeof villainToFight.trait === "function") {
+        villainToFight.trait(villainToFight);
+    }
+
+
+
+    villainToFight.techniqueID = villainToFight.technique.id;
+    villainToFight.weapon = villainToFight.technique.weapon;
+    villainToFight.fight = villainToFight.technique.fight;
+    villainToFight.block = villainToFight.technique.block;
+
+
+    encounterPersons.push(villainToFight);
+
+    encounterText.innerHTML =
+    `The wind falls silent.
+    <br><br>
+    Before you stands ${villainToFight.name}. ${villainToFight.appearance}.
+    <br><br>
+    ${villainToFight.trait}
+    <br><br>
+    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villain.power.text}
+    <br><br>` : ``}
+    Without another word, the villain reaches for their weapon.`;
+}
+
 renderEncounter("villain");
