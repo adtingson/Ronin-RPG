@@ -29,7 +29,7 @@ function fight() {
         renderBlockDeterminationOption();
     }
 
-    renderDisplay();
+    renderUI();
 }
 
 function checkFightWinner() {
@@ -40,19 +40,19 @@ function checkFightWinner() {
     if (roninFight > enemyFight) {
         renderCombatHeader(target)
         interactText.innerHTML += `<br><br>${ronin.name} won the exchange.`;
-
+        target.status = "fighting";
         return "ronin";
     }
     else if (enemyFight > roninFight) {
         renderCombatHeader(target)
         interactText.innerHTML += `<br><br>${target.name} won the exchange.`;
-
+        target.status = "winning";
         return "enemy";
     }
     else {
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${ronin.name} and ${target.name} have been exchanged. The fight is even.`;
-
+        interactText.innerHTML += `<br><br>${ronin.name} and ${target.name} have exchanged blows. The fight is even.`;
+        target.status = "fighting";
         return "draw";
     }
 }
@@ -81,7 +81,9 @@ function checkEnemyBlock() {
 function roninWinCleanUp() {
     const target = getTarget();
 
-    target.background = "interactedWith";
+    if (target.background !== "hater") {
+        target.background = "interactedWith";
+    }
 
     combatHeader.innerHTML = `<b>${ronin.name}</b>[${ronin.weapon}](Fight: ${ronin.fight(ronin,target)}${ronin.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
     interactText.innerHTML += `<br><br>${target.name} has lost this duel. How do you want this to end?`;
@@ -141,7 +143,7 @@ function renderBlockDeterminationOption() {
 
     renderCombatHeader(target)
     interactText.innerHTML += `<br><br>${target.name} is about to land a hit on you. What do you do?`;
-    target.status = "fighting";
+    target.status = "winning";
 
     encounterButtons.innerHTML =
     `<button onclick="extraEffort()">Extra Effort</button>
@@ -156,8 +158,8 @@ function extraEffort() {
         updateStat("determination",-1);
 
         renderCombatHeader(target)
-        interactText.innerHTML +=
-        `${ronin.name} pushed ${ronin.gender == "Male" ? "his" : "her"} limits to avoid this hit.`;
+        interactText.innerHTML += `<br><br>${ronin.name} pushed ${ronin.gender == "Male" ? "his" : "her"} limits to avoid this hit.`;
+        target.status = "fighting";
     }
     else if (ronin.determination == 0) {
         if (roninBlock == 0) {
@@ -179,7 +181,8 @@ function blockHit() {
         ronin.blockState = "blocked";
 
         renderCombatHeader(target)
-        interactText.innerHTML += `${ronin.name} blocks the blow. The fight continues.`;
+        interactText.innerHTML += `<br><br>${ronin.name} blocks the blow. The fight continues.`;
+        target.status = "fighting";
     }
     else if (roninBlock == 0) {
         if (ronin.determination == 0) {

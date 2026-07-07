@@ -26,11 +26,12 @@ function intimidate() {
         renderDisplay();
     }
     else {
-        intimidateMessage = `${target.name} is not intimidated by you. He becomes emboldened to fight!`;
+        intimidateMessage = `${target.name} is not intimidated by you. He becomes emboldened to fight!<br>(${target.name} gets +1 to their next Fight roll)`;
         target.morale = "emboldened";
     }
 
     interactText.innerHTML = `<p>${intimidateMessage}</p>`;
+    renderUI();
 }
 
 function intimidateAttempt() {

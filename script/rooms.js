@@ -17,6 +17,11 @@ const rooms = {
             
         ]
     },
+    villain: {
+        header: "villainHeader",
+        text: () => `You face the mighty`, // WIP
+        function: () => setWindowContext("endRoute")
+    },
     enRoute: {
         header: "En route to next destination...",
 	    text: "",
@@ -126,19 +131,14 @@ const rooms = {
     temple1: {
         header: "A Ghost from the Past",
 	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
-	    buttons: [
-            {
-                text: "Fight",
-                function: () => renderTechniqueSelection()
-            }
-        ],
         persons: [
             {
                 name: "The Spirit of your Victim",
                 weapon: "None",
                 fight: () => 1,
                 block: 0,
-                class: "fightOnly"
+                class: "enemy",
+                background: "hater"
             }
         ],
         function: () => {addEnemyToEndRoute();setWindowContext("destination");}

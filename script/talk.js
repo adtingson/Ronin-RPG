@@ -6,7 +6,7 @@ function talk() {
         return;
     }
     
-    if (target.morale == "emboldened") {
+    if (target.morale == "emboldened" || target.background == "hater") {
         interactText.innerHTML = "Trying to talk to this person is pointless. They are eager to fight you!";
         return;
     }
@@ -88,6 +88,8 @@ function talk() {
     `You tried talking to ${target.name} and you learned...
     <br>
     ${talkMessage}`;
+
+    renderUI();
 }
 
 const pastInformationTable = ["They tell about the secret of another person or clan. Possibly, someone you don’t know well or haven’t met yet.", "They tell you something about their past that makes you understand his actions in the present.", "You realize that despite doing what they do, they have a certain hatred of their condition.", "They are a fervent idealist and will die defending what they think is right.", "They say almost nothing. They are very cold, but lets slip that they have some connection with some of your allies.", "They have no interesting background or pertinent information."];

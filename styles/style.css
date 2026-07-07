@@ -183,10 +183,6 @@ main {
     padding: 16px;
 }
 
-.half-half {
-    grid-template-columns: 1fr 1fr;
-    display: grid;
-}
 
 @media screen and (max-width: 616px) {
     main {

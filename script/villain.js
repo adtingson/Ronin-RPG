@@ -21,28 +21,37 @@ const uniquePowers = [
     "One of your Allies (random) reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now."
 ];
 
+// WIP ang Villains
+
+let firstPossibleAlly;
+const finalVillainName = finalName();
+const finalVillainScar = generateScar();
+const finalVillainScarMeaning = generateScarMeaning()
+const finalVillainPowerIndex = Math.floor(Math.random() * uniquePowers.length);
+const finalVillainBackgroundIndex = Math.floor(Math.random() * finalVillainTypes.length);
+
+function generateFinalVillain(finalVillainPowerIndex, finalVillainBackgroundIndex) {
+    const fightTechnique = randomTechnique();
+    
+    const finalVillain = {
+        name: finalVillainName,
+        appearance: normalizeText(randoAppearance()),
+        technique: fightTechnique.desc,
+        fight: fightTechnique.fight,
+        block:fightTechnique.block,
+        weapon: fightTechnique.weapon,
+        power: uniquePowers[finalVillainPowerIndex],
+        history: finalVillainTypes[finalVillainBackgroundIndex],
+        scar: finalVillainScar,
+        meaning: finalVillainScarMeaning
+    };
+}
+
 function generateExoticLocation() {
     const thePlace = exoticlocations.place[Math.floor(Math.random() * exoticlocations.place.length)];
     const theWeather = exoticlocations.weather[Math.floor(Math.random() * exoticlocations.weather.length)];
     return `${thePlace} ${theWeather}`;
 }
-
-function villainPowers() {
-    return uniquePowers[Math.floor(Math.random() * uniquePowers.length)];
-}
-
-function finalVillainBG() {
-    return finalVillainTypes[Math.floor(Math.random() * finalVillainTypes.length)];
-}
-
-const finalVillain = {
-    name: finalName(),
-    appearance: normalizeText(randoAppearance()),
-    technique: randomTechnique(),
-    power: villainPowers(),
-    background: finalVillainBG(),
-    status: "Active"
-};
 
 const villainTypes = [
     "This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.",
@@ -72,5 +81,6 @@ const secondVillain = {
     background: villainBG(),
     status: "Active"
 }
+
 
 const villainsList = [firstVillain, secondVillain, finalVillain];

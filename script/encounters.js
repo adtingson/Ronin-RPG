@@ -1,5 +1,5 @@
 const routeEvents = [
-    route0, route1, route2, route3, randomRoadEncounter, randomRoadEncounter
+    nada, () => roninReputationCheck(4), () => roninReputationCheck(5), () => roninReputationCheck(6), randomRoadEncounter, randomRoadEncounter
 ];
 
 let windowContext;
@@ -8,12 +8,20 @@ const encounterText = document.getElementById("encounterText");
 const encounterButtons = document.getElementById("encounterButtons");
 const interactText = document.getElementById("interactText");
 const combatHeader = document.getElementById("combatHeader");
+const interactButtons = document.getElementById("interactButtons");
 
 function renderEncounter(encounter) {
     interactText.innerHTML = "";
     combatHeader.innerHTML = "";
     encounterPersons = [];
-    encounterHeader.innerHTML = rooms[encounter].header;
+    
+    if (rooms[encounter].header == "villainHeader") {
+        encounterHeader.innerHTML = `In a ${generateExoticLocation()}...`;
+    }
+    else {
+        encounterHeader.innerHTML = rooms[encounter].header;
+    }
+
     encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
 
@@ -32,7 +40,7 @@ function renderEncounter(encounter) {
                         enemySpawned += 1;
                     } while(enemySpawned !== enemyNumber);
                 }
-                else if (person.class == "enemy" || person.class == "fightOnly") {
+                else if (person.class == "enemy") {
                     const newEnemy = generateEnemy(person);
                     encounterPersons.push(newEnemy);
                 }
@@ -48,9 +56,7 @@ function renderEncounter(encounter) {
         rooms[encounter].function();
     }
 
-    renderDisplay();
-
-    renderInteractions();
+    renderUI();
 
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
         return;
@@ -111,7 +117,7 @@ function renderTechniqueSelection() {
     ronin.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
-        `<button onclick="setCombatStats(${index})">${technique.id}</button>
+        `<button onclick="setCombatStats(${index})">${technique.desc}</button>
         `;
         }
     );
@@ -126,7 +132,7 @@ function setCombatStats(techniqueIndex) {
     fight();
 }
 
-function generateEnemy({name,weapon,fight,block,technique,type}={}) {
+function generateEnemy({name, weapon, fight, block, technique, type, status, background}={}) {
     const addedEnemy = {
         name: name,
         weapon: weapon,
@@ -134,7 +140,9 @@ function generateEnemy({name,weapon,fight,block,technique,type}={}) {
         block: block,
         technique: technique,
         type: type !== undefined ? type : "generic",
-        firstStrike: "available"
+        firstStrike: "available",
+        status: status !== undefined ? status : undefined,
+        background: background !== undefined ? background : undefined
     }
 
     enemies.push(addedEnemy);
@@ -145,7 +153,7 @@ function routeBuilder() {
     routeEvents[rolld6()]();
 }
 
-function route0() {
+function nada() {
     encounterText.innerHTML = "Nothing happened.";
     encounterButtons.innerHTML =
     `<button>Search for Something</button>
@@ -153,27 +161,32 @@ function route0() {
     `;
 }
 
-function route1() {
-    if (ronin.reputation >= 4) {
-        encounterText.innerHTML = `${villainsList[0].name} has found you.`;
-        encounterButtons.innerHTML =
-        `<button>Face this Villain</button>
-        `;
-    }
-    else {
-        route0();
-    }
-}
 
-function route2() {
-    if (ronin.reputation >= 5) {
-        encounterText.innerHTML = `${villainsList[0].name} has found you.`;
+function roninReputationCheck(rep) {
+    if (ronin.reputation >= rep) {
+        if (villainsList.length > 1) {
+            encounterText.innerHTML = `Your victories have become the talk of every survivor you left behind. Their stories have reached ${villainsList[0].name}, who now seeks you out. The duel you could not avoid has finally arrived.`;
+        }
+        else {
+            encounterText.innerHTML = `From one defeated foe to the next, rumors of your blade have spread across the land. At last, they have reached ${villainsList[0].name}. The one who cast the longest shadow over your life has finally come to face you. There will be no road beyond this one.`;
+        }
+        
         encounterButtons.innerHTML =
-        `<button>Face this Villain</button>
+        `<button onclick="renderEncounter('villain')">Face this Villain</button>
         `;
     }
     else {
-        randomRoadEncounter();
+        switch (rep) {
+            case 4:
+                nada();
+                break;
+            case 5:
+                randomRoadEncounter();
+                break;
+            case 6:
+                randomRoadEncounter();
+                break;
+        };
     }
 }
 
@@ -185,18 +198,6 @@ function randomRoadEncounter() {
     encounterButtons.innerHTML =
     `<button onclick="renderEncounter('${randomTitle}')">What is it?</button>
     `;
-}
-
-function route3() {
-    if (ronin.reputation >= 6) {
-        encounterText.innerHTML = `${villainsList[0].name} has found you.`;
-        encounterButtons.innerHTML =
-        `<button>Face this Villain</button>
-        `;
-    }
-    else {
-        randomRoadEncounter();
-    }
 }
 
 function addEnemyToEndRoute() {
@@ -257,6 +258,10 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
 
     possibleAlly.technique.block += -1;
 
+    if (possibleAllies.length == 0 && firstPossibleAlly == undefined) {
+        firstPossibleAlly = possibleAlly;
+    }
+
     possibleAllies.push(possibleAlly);
 
     return possibleAlly;
@@ -265,24 +270,28 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
 function renderInteractions() {
     const target = getTarget();
 
+    interactButtons.innerHTML = "";
+
     if (target == undefined) {
         return;
     }
 
-    if (["talkFailed", "darkSecretFailed", "darkSecret"].includes(target.background) && !enemies.includes(target) || ["dead", "lost"].includes(target.status)) {
+    const cannotTalk = ["talkFailed", "darkSecretFailed", "darkSecret", "hater"].includes(target.background);
+    const neutralStatus = !["lost", "dead", "winning"].includes(target.status);
+
+    if (cannotTalk && allies.includes(target)) {
         encounterButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
-        return;
     }
 
-    if (allies.includes(target) || possibleAllies.includes(target) || villainsList.includes(target) || enemies.includes(target)) {
+    if (!cannotTalk && target.status !== "fighting") {
         encounterButtons.innerHTML += `<button onclick="talk()">Talk</button>`;
     }
 
-    if ((possibleAllies.includes(target) || enemies.includes(target)) && target.background == "darkSecret") {
+    if (possibleAllies.includes(target)) {
         encounterButtons.innerHTML += `<button onclick="charm()">Charm</button>`;
     }
 
-    if (enemies.includes(target)) {
+    if (enemies.includes(target) && target.morale !== "emboldened" && neutralStatus) {
         encounterButtons.innerHTML += `<button onclick="intimidate()">Intimidate</button>`;
     }
 
@@ -291,7 +300,14 @@ function renderInteractions() {
         return;
     }
 
-    if (villainsList.includes(target) || enemies.includes(target)) {
+    if ((villainsList.includes(target) || enemies.includes(target)) && neutralStatus) {
         encounterButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
     }
 }
+
+function renderUI() {
+    renderInteractions();
+    renderDisplay();
+}
+
+renderEncounter("villain");

@@ -37,6 +37,8 @@ function charm() {
     encounterPersons.splice(0,1);
 
     interactText.innerHTML = charmMessage;
+
+    renderUI();
 }
 
 function charmAttempt() {
