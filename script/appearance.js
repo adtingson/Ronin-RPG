@@ -1,4 +1,41 @@
-const appearanceList = ["Athletic", "Athletic *", "Fat", "Fat *", "Thin", "Thin *", "Tall", "Tall *", "Small", "Small *", "Tattoo", "Covered in Tattoo", "Long Hair", "Big Eyebrow", "Red Hair", "Weird Hair", "Grey Hair", "Bald", "Sex Appeal", "Colored Eyes", "Uses a Mask", "Dead Face", "White Hair", "Skin Spots", "Androgen", "Albino", "Gigantism", "Blind", "Deep Voice", "Deformed Face", "Blueish Hair", "Red Eyes", "Pale", "Choose Two", "Choose Two", "Choose Two"];
+const appearanceList = [
+    "is athletic",
+    "is athletic *",
+    "is fat",
+    "is fat *",
+    "is thin",
+    "is thin *",
+    "is tall",
+    "is tall *",
+    "is small",
+    "is small *",
+    "has a tattoo",
+    "is covered in yattoo",
+    "has long hair",
+    "has big eyebrows",
+    "has red hair",
+    "has weird hair",
+    "has grey hair",
+    "is bald",
+    "has sex appeal",
+    "has colored eyes",
+    "uses a mask",
+    "has a dead face",
+    "has white hair",
+    "has skin spots",
+    "is an androgen",
+    "is an albino",
+    "has gigantism",
+    "is blind",
+    "has a deep voice",
+    "has a deformed face",
+    "has blueish hair",
+    "has red eyes",
+    "is pale",
+    "Choose Two",
+    "Choose Two",
+    "Choose Two"
+];
 
 function randoAppearance() {
     const appearance = appearanceList[Math.floor(Math.random() * appearanceList.length)];
@@ -11,7 +48,7 @@ function randoAppearance() {
             app2 = appearanceList[Math.floor(Math.random() * (appearanceList.length - 3))];
         } while (app1 == app2)
         
-        return `${app1}, ${app2}`;
+        return `${app1}, and ${app2}`;
     }
     else if (appearance.includes("*")) {
         const filteredList1 = appearanceList.filter(word => !word.includes(appearance));
@@ -24,7 +61,7 @@ function randoAppearance() {
             return `${appearance}, ${app2}, ${app3}`;
         }
 
-        return `${appearance}, ${app2}`;
+        return `${appearance}, and ${app2}`;
     }
     
     return appearance;

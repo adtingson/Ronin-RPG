@@ -15,13 +15,7 @@ function renderEncounter(encounter) {
     combatHeader.innerHTML = "";
     encounterPersons = [];
     
-    if (rooms[encounter].header == "villainHeader") {
-        encounterHeader.innerHTML = `In a ${generateExoticLocation()}...`;
-    }
-    else {
-        encounterHeader.innerHTML = rooms[encounter].header;
-    }
-
+    encounterHeader.innerHTML = rooms[encounter].header;
     encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
 
@@ -56,6 +50,7 @@ function renderEncounter(encounter) {
         rooms[encounter].function();
     }
 
+    enemyPreview();
     renderUI();
 
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
@@ -280,28 +275,28 @@ function renderInteractions() {
     const neutralStatus = !["lost", "dead", "winning"].includes(target.status);
 
     if (cannotTalk && allies.includes(target)) {
-        encounterButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
+        interactButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
     }
 
-    if (!cannotTalk && target.status !== "fighting") {
-        encounterButtons.innerHTML += `<button onclick="talk()">Talk</button>`;
+    if (!cannotTalk && !["fighting", "winning"].includes(target.status)) {
+        interactButtons.innerHTML += `<button onclick="talk()">Talk</button>`;
     }
 
     if (possibleAllies.includes(target)) {
-        encounterButtons.innerHTML += `<button onclick="charm()">Charm</button>`;
+        interactButtons.innerHTML += `<button onclick="charm()">Charm</button>`;
     }
 
     if (enemies.includes(target) && target.morale !== "emboldened" && neutralStatus) {
-        encounterButtons.innerHTML += `<button onclick="intimidate()">Intimidate</button>`;
+        interactButtons.innerHTML += `<button onclick="intimidate()">Intimidate</button>`;
     }
 
     if ((villainsList.includes(target) || enemies.includes(target)) && target.status == "fighting") {
-        encounterButtons.innerHTML += `<button onclick="fight()">Fight</button>`;
+        interactButtons.innerHTML += `<button onclick="fight()">Fight</button>`;
         return;
     }
 
     if ((villainsList.includes(target) || enemies.includes(target)) && neutralStatus) {
-        encounterButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
+        interactButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
     }
 }
 
@@ -317,26 +312,39 @@ function villainFight() {
         villainToFight.trait(villainToFight);
     }
 
-
-
     villainToFight.techniqueID = villainToFight.technique.id;
     villainToFight.weapon = villainToFight.technique.weapon;
     villainToFight.fight = villainToFight.technique.fight;
     villainToFight.block = villainToFight.technique.block;
 
-
     encounterPersons.push(villainToFight);
 
     encounterText.innerHTML =
-    `The wind falls silent.
+    `At a ${generateExoticLocation()}.
     <br><br>
-    Before you stands ${villainToFight.name}. ${villainToFight.appearance}.
+    Before you stands ${villainToFight.name}. ${villainToFight.gender == "Male" ? "He" : "She"} ${villainToFight.appearance}.
     <br><br>
     ${villainToFight.trait}
     <br><br>
-    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villain.power.text}
+    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text}
     <br><br>` : ``}
     Without another word, the villain reaches for their weapon.`;
 }
 
-renderEncounter("villain");
+function enemyPreview() {
+    const target = getTarget();
+
+    if (target == undefined) {
+        return;
+    }
+
+    enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
+
+    if (enemies.includes(target) || villainsList.includes(target)) {
+        combatHeader.innerHTML = `<b>${target.name}</b> uses <i>${target.techniqueID}</i> [${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+    }
+
+    return;
+}
+
+renderEncounter("re66");

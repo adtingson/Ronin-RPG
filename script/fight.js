@@ -22,7 +22,7 @@ function fight() {
     else if (fightWinner == "draw") {
         if (ronin.techniqueID == "Jitte") {
             target.fight = 0;
-            fightMessage += `However, you had broken their weapon broken.`;
+            interactText.innerHTML += `However, you had broken their weapon broken.`;
         }
     }
     else if (fightWinner == "enemy") {
@@ -88,10 +88,7 @@ function roninWinCleanUp() {
     combatHeader.innerHTML = `<b>${ronin.name}</b>[${ronin.weapon}](Fight: ${ronin.fight(ronin,target)}${ronin.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
     interactText.innerHTML += `<br><br>${target.name} has lost this duel. How do you want this to end?`;
 
-    encounterButtons.innerHTML =
-    `<button onclick="slayEnemy()">Kill</button>
-    <button onclick="spareEnemy()">Knock Out</button>
-    `;
+    encounterButtons.innerHTML = `<button onclick="slayEnemy()">Kill</button><button onclick="spareEnemy()">Knock Out</button>`;
 }
 
 function slayEnemy() {
@@ -114,6 +111,8 @@ function slayEnemy() {
 
     renderCombatHeader(target)
     interactText.innerHTML += "<br><br>Next enemy is here. Be ready.";
+
+    renderUI();
 }
 
 function spareEnemy() {
@@ -136,6 +135,9 @@ function spareEnemy() {
 
     renderCombatHeader(target)
     interactText.innerHTML += "<br><br>Next enemy is here. Be ready.";
+
+    encounterButtons.innerHTML = "";
+    renderUI();
 }
 
 function renderBlockDeterminationOption() {
@@ -145,10 +147,7 @@ function renderBlockDeterminationOption() {
     interactText.innerHTML += `<br><br>${target.name} is about to land a hit on you. What do you do?`;
     target.status = "winning";
 
-    encounterButtons.innerHTML =
-    `<button onclick="extraEffort()">Extra Effort</button>
-    <button onclick="blockHit()">Block</button>
-    `;
+    encounterButtons.innerHTML = `<button onclick="extraEffort()">Extra Effort</button><button onclick="blockHit()">Block</button>`;
 }
 
 function extraEffort() {
@@ -170,6 +169,9 @@ function extraEffort() {
         interactText.innerHTML += `${ronin.name} has already ran out of determination. Try something else.`;
         encounterButtons.innerHTML = `<button onclick="blockHit()">Block</button>`;
     }
+
+    encounterButtons.innerHTML = "";
+    renderUI();
 }
 
 function blockHit() {
@@ -183,6 +185,7 @@ function blockHit() {
         renderCombatHeader(target)
         interactText.innerHTML += `<br><br>${ronin.name} blocks the blow. The fight continues.`;
         target.status = "fighting";
+        encounterButtons.innerHTML = "";
     }
     else if (roninBlock == 0) {
         if (ronin.determination == 0) {
@@ -190,9 +193,11 @@ function blockHit() {
             return;
         }
 
-        interactText.innerHTML += `${ronin.name} is already in his limits and can no longer block. Try something else.`;
+        interactText.innerHTML += `<br><br>${ronin.name} is already in his limits and can no longer block. Try something else.`;
         encounterButtons.innerHTML = `<button onclick="extraEffort()">Extra Effort</button>`;
     }
+
+    renderUI();
 }
 
 function roninLossCleanUp() {

@@ -1,7 +1,13 @@
 let firstPossibleAlly;
 
 const exoticlocations = {
-    place: ["Canebrake", "Cherry forest", "Stone staircase of an old temple", "Deserted beach", "Large wooden bridge", "Deserted road"],
+    place: [
+        "canebrake",
+        "cherry forest",
+        "stone staircase of an old temple",
+        "deserted beach",
+        "large wooden bridge",
+        "deserted road"],
     weather: ["at night, under the moonlight", "in the late afternoon", "at sunrise", "during a windstorm", "in the rain", "while it snows lightly"]
 };
 
@@ -74,7 +80,7 @@ function generateExoticLocation() {
 const villainTraits = [
     (villain) => villain.trait = `This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.`,
     (villain) => villain.trait = `This villain is a Minion of ${finalVillain.name}. He talks about his master and his motivations.`,
-    (villain) => villain.trait = `This villain is a mercenary hired by ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
+    (villain) => villain.trait = `This villain is a mercenary hired by the final villain, ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
     (villain) => villain.trait = `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`,
     (villain) => villain.trait = `This villain is your ${villain.gender == "Male" ? "brother" : "sister"}. You didn’t expect this. But now you find out that ${villain.gender == "Male" ? "he" : "she"} was there, along with you, when you got your scar. However, ${villain.gender == "Male" ? "he" : "she"} blames you for everything and now ${villain.gender == "Male" ? "he" : "she"} wants your death.`,
     (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
@@ -120,7 +126,8 @@ const finalVillain = {
     status: "active",
     scar: generateScar(),
     meaning: generateScarMeaning(),
-    power: uniquePowers[rolld6()]
+    power: uniquePowers[rolld6()],
+    firstStrike: "available"
 }
 
 const firstVillain = {
@@ -129,7 +136,8 @@ const firstVillain = {
     appearance: normalizeText(randoAppearance()),
     technique: randomTechnique(),
     trait: villainTraits[rolld6()],
-    status: "active"
+    status: "active",
+    firstStrike: "available"
 };
 
 const secondVillain = {
@@ -138,7 +146,8 @@ const secondVillain = {
     appearance: normalizeText(randoAppearance()),
     technique: randomTechnique(),
     trait: villainTraits[rolld6()],
-    status: "active"
+    status: "active",
+    firstStrike: "available"
 };
 
 const villainsList = [firstVillain, secondVillain, finalVillain];

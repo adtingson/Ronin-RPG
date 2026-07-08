@@ -13,7 +13,7 @@ const rooms = {
         ]
     },
     villain: {
-        header: "villainHeader",
+        header: "A Villain in Your Tracks",
         text: "",
         function: () => {setWindowContext("endRoute");villainFight()}
     },
