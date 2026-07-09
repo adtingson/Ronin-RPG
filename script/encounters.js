@@ -50,8 +50,9 @@ function renderEncounter(encounter) {
         rooms[encounter].function();
     }
 
-    enemyPreview();
+
     renderUI();
+    enemyPreview();
 
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
         return;
@@ -248,7 +249,8 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
         background: background !== undefined ? background : undefined,
         pastInfo: pastInfo !== undefined ? pastInfo : undefined,
         darkSecret: darkSecret !== undefined ? darkSecret : undefined,
-        firstStrike: "available"
+        firstStrike: "available",
+        status: "alive"
     };
 
     possibleAlly.technique.block += -1;
@@ -307,15 +309,47 @@ function renderUI() {
 
 function villainFight() {
     const villainToFight = villainsList.find(villain => villain.status == "active");
-    
-    if (typeof villainToFight.trait === "function") {
-        villainToFight.trait(villainToFight);
-    }
 
-    villainToFight.techniqueID = villainToFight.technique.id;
-    villainToFight.weapon = villainToFight.technique.weapon;
-    villainToFight.fight = villainToFight.technique.fight;
-    villainToFight.block = villainToFight.technique.block;
+    if (villainToFight.status !== "facedBefore") {
+        if (typeof villainToFight.trait === "function") {
+            villainToFight.trait(villainToFight);
+        }
+
+        if (villainToFight.power !== undefined) {
+            villainToFight.power.condition();
+        }
+
+        villainToFight.techniqueID = villainToFight.technique.id;
+        villainToFight.weapon = villainToFight.technique.weapon;
+        villainToFight.fight = villainToFight.technique.fight;
+
+        let villainBonusBlock = 0;
+
+        if (villainToFight.power !== undefined && villainToFight.power.blockBonus !== undefined) {
+            villainBonusBlock = villainToFight.power.blockBonus();
+        }
+
+        villainToFight.block = villainToFight.technique.block + villainBonusBlock;
+
+        if (villainToFight.power !== undefined && villainToFight.power.buffer !== undefined) {
+            let traitor = villainToFight.power.buffer();
+
+            traitor.techniqueID = traitor.technique.id;
+            traitor.weapon = traitor.technique.weapon;
+            traitor.fight = traitor.technique.fight;
+            traitor.block = traitor.technique.block;
+
+            encounterPersons.push(traitor);
+            enemies.push(traitor);
+            allies.includes(traitor) ? allies.splice(allies.indexOf(traitor), 1) : possibleAllies.splice(possibleAllies.indexOf(traitor), 1);
+        }
+
+        if (villainToFight.power !== undefined && villainToFight.power.prisoner !== undefined) {
+            let allyInPrison = villainToFight.power.prisoner();
+            villainPrisoners.push(allyInPrison);
+            allies.splice(allies.indexOf(allyInPrison), 1);
+        }
+    }
 
     encounterPersons.push(villainToFight);
 
@@ -326,9 +360,11 @@ function villainFight() {
     <br><br>
     ${villainToFight.trait}
     <br><br>
-    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text}
+    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}
     <br><br>` : ``}
     Without another word, the villain reaches for their weapon.`;
+
+    
 }
 
 function enemyPreview() {
@@ -347,4 +383,12 @@ function enemyPreview() {
     return;
 }
 
-renderEncounter("re66");
+
+generatePossibleAlly({occupation: "Fighter"});
+
+allies.push(possibleAllies[0]);
+possibleAllies.splice(0,1);
+villainsList[0].status = "dead";
+villainsList[1].status = "dead";
+
+renderEncounter("villain");

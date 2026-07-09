@@ -34,39 +34,68 @@ const finalVillainTraits = [
             finalVillainTraits[Math.floor(Math.random() * 5)]()
             return;
         }
-        finalVillain.trait = `The Final Villain reveals themself as ${firstPossibleAlly.name}, the first Possible Ally you met. If they became your ally, it would only have been to deceive you. You find out now that they have a scar too. Roll a Scar Meaning and you are one of the possible causes of it.`
+        finalVillain.trait = `The Final Villain reveals ${finalVillain.gender == "Male" ? "himself" : "herself"} as ${firstPossibleAlly.name}, the first Possible Ally you met. If ${finalVillain.gender == "Male" ? "he" : "she"} became your ally, it would only have been to deceive you. You find out now that they have a scar too. Roll a Scar Meaning and you are one of the possible causes of it.`
         finalVillain.name = `${finalVillain.name} aka ${firstPossibleAlly.name}`;
         finalVillain.gender = firstPossibleAlly.gender;
         finalVillain.appearance = firstPossibleAlly.appearance;
         finalVillain.technique = firstPossibleAlly.technique;
+        finalVillain.technique.block = firstPossibleAlly.technique.block + 1;
         possibleAllies.includes(firstPossibleAlly) ? possibleAllies.splice(possibleAllies.indexOf(firstPossibleAlly), 1) : allies.splice(allies.indexOf(firstPossibleAlly), 1);
     }
 ];
 
 const uniquePowers = [
     {
-        text: `This Villain is very observant and gains +1 in Fight each time he spends a Block point.`,
-        fightBonus: (user,enemy) => {user.block - enemyBlock}
+        condition: () => {},
+        text: () => `This Villain is very observant and gains +1 in Fight each time he spends a Block point.`,
+        fightBonus: (user,enemy) => user.block - enemyBlock
     },
     {
-        text: `This Villain is very fast and has 2 extra Block points.`,
+        condition: () => {},
+        text: () => `This Villain is very fast and has 2 extra Block points.`,
         blockBonus: () => 2
     },
     {
-        text: `This Villain can manipulate fire and gains +1 in Fight. But if your scar is a burn, this number becomes +2 instead.`,
+        condition: () => {},
+        text: () => `This Villain can manipulate fire and gains +1 in Fight. But if your scar is a burn, this number becomes +2 instead.`,
         fightBonus: (user,enemy) => (enemy.scar.includes("burn") || enemy.scar.includes("Burn")) ? 2 : 1
     },
     {
-        text: `Before facing this Villain, you will have to face one of his servants. The last Possible Ally you fail to become ally appears to protect the Final Villain.`,
-        buffer: possibleAllies.at(-1)
+        condition: () => {
+            if (possibleAllies.filter(possibleAlly => possibleAlly.status !== "dead").length === 0) {
+                finalVillain.power = uniquePowers[rolld6()];
+                finalVillain.power.condition();
+            }
+        },
+        text: () => `Before facing this Villain, you will have to face one of his servants. The last Possible Ally you fail to become ally appears to protect the Final Villain.`,
+        buffer: () => possibleAllies.at(-1)
+    },
+    {   condition: () => {
+            if (allies.filter(ally => ally.status !== "dead").length === 0) {
+                finalVillain.power = uniquePowers[rolld6()];
+                finalVillain.power.condition();
+            }
+        },
+        text: () => `This Final Villain has one of your Allies as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.`,
+        prisoner: () => {
+            let livingAllies = allies.filter(ally => ally.status !== "dead");
+
+            return livingAllies[Math.floor(Math.random() * livingAllies.length)];
+        }
     },
     {
-        text: `This Final Villain has one of your Allies (random) as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.`,
-        prisoner: allies[Math.floor(Math.random() * allies.length)]
-    },
-    {
-        text: `One of your Allies (random) reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now.`,
-        buffer: allies[Math.floor(Math.random() * allies.length)]
+        condition: () => {
+            if (allies.filter(ally => ally.status !== "dead").length === 0) {
+                finalVillain.power = uniquePowers[rolld6()];
+                finalVillain.power.condition();
+            }
+        },
+        text: () => `One of your Allies reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now.`,
+        buffer: () => {
+            let livingAllies = allies.filter(ally => ally.status !== "dead");
+
+            return livingAllies[Math.floor(Math.random() * livingAllies.length)];
+        }
     }
 ];
 

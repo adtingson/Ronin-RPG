@@ -29,6 +29,10 @@ const enemies = [];
 
 const endRouteEnemies = [];
 
+let fighterAlliesQueue = [];
+
+const villainPrisoners = [];
+
 function getTarget() {
     return encounterPersons[0];
 }
