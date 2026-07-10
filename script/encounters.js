@@ -250,7 +250,9 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
         status: "alive"
     };
 
-    possibleAlly.technique.block += -1;
+    if (possibleAlly.technique.block > 0) {
+        possibleAlly.technique.block += -1;
+    }
 
     if (possibleAllies.length == 0 && firstPossibleAlly == undefined) {
         firstPossibleAlly = possibleAlly;
@@ -387,4 +389,4 @@ possibleAllies.splice(0,1);
 villainsList[0].status = "dead";
 villainsList[1].status = "dead";
 
-renderEncounter("destination");
+renderEncounter("ue00");

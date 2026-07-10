@@ -42,7 +42,7 @@ function charm() {
 }
 
 function charmAttempt() {
-    const empathy = rolld6() + roninStats.compassion;
+    const empathy = rolld6() + ronin.compassion;
     const resistance = rolld6();
 
     if (empathy > resistance) {

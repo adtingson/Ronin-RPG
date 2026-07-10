@@ -1,4 +1,5 @@
 const roadEncounters = ["re66"];
+const urbanEncounters = ["ue00", "ue01", "ue02", "ue03", "ue04", "ue05", "ue06", "ue07", "ue08", "ue09", "ue10", "ue11", "ue12", "ue13", "ue14", "ue15", "ue16", "ue17"];
 
 const rooms = {
     searchRoom: {
@@ -211,6 +212,20 @@ const rooms = {
         header: "Lending a hand",
         function: () => updateStat("compassion", +1),
         text: "Who knew helping lift others' burdens lightens the heart? You gained 1 compassion."
+    },
+    randomUrbanEncounter: {
+        header: "",
+        text: "",
+        function: () => renderEncounter(urbanEncounters[Math.floor(Math.random() * urbanEncounters.length)])
+    },
+    ue00: {
+        header: "A Possible Ally",
+        text: () => `A Possible Ally started contacting you on the streets. ${encounterPersons[0].gender == "Male" ? "His" : "Her"} name is ${encounterPersons[0].name}. ${encounterPersons[0].gender == "Male" ? "He" : "She"} is a ${encounterPersons[0].occupation}${["Fighter", "Mentor"].includes(encounterPersons[0].occupation) ? ` (${encounterPersons[0].technique.desc})` : ``}.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ]
     },
     re66: {
         header: "Buddhist Temple",
