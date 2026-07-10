@@ -44,3 +44,7 @@ function uniqueClan() {
     
     return name;
 }
+
+function nobleClanName() {
+    return nobleClans[Math.floor(Math.random() * 4)];
+}

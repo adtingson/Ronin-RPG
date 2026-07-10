@@ -125,7 +125,12 @@ function slayEnemy() {
 
     target.status = "dead";
     encounterPersons.splice(0,1);
-    updateStat("compassion",-1);
+    if (target.compassionBonus !== undefined) {
+        updateStat("compassion",-target.compassionBonus);
+    }
+    else {
+        updateStat("compassion",-1);
+    }
     
     if (encounterPersons.length === 0) {
         renderEncounter(windowContext);
@@ -287,11 +292,11 @@ function healWounds() {
 
     if (heal >= 3) {
         ronin.status = "alive";
-        encounterText.innerHTML += `<br><br>After quite some time, you suddenly felt light and free. Your wounds healed.`;
+        encounterText.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i><br><br>`;
     }
     else {
         ronin.status = "wounded";
-        encounterText.innerHTML += `<br><br>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.`;
+        encounterText.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i><br><br>`;
     }
 }
 

@@ -14,29 +14,24 @@ function renderEncounter(encounter) {
     interactText.innerHTML = "";
     combatHeader.innerHTML = "";
     encounterPersons = [];
-    
-    encounterHeader.innerHTML = rooms[encounter].header;
-    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
     encounterButtons.innerHTML = "";
-
+    
     if (rooms[encounter].persons !== undefined) {
         rooms[encounter].persons.forEach(
             person => {
-                const multiEnemyFormatMatch = person.class.match(/^multiEnemy-(\d+)$/);
-
-                if (multiEnemyFormatMatch) {
-                    const enemyNumber = Number(multiEnemyFormatMatch[1]);
+                if (person.class == "enemy") {
+                    let enemyNumber = 1;
                     let enemySpawned = 0;
 
+                    if (person.number !== undefined || person.number !== 0) {
+                        enemyNumber = person.number;
+                    }
+
                     do {
-                        const newEnemy = generateEnemy(person);
+                        let newEnemy = generateEnemy(person);
                         encounterPersons.push(newEnemy);
                         enemySpawned += 1;
                     } while(enemySpawned !== enemyNumber);
-                }
-                else if (person.class == "enemy") {
-                    const newEnemy = generateEnemy(person);
-                    encounterPersons.push(newEnemy);
                 }
                 else if (person.class == "possibleAlly") {
                     const newPossibleAlly = generatePossibleAlly(person);
@@ -50,6 +45,8 @@ function renderEncounter(encounter) {
         rooms[encounter].function();
     }
 
+    encounterHeader.innerHTML = rooms[encounter].header;
+    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
 
     renderUI();
     enemyPreview();
@@ -383,7 +380,6 @@ function enemyPreview() {
     return;
 }
 
-
 generatePossibleAlly({occupation: "Fighter"});
 
 allies.push(possibleAllies[0]);
@@ -391,4 +387,4 @@ possibleAllies.splice(0,1);
 villainsList[0].status = "dead";
 villainsList[1].status = "dead";
 
-renderEncounter("villain");
+renderEncounter("destination");

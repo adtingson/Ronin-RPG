@@ -40,9 +40,14 @@ const rooms = {
     },
     destination: {
         header: "Destination",
-        text: "",
-        buttons: [],
-        function: () => {setWindowContext("inDestination");healWounds();}
+        text: "You have reached your destination.",
+        function: () => {setWindowContext("inDestination");healWounds();},
+        buttons: [
+            {
+                text: "Proceed",
+                goto: () => ["destination0", "destination1", "destination2", "destination3", "destination4", "destination4"][rolld6()]
+            }
+        ]
     },
     inDestination: {
         header: "Somewhere in the destination",
@@ -87,6 +92,125 @@ const rooms = {
 			    text: "Continue"
 		    }
         ]
+    },
+    destination0: {
+        header: "Large City",
+        text: () => `You have arrived in a large city led by ${randomNobleClan()}.`,
+        buttons: [
+            {
+                text: "Next",
+                goto: () => ronin.reputation >= 4 ? "destination0a" : "destination0b"
+            }
+        ]
+    },
+    destination0a: {
+        header: "At the Gates",
+        text: "Two soldiers recognized you from the stories they have heard of a wandering ronin. The soldiers approached you.",
+        persons: [
+            {
+                name: "Soldier",
+                weapon: "Katana",
+                fight: ()=> 1,
+                block: 0,
+                class: "enemy",
+                number: 2
+            }
+        ],
+        function: () => setWindowContext("destination0b")
+    },
+    destination0b: {
+        header: "Roaming around",
+        text: `As you moved around the place, people started talking about you. This increased your reputation by 1. Here you also had an encounter.`,
+        function: () => {updateStat("reputation", +1), setWindowContext("inDestination")},
+        buttons: [
+            {
+                text: "What is it?",
+                goto: "randomUrbanEncounter"
+            }
+        ]
+    },
+    destination1: {
+        header: "A town",
+        text: `You have arrived in a town.`,
+        buttons: [
+            {
+                text: "Next",
+                goto: () => ronin.reputation >= 5 ? "destination0a" : "destination0b"
+            }
+        ]
+    },
+    destination2: {
+        header: "A small town",
+        text: "You have arrived in a small town.",
+        buttons: [
+            {
+                text: "Next",
+                goto: () => ronin.reputation >= 6 ? "destination2a" : "destination2b"
+            }
+        ]
+    },
+    destination2a: {
+        header: "At the gates",
+        text: "A soldier recognized you from the stories they have heard of a wandering ronin. The soldier approached you.",
+        persons: [
+            {
+                name: "Soldier",
+                weapon: "Katana",
+                fight: ()=> 1,
+                block: 0,
+                class: "enemy"
+            }
+        ],
+        function: () => setWindowContext("destination2b")
+    },
+    destination2b: {
+        header: "Roaming around",
+        text: `As you moved around the place, you had an encounter.`,
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "What is it?",
+                goto: "randomUrbanEncounter"
+            }
+        ]
+    },
+    destination3: {
+        header: "A port city",
+        text: "You have reached a port city.",
+        buttons: [
+            {
+                text: "Roam around",
+                goto: "destination2b"
+            },
+            {
+                text: "Take shelter",
+                goto: "destination3a"
+            }
+        ]
+    },
+    destination3a: {
+        header: "Taking a shelter",
+        function: () => updateStat("determination", +1),
+        text: "Sometimes, the best way for us to move forward is to stop and gather ourself. You gained 1 determination."
+    },
+    destination4: {
+        header: "A village",
+        text: "You have reached a village.",
+        buttons: [
+            {
+                text: "Help around",
+                goto: "destination4a"
+            },
+            {
+                text: "Take shelter",
+                goto: "destination3a"
+            }
+        ]
+    },
+    destination4a: {
+        header: "Lending a hand",
+        function: () => updateStat("compassion", +1),
+        text: "Who knew helping lift others' burdens lightens the heart? You gained 1 compassion."
     },
     re66: {
         header: "Buddhist Temple",

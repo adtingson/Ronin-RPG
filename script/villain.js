@@ -22,7 +22,7 @@ const finalVillainTraits = [
         finalVillain.trait = `Several tragedies and conflicts that you witnessed on your journey were caused by ${finalVillain.gender == "Male" ? "him" : "her"}. ${finalVillain.gender == "Male" ? "He" : "She"} was behind the curtains pulling the strings. And now, you are an obstacle to ${finalVillain.gender == "Male" ? "his" : "her"} plans.`;
     },
     () => {
-        finalVillain.trait = `${finalVillain.gender == "Male" ? "He" : "She"} is a powerful and tyrannical Daimio of ${generateClanName()}, who dominates a neighboring region and wants to provoke a war. For some reason, you are in ${finalVillain.gender == "Male" ? "his" : "her"} way and need to be eliminated.`;
+        finalVillain.trait = `${finalVillain.gender == "Male" ? "He" : "She"} is a powerful and tyrannical Daimio of ${randomNobleClan()}, who dominates a neighboring region and wants to provoke a war. For some reason, you are in ${finalVillain.gender == "Male" ? "his" : "her"} way and need to be eliminated.`;
     },
     () => {
         finalVillain.trait = `You meet the Final Villain and discover that they are, in fact, ${firstVillain.name}, the first Villain who had appeared. However, now it has changed, changed its shape or revealed itself, having a new trick.`;
@@ -110,9 +110,12 @@ const villainTraits = [
     (villain) => villain.trait = `This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.`,
     (villain) => villain.trait = `This villain is a Minion of ${finalVillain.name}. He talks about his master and his motivations.`,
     (villain) => villain.trait = `This villain is a mercenary hired by the final villain, ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
-    (villain) => villain.trait = `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`,
+    (villain) => {
+        villain.trait = `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`;
+        villain.compassionBonus = 2;
+    },
     (villain) => villain.trait = `This villain is your ${villain.gender == "Male" ? "brother" : "sister"}. You didn’t expect this. But now you find out that ${villain.gender == "Male" ? "he" : "she"} was there, along with you, when you got your scar. However, ${villain.gender == "Male" ? "he" : "she"} blames you for everything and now ${villain.gender == "Male" ? "he" : "she"} wants your death.`,
-    (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${generateClanName()}.`
+    (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${randomNobleClan()}.`
 ];
 
 const villainNames = [];
