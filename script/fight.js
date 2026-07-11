@@ -1,4 +1,5 @@
 let roninSide;
+const livingInnocents = () => allies.filter(ally => ally.occupation == "Innocent" && ally.status !== "dead");
 
 function fight() {
     const target = getTarget();
@@ -17,6 +18,19 @@ function fight() {
             roninSide.fight = roninSide.technique.fight;
             roninSide.block = roninSide.technique.block;
         }
+    }
+
+    if (roninSide == ronin && encounterPersons.some(person => villainsList.includes(person)) && livingInnocents().length && ronin.firstStrike == "available") {
+        let villain = encounterPersons.find(person => villainsList.includes(person));
+        livingInnocents().forEach(innocent => {
+            let fateRoll = rolld6();
+
+            if (fateRoll <= 1) {
+                innocent.status = "dead";
+                updateStat("determination", -2);
+                interactText.innerHTML += `<i>The villain ${villain.name} announces that ${villain.gender == "Male" ? "he" : "she"} has killed the innocent ${innocent.name}. ${ronin.name} loses 2 determination.</i><br>`;
+            }
+        });
     }
 
     roninBlock = roninSide.firstStrike == "available" ? roninSide.block:roninBlock;
@@ -39,8 +53,18 @@ function fight() {
     }
     else if (fightWinner == "draw") {
         if (roninSide.techniqueID == "Jitte") {
-            target.fight = 0;
-            interactText.innerHTML += `However, you had broken their weapon.`;
+            if (target.brokenWeapons == undefined || !target.brokenWeapons.some(weapon => weapon.includes(target.weapon))) {
+                target.brokenWeapons ??= [];
+                target.brokenWeapons.push(target.weapon);
+                interactText.innerHTML += `However, you had broken their weapon.`;
+            }
+        }
+        if (target.techniqueID == "Jitte") {
+            if (roninSide.brokenWeapons == undefined || (roninSide.specialWeapons && (roninSide.specialWeapons.filter(weapon => weapon.includes(roninSide.weapon)).length >= roninSide.brokenWeapons.filter(weapon => weapon.includes(roninSide.weapon)).length)) || !roninSide.brokenWeapons.some(weapon => weapon.includes(roninSide.weapon))) {
+                roninSide.brokenWeapons ??= [];
+                roninSide.brokenWeapons.push(roninSide.weapon);
+                interactText.innerHTML += `And also, they had broken your weapon.`;
+            }
         }
     }
     else if (fightWinner == "enemy") {
@@ -53,14 +77,55 @@ function fight() {
 function checkFightWinner() {
     const target = getTarget();
 
+    let enemyFightStat = target.fight(target, roninSide);
+    let roninSideFightStat = roninSide.fight(roninSide, target);
+
     let villainFightBonus = 0;
+    let roninFightBonus = 0;
 
     if ((target.power !== undefined && target.power.fightBonus !== undefined && roninSide.scar !== undefined)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
-    const roninFight = rolld6() + roninSide.fight(roninSide, target) - (roninSide.status == "wounded" ? 1:0);
-    const enemyFight = rolld6() + target.fight(target, roninSide) + villainFightBonus;
+    if (roninSide == ronin) {
+        if (livingInnocents().length) {
+            livingInnocents().forEach(innocent => {
+                roninFightBonus += 1;
+            });
+        }
+
+        if (ronin.specialWeapons !== undefined && ronin.specialWeapons.length) {
+            ronin.specialWeapons.forEach(weapon => {
+                if (weapon.includes(ronin.weapon)) {
+                    roninFightBonus += 1;
+                }
+            });
+        }
+
+        if (ronin.brokenWeapons !== undefined && ronin.brokenWeapons.length) {
+            if ((!ronin.specialWeapons || !ronin.specialWeapons.length) || (ronin.brokenWeapons.filter(weapon => weapon.includes(ronin.weapon)).length > ronin.specialWeapons.filter(weapon => weapon.includes(ronin.weapon)).length)) {
+                roninSideFightStat = 0;
+            }
+            else {
+                ronin.brokenWeapons.forEach(weapon => {
+                    if (weapon.includes(ronin.weapon)) {
+                        roninFightBonus -= 1;
+                    }
+                });
+            }
+        }
+    }
+
+    if (target.brokenWeapons.length) {
+        enemyFightStat = 0;
+    }
+
+    if (roninSide.brokenWeapons.length && roninSide !== ronin) {
+        roninSideFightStat = 0;
+    }
+
+    const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninBonus;
+    const enemyFight = rolld6() + enemyFightStat + villainFightBonus;
 
     console.log(roninSide.scar);
 
@@ -153,6 +218,7 @@ function spareEnemy() {
     interactText.innerHTML += `<br><br>${target.name} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.`;
 
     target.status = "lost";
+    target.brokenWeapons = undefined;
     encounterPersons.splice(0,1);
     updateStat("reputation",+1);
     

@@ -78,10 +78,6 @@ function applyAllyBuff(target) {
     else if (target.occupation == "Blacksmith") {
         let specialWeaponMade = ronin.technique[Math.floor(Math.random() * ronin.technique.length)].weapon;
 
-        if (specialWeaponMade == "Katana and Wakizashi") {
-            specialWeaponMade = "Katana";
-        }
-
         specialWeaponsDelivery.push(specialWeaponMade);
 
         interactText.innerHTML += `You will receive ${target.name}'s Special ${specialWeaponMade} once you reach your next city.`;
@@ -90,6 +86,8 @@ function applyAllyBuff(target) {
 
 function specialWeaponsDeliveryCheck() {
     if (specialWeaponsDelivery.length) {
+        ronin.specialWeapons ??= [];
+
         ronin.specialWeapons.push(...specialWeaponsDelivery);
 
         interactText.innerHTML = `As ${ronin.name} arrives at the city, ${ronin.gender == "Male" ? "he" : "she"} gets approached by a courier. The courier delivers the special weapons from ${ronin.name}'s blacksmith allies. Each type of weapon is crafted better than the last: ${specialWeaponsDelivery.join(", ")}`;
