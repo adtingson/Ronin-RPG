@@ -33,6 +33,8 @@ let fighterAlliesQueue = [];
 
 const villainPrisoners = [];
 
+let specialWeaponsDelivery = [];
+
 function getTarget() {
     return encounterPersons[0];
 }

@@ -94,6 +94,9 @@ const rooms = {
 		    }
         ]
     },
+    allyHealer: {
+        header: "Saved by an Ally"
+    },
     destination0: {
         header: "Large City",
         text: () => `You have arrived in a large city led by ${randomNobleClan()}.`,
@@ -102,7 +105,8 @@ const rooms = {
                 text: "Next",
                 goto: () => ronin.reputation >= 4 ? "destination0a" : "destination0b"
             }
-        ]
+        ],
+        function: () => specialWeaponsDeliveryCheck()
     },
     destination0a: {
         header: "At the Gates",
@@ -187,7 +191,8 @@ const rooms = {
                 text: "Take shelter",
                 goto: "destination3a"
             }
-        ]
+        ],
+        function: () => specialWeaponsDeliveryCheck()
     },
     destination3a: {
         header: "Taking a shelter",

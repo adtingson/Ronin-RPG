@@ -265,6 +265,12 @@ function roninLossCleanUp() {
         renderEncounter("lostSomewhereLoss");
     }
     else {
+        if (allies.some(ally => ally.occupation == "Healer" && ally.status !== "dead")) {
+            renderEncounter("allyHealer");
+            roninSide.status = "wounded";
+            return;
+        }
+
         roninSide.status = "dead";
         renderEncounter("characterOver");
     }
@@ -278,6 +284,11 @@ function surrenderFight() {
         renderEncounter("lostSomewhereSurrender");
     }
     else {
+        if (allies.some(ally => ally.occupation == "Healer" && ally.status !== "dead")) {
+            renderEncounter("allyHealer");
+            roninSide.status = "wounded";
+            return;
+        }
         ronin.status = "dead";
         renderEncounter("characterOver");
     }

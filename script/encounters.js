@@ -382,11 +382,8 @@ function enemyPreview() {
     return;
 }
 
-generatePossibleAlly({occupation: "Fighter"});
-
-allies.push(possibleAllies[0]);
-possibleAllies.splice(0,1);
-villainsList[0].status = "dead";
-villainsList[1].status = "dead";
-
-renderEncounter("ue00");
+renderEncounter("destination");
+generatePossibleAlly({occupation: "Blacksmith"});
+updateStat("compassion",+6);
+encounterPersons.push(possibleAllies[0]);
+renderUI();

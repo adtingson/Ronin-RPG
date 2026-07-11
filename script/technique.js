@@ -1,4 +1,4 @@
-const swords = ["Odachi", "Katana", "Katana e Wakizashi"];
+const swords = ["Odachi", "Katana", "Katana and Wakizashi"];
 
 const uncommonTechniques = [
     {
@@ -72,8 +72,8 @@ const techniques = [
     },
     {
         id: "Niten Ichi-ryu",
-        desc: "Niten Ichi-ryu [Katana e Wakizashi] (Fight +1; Block 3)",
-        weapon: "Katana e Wakizashi",
+        desc: "Niten Ichi-ryu [Katana and Wakizashi] (Fight +1; Block 3)",
+        weapon: "Katana and Wakizashi",
         fight: (user,enemy) => 1,
         block: 3
     },
