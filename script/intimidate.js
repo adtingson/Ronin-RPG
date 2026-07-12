@@ -6,6 +6,11 @@ function intimidate() {
         return;
     }
 
+    if (target.type == "tricky") {
+        interactText.innerHTML = "This creature can't be intimidated.";
+        return;
+    }
+
     if (!enemies.includes(target)) {
         interactText.innerHTML = `You cannot intimidate ${target.name}. ${target.name} is ${(allies.includes(target)?`an ally.`:possibleAllies.includes(target)?`a possible ally.`:`a villain!`)}`;
         return;

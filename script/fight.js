@@ -60,7 +60,7 @@ function fight() {
             }
         }
         if (target.techniqueID == "Jitte") {
-            if (roninSide.brokenWeapons == undefined || (roninSide.specialWeapons && (roninSide.specialWeapons.filter(weapon => weapon.includes(roninSide.weapon)).length >= roninSide.brokenWeapons.filter(weapon => weapon.includes(roninSide.weapon)).length)) || !roninSide.brokenWeapons.some(weapon => weapon.includes(roninSide.weapon))) {
+            if (!roninSide.brokenWeapons?.length || roninSide.weapons?.filter(weapon => weapon.includes(roninSide.weapon)).length > roninSide.brokenWeapons?.filter(weapon => weapon.includes(roninSide.weapon)).length) {
                 roninSide.brokenWeapons ??= [];
                 roninSide.brokenWeapons.push(roninSide.weapon);
                 interactText.innerHTML += `And also, they had broken your weapon.`;
@@ -83,52 +83,40 @@ function checkFightWinner() {
     let villainFightBonus = 0;
     let roninFightBonus = 0;
 
-    if ((target.power !== undefined && target.power.fightBonus !== undefined && roninSide.scar !== undefined)) {
+    if ((target.power?.fightBonus !== undefined && roninSide.scar !== undefined)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
     if (roninSide == ronin) {
-        if (livingInnocents().length) {
-            livingInnocents().forEach(innocent => {
-                roninFightBonus += 1;
-            });
+        let weaponsBonus = 0;
+
+        weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon)).length ?? 0);
+        
+        if (weaponsBonus < 0) {
+            weaponsBonus = 0;
+            roninSideFightStat = 0;
         }
 
-        if (ronin.specialWeapons !== undefined && ronin.specialWeapons.length) {
-            ronin.specialWeapons.forEach(weapon => {
-                if (weapon.includes(ronin.weapon)) {
-                    roninFightBonus += 1;
-                }
-            });
-        }
+        roninFightBonus = weaponsBonus + livingInnocents().length;
 
-        if (ronin.brokenWeapons !== undefined && ronin.brokenWeapons.length) {
-            if ((!ronin.specialWeapons || !ronin.specialWeapons.length) || (ronin.brokenWeapons.filter(weapon => weapon.includes(ronin.weapon)).length > ronin.specialWeapons.filter(weapon => weapon.includes(ronin.weapon)).length)) {
-                roninSideFightStat = 0;
-            }
-            else {
-                ronin.brokenWeapons.forEach(weapon => {
-                    if (weapon.includes(ronin.weapon)) {
-                        roninFightBonus -= 1;
-                    }
-                });
-            }
+        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon))) {
+            roninSideFightStat = 0;
         }
     }
 
-    if (target.brokenWeapons.length) {
+    if (target.brokenWeapons?.length) {
         if (enemyFightStat >= 0) {
             enemyFightStat = 0;
         }
     }
 
-    if (roninSide.brokenWeapons.length && roninSide !== ronin) {
+    if (roninSide.brokenWeapons?.length && roninSide !== ronin) {
         if (roninSideFightStat >= 0) {
             roninSideFightStat = 0;
         }
     }
 
-    const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninBonus;
+    const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninFightBonus;
     const enemyFight = rolld6() + enemyFightStat + villainFightBonus;
 
     if (roninFight > enemyFight) {
@@ -326,6 +314,13 @@ function blockHit() {
 
 function roninLossCleanUp() {
     const lossOutcome = rolld6();
+    const target = getTarget();
+
+    if (target.type == "finisher") {
+        roninSide.status = "dead";
+        renderEncounter("characterOver");
+        return;
+    }
 
     if (lossOutcome >= 1) {
         roninSide.status = "wounded";
@@ -346,6 +341,13 @@ function roninLossCleanUp() {
 
 function surrenderFight() {
     const lossOutcome = rolld6();
+    const target = getTarget();
+
+    if (target.type == "finisher") {
+        roninSide.status = "dead";
+        renderEncounter("characterOver");
+        return;
+    }
 
     if (lossOutcome >= 1) {
         ronin.status = "wounded";
@@ -381,10 +383,27 @@ function healWounds() {
 
 function renderCombatHeader(target) {
     let villainFightBonus = 0;
+    let weaponModifier = ``;
 
     if ((target.power !== undefined && target.power.fightBonus !== undefined && roninSide.scar !== undefined)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
-    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+    if (roninSide == ronin) {
+        let weaponsMod = ronin.weapons.filter(weapon => weapon.includes(ronin.weapon)).length - 1;
+        let brokenWeaponsMod = ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon)).length ?? 0;
+
+        if (weaponsMod > brokenWeaponsMod) {
+            weaponModifier = `+${weaponsMod - brokenWeaponsMod} `;
+        }
+        else if (weaponsMod < brokenWeaponsMod) {
+            weaponModifier = `Broken `;
+        }
+
+        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon))) {
+            weaponModifier = `No `;
+        }
+    }
+
+    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
 }

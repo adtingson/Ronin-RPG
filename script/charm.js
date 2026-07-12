@@ -72,26 +72,28 @@ function applyAllyBuff(target) {
             
             ronin.technique.push({...taughtTechnique});
 
+            ronin.weapons.push(taughtTechnique.weapon);
+
             interactText.innerHTML += `${ronin.name} spent some time under the guidance of ${target.name}. ${ronin.name} learns ${target.technique.desc}!`;
         }
     }
     else if (target.occupation == "Blacksmith") {
-        let specialWeaponMade = ronin.technique[Math.floor(Math.random() * ronin.technique.length)].weapon;
+        let weaponMade = ronin.technique[Math.floor(Math.random() * ronin.technique.length)].weapon;
 
-        specialWeaponsDelivery.push(specialWeaponMade);
+        weaponsDelivery.push(weaponMade);
 
-        interactText.innerHTML += `You will receive ${target.name}'s Special ${specialWeaponMade} once you reach your next city.`;
+        interactText.innerHTML += `You will receive ${target.name}'s Special ${weaponMade} once you reach your next city.`;
     }
 }
 
-function specialWeaponsDeliveryCheck() {
-    if (specialWeaponsDelivery.length) {
-        ronin.specialWeapons ??= [];
+function weaponsDeliveryCheck() {
+    if (weaponsDelivery.length) {
+        ronin.weapons ??= [];
 
-        ronin.specialWeapons.push(...specialWeaponsDelivery);
+        ronin.weapons.push(...weaponsDelivery);
 
-        interactText.innerHTML = `As ${ronin.name} arrives at the city, ${ronin.gender == "Male" ? "he" : "she"} gets approached by a courier. The courier delivers the special weapons from ${ronin.name}'s blacksmith allies. Each type of weapon is crafted better than the last: ${specialWeaponsDelivery.join(", ")}`;
+        interactText.innerHTML = `As ${ronin.name} arrives at the city, ${ronin.gender == "Male" ? "he" : "she"} gets approached by a courier. The courier delivers the special weapons from ${ronin.name}'s blacksmith allies. Each type of weapon is crafted better than the last: ${weaponsDelivery.join(", ")}`;
 
-        specialWeaponsDelivery = [];
+        weaponsDelivery = [];
     }
 }

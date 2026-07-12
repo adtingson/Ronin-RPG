@@ -4,6 +4,7 @@ generateRonin();
 function generateRonin() {
     const gender = genderFunc();
     const name = nameFunc(gender);
+    const firstTechnique = randomTechnique();
 
     ronin.name = name,
     ronin.gender = gender,
@@ -12,11 +13,12 @@ function generateRonin() {
     ronin.nightmare = nightmare(),
     ronin.scar = generateScar(),
     ronin.meaning = generateScarMeaning(),
-    ronin.technique = [randomTechnique()],
+    ronin.technique = [firstTechnique],
     ronin.firstStrike = "available",
     ronin.reputation = 0,
     ronin.compassion = 2,
-    ronin.determination = 2    
+    ronin.determination = 2,
+    ronin.weapons = [firstTechnique.weapon]
 };
 
 let encounterPersons = [];
@@ -33,7 +35,7 @@ let fighterAlliesQueue = [];
 
 const villainPrisoners = [];
 
-let specialWeaponsDelivery = [];
+let weaponsDelivery = [];
 
 function getTarget() {
     return encounterPersons[0];
@@ -85,4 +87,10 @@ function renderDisplay() {
     renderLivingEnemies();
     renderEndRouteEnemies();
     renderVillains();
+}
+
+function addToPersonalEffects(item) {
+    ronin.items ??= [];
+
+    ronin.items.push(item);
 }

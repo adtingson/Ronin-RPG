@@ -25,12 +25,12 @@ function renderEncounter(encounter) {
                     let enemyNumber = 1;
                     let enemySpawned = 0;
 
-                    if (person.number !== undefined || person.number !== 0) {
+                    if (person.number !== undefined) {
+                        enemyNumber = person.number;
+
                         if (person.number == "d6") {
                             enemyNumber = rolld6() + 1;
                         }
-
-                        enemyNumber = person.number;
                     }
 
                     do {
@@ -386,10 +386,10 @@ function personPreview() {
     enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
 
     if (enemies.includes(target) || villainsList.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+        combatHeader.innerHTML = `You are now facing: <b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
     }
     else if (possibleAllies.includes(target) || allies.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})`;
+        combatHeader.innerHTML = `You are now facing: <b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})`;
     }
 }
 
@@ -435,6 +435,7 @@ function searchResult(quarry) {
 
     encounterHeader.innerHTML = "Search Result";
     encounterText.innerHTML = `${searchResults.text}`;
+    encounterButtons.innerHTML = "";
 
     if (searchResults.function !== undefined) {
         searchResults.function();
@@ -449,17 +450,22 @@ function searchResult(quarry) {
             case "success":
                 let newCorrectPossibleAlly = generatePossibleAlly({occupation: quarry});
                 encounterPersons.push(newCorrectPossibleAlly);
-                encounterText.innerHTML += `<br><br>You found ${newCorrectPossibleAlly.name}. ${newCorrectPossibleAlly.gender == "Male" ? "He" : "She"} is a ${newCorrectPossibleAlly.occupation}.`;
+                encounterText.innerHTML += `<br><br>You found ${newCorrectPossibleAlly.name}. ${newCorrectPossibleAlly.gender == "Male" ? "He" : "She"} is ${newCorrectPossibleAlly.occupation == "Innocent" ? "an Innocent" : `a ${newCorrectPossibleAlly.occupation}`}.`;
                 break;
             case "mixed":
                 let newPossibleAlly = generatePossibleAlly();
                 encounterPersons.push(newPossibleAlly);
-                encounterText.innerHTML += `<br><br>You found ${newPossibleAlly.name}. ${newPossibleAlly.gender == "Male" ? "He" : "She"} is a ${newPossibleAlly.occupation}.`;
+                encounterText.innerHTML += `<br><br>You found ${newPossibleAlly.name}. ${newPossibleAlly.gender == "Male" ? "He" : "She"} is ${newPossibleAlly.occupation == "Innocent" ? "an Innocent" : `a ${newPossibleAlly.occupation}`}.`;
                 break;
             case "fail":
                 break;
         }
-    }    
+    }
+
+
+    if (encounterButtons.innerHTML == "" && interactButtons.innerHTML == "") {
+        renderUI();
+    }
 }
 
-renderEncounter("destination");
+renderEncounter("enRoute");

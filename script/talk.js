@@ -19,6 +19,11 @@ function talk() {
         if (result == "Failed") {
             target.background = "talkFailed";
             talkMessage = "Nothing about their past."
+
+            if (target.type == "tricky") {
+                renderEncounter("re62a0");
+            }
+
         }
         else {
             target.background = "pastInfo";
@@ -35,6 +40,10 @@ function talk() {
         if (result == "Failed") {
             target.background = "darkSecretFailed";
             talkMessage = "Nothing about their dark secret.";
+
+            if (target.type == "tricky") {
+                renderEncounter("re62a0");
+            }
         }
         else {
             target.background = "darkSecret";

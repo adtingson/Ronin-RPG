@@ -1,4 +1,4 @@
-const roadEncounters = ["re66"];
+const roadEncounters = ["re66", "re65", "re64", "re63", "re62", "re61", "re56", "re55", "re54", "re53", "re52", "re51", "re46", "re45", "re44", "re43", "re42", "re41", "re36", "re35", "re34", "re33", "re32", "re31", "re26", "re25", "re24", "re23", "re22", "re21", "re16", "re15", "re14", "re13", "re12", "re11"];
 const urbanEncounters = ["ue00", "ue01", "ue02", "ue03", "ue04", "ue05", "ue06", "ue07", "ue08", "ue09", "ue10", "ue11", "ue12", "ue13", "ue14", "ue15", "ue16", "ue17"];
 
 const rooms = {
@@ -10,7 +10,62 @@ const rooms = {
                 text: "Nothing",
                 function: () => {renderEncounter(windowContext)}
             },
+            {
+                text: "Possible Ally",
+                goto: "searchPossibleAlly"
+            },
+            {
+                text: "Ally"
+            },
+            {
+                text: "Enemy"
+            },
+            {
+                text: "Villain"
+            },
+            {
+                text: "Object"
+            }
             
+        ]
+    },
+    searchPossibleAlly: {
+        header: "Searching for a Possible Ally",
+        text: "Are you searching for a new or existing Possible Ally?",
+        buttons: [
+            {
+                text: "New",
+                goto: "searchNewPossibleAlly"
+            },
+            {
+                text: "Existing"
+            }
+        ]
+    },
+    searchNewPossibleAlly: {
+        header: "Searching for a Possible Ally",
+        text: "What is their occupation?",
+        buttons: [
+            {
+                text: "Blacksmith",
+                function: () => searchResult("Blacksmith")
+            },
+            {
+                text: "Fighter",
+                function: () => searchResult("Fighter")
+            },
+            {
+                text: "Healer",
+                function: () => searchResult("Healer")
+            },
+            {
+                text: "Innocent",
+                function: () => searchResult("Innocent")
+            },
+            {
+                text: "Mentor",
+                function: () => searchResult("Mentor")
+            }
         ]
     },
     villain: {
@@ -59,7 +114,8 @@ const rooms = {
                 goto: "enRoute"
             },
             {
-                text: "Find Something"
+                text: "Find Something",
+                goto: "searchRoom"
             }
         ],
         function: () => {setWindowContext("inDestination")}
@@ -106,7 +162,7 @@ const rooms = {
                 goto: () => ronin.reputation >= 4 ? "destination0a" : "destination0b"
             }
         ],
-        function: () => specialWeaponsDeliveryCheck()
+        function: () => weaponsDeliveryCheck()
     },
     destination0a: {
         header: "At the Gates",
@@ -124,7 +180,7 @@ const rooms = {
         function: () => setWindowContext("destination0b")
     },
     destination0b: {
-        header: "Roaming around",
+        header: "Roaming Around",
         text: `As you moved around the place, people started talking about you. This increased your reputation by 1. Here you also had an encounter.`,
         function: () => {updateStat("reputation", +1), setWindowContext("inDestination")},
         buttons: [
@@ -135,7 +191,7 @@ const rooms = {
         ]
     },
     destination1: {
-        header: "A town",
+        header: "Town",
         text: `You have arrived in a town.`,
         buttons: [
             {
@@ -145,7 +201,7 @@ const rooms = {
         ]
     },
     destination2: {
-        header: "A small town",
+        header: "Small Town",
         text: "You have arrived in a small town.",
         buttons: [
             {
@@ -180,7 +236,7 @@ const rooms = {
         ]
     },
     destination3: {
-        header: "A port city",
+        header: "Port City",
         text: "You have reached a port city.",
         buttons: [
             {
@@ -192,7 +248,7 @@ const rooms = {
                 goto: "destination3a"
             }
         ],
-        function: () => specialWeaponsDeliveryCheck()
+        function: () => weaponsDeliveryCheck()
     },
     destination3a: {
         header: "Taking a shelter",
@@ -200,7 +256,7 @@ const rooms = {
         text: "Sometimes, the best way for us to move forward is to stop and gather ourself. You gained 1 determination."
     },
     destination4: {
-        header: "A village",
+        header: "Village",
         text: "You have reached a village.",
         buttons: [
             {
@@ -529,6 +585,10 @@ const rooms = {
             },
             {
                 text: "Let it go",
+                function: () => {
+                    ronin.items ??= [];
+                    ronin.items = [];
+                },
                 goto: "inDestination"
             }
         ]
@@ -652,7 +712,7 @@ const rooms = {
         persons: [
             {
                 name: "The Spirit of your Victim",
-                weapon: "None",
+                weapon: "Katana",
                 fight: () => 1,
                 block: 0,
                 class: "enemy",
@@ -662,75 +722,232 @@ const rooms = {
         function: () => {addEnemyToEndRoute();setWindowContext("destination");}
     },
     re65: {
-        header: "A Wild Animal",
+        header: "Road Encounter",
         text: "There is a large wild animal on the loose. Some farmers say that he has already killed several animals and attacked some inhabitants of the region.",
+        function: () => {setWindowContext("endRoute");},
         buttons: [
             {
                 text: "Ignore",
-                goto: "ignore65"
+                goto: "endRoute"
             },
             {
                 text: "Investigate",
-                goto: () => rolld6() > 1 ?  "investigate652":"investigate651"
+                goto: () => rolld6() > 0 ? "re65a" : "re65b"
             }
         ]
     },
-    ignore65: {
-        header: "Not my problem",
-        text: "You have decided that this is not a problem that you have to face. You continued your journey.",
-        buttons: [
-            {
-                text: "Continue",
-                goto: "endRoute"
-            }
-        ]
-    },
-    investigate652: {
-        header: "A Wolf",
+    re65a: {
+        header: "Road Encounter",
         text: "You found that it was a Wolf (Fight +0; Block 1) and, if you defeat it, you will gain 1 Reputation.",
-        buttons: [
+        function: () => {setWindowContext("re65a0");},
+        persons: [
             {
-                text: "Get rid of this menace",
-                function: () => {addEnemyToQueue({name: "The Wolf", fight: () => 0, block: 1});renderTechniqueSelection();}
-            },
-            {
-                text: "This is not my problem",
-                goto: "ignore65"
-            }
-        ],
-        function: () => {setWindowContext("investigate652W")}
-    },
-    investigate651: {
-        header: "A Yokai",
-        text: "You have found a Yokai named Nue (Fight +2; Block 2), a dangerous chimeric creature.",
-        buttons: [
-            {
-                text: "I have seen enough"
-            },
-            {
-                text: "Get rid of this menace"
+                class: "enemy",
+                background: "hater",
+                name: "Wolf",
+                fight: () => 0,
+                block: 1,
+                weapon: "Bite and Claws"
             }
         ]
     },
-    investigate652W: {
-        header: "The Wolf is Gone",
-        text: "You successfully got rid of the Wolf that was causing trouble to the people of this region. You gained +1 Reputation",
+    re65a0: {
+        header: "Road Encounter",
+        text: "You defeated the wolf that was bothering the people of this region. You gain 1 Reputation.",
+        function: () => {setWindowContext("endRoute"); updateStat("reputation", +1)},
+    },
+    re65b: {
+        header: "Road Encounter",
+        text: "You have found a Yokai named Nue (Fight +2; Block 2), a dangerous chimeric creature.",
+        persons: [
+            {
+                class: "enemy",
+                type: "named",
+                name: "Nue",
+                fight: () => 2,
+                block: 2,
+                weapon: "None"
+
+            }
+        ]
+    },
+    re64: {
+        header: "Road Encounter",
+        text: "You spent the night in a very simple inn by the road. At night, you heard cries for help. The screams came from the direction of a tall grassy field.",
+        function: () => {setWindowContext("endRoute");},
         buttons: [
             {
-                text: "It is my honor",
+                text: "Ignore",
+                goto: "re64a"
+            },
+            {
+                text: "Check it",
+                goto: () => ["re64b", "re64c", "re64c", "re64c", "re64c", "re64d"][rolld6()]
+            }
+        ]
+    },
+    re64a: {
+        header: "Road Encounter",
+        text: "You ignored the screams. You've lost 1 Compassion.",
+        function: () => updateStat("compassion", -1)
+    },
+    re64b: {
+        header: "Road Encounter",
+        text: "You discover that a Possible Ally is being attacked by a Wolf (Fight +1; Block 1).",
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Wolf",
+                fight: () => 1,
+                block: 1,
+                weapon: "Bite and Claws"
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re64c: {
+        header: "Road Encounter",
+        text: "You discover that they were just children playing away from their homes."
+    },
+    re64d: {
+        header: "Road Encounter",
+        text: "You find a beautiful naked person lying on the floor. When you approach, the person turns into a horrendous spider 3 meters high. It is a Jorogumo (Fight +2; Block 2), a terrible Yokai that leaves no victims. If you lose the fight against him, you are dead.",
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                type: "finisher",
+                gender: "Male",
+                name: "Jorogumo",
+                fight: () => 2,
+                block: 2,
+                weapon: "None"
+            }
+        ]
+    },
+    re63: {
+        header: "Road Encounter",
+        function: () => {setWindowContext("endRoute");},
+        text: "You found a broken umbrella by the side of the road.",
+        buttons: [
+            {
+                text: "Take it to repair",
+                function: () => addToPersonalEffects("Umbrella")
+            },
+            {
+                text: "Leave it on the floor",
+                goto: () => rolld6() == 0 ? "re63a" : "endRoute"
+            }
+        ]
+    },
+    re63a: {
+        header: "Road Encounter",
+        text: "The umbrella becomes a Kasa-obake (Fight +4; Block 0) and attacks you the next night.",
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Kasa-obake",
+                weapon: "None",
+                fight: () => 4,
+                block: 0
+            }
+        ]
+    },
+    re62: {
+        header: "Road Encounter",
+        text: "A family was driving their wagon on the road and offered you a ride.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Refuse",
+                goto: "endRoute"
+            },
+            {
+                text: "Accept",
+                goto: () => rolld6() == 0 ? "re62a" : "re62b"
+            }
+        ]
+    },
+    re62a: {
+        header: "Road Encounter",
+        text: "You have found that a member of that family is a Kitsune (Fight +0; Block 2), a treacherous Yokai.",
+        persons: [
+            {
+                class: "enemy",
+                type: "tricky",
+                name: "Kitsune",
+                gender: "Female",
+                weapon: "None",
+                fight: () => 0,
+                block: 2
+            }
+        ]
+    },
+    re62a0: {
+        header: "Lost Somewhere",
+        text: "You have been tricked by the Kitsune. You've lost 1 Determination and wake up without your belongings by the side of the road.",
+        function: () => {
+            updateStat("determination", -1);
+            ronin.items ??= [];
+            ronin.weapons ??= [];
+            ronin.brokenWeapons ??= [];
+
+            ronin.items = [];
+            ronin.weapons = [];
+            ronin.brokenWeapons = [];
+        }
+    },
+    re62b: {
+        header: "Road Encounter",
+        text: "You made a good trip to your next destination and nothing happened (take 1 Determination).",
+        function: () => updateStat("determination", +1)
+    },
+    re61: {
+        header: "Road Encounter",
+        text: "You discover that 3 children have gone missing in the past few weeks. Some say that there is a Kappa living in a nearby river. There is not much beyond rumors.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Explore the river at night (when Kappa is supposed to appear)",
+                goto: () => ["re61a", "re61a", "re61a", "re61a", "re61b", "re61c"][rolld6()]
+            },
+            {
+                text: "Ignore",
                 goto: "endRoute"
             }
-        ],
-        function: () => updateStat("reputation",+1)
+        ]
     },
-    template: {
-        header: "",
-        text: "",
-        buttons: [
+    re61a: {
+        header: "Road Encounter",
+        text: "Nothing happens."
+    },
+    re61b: {
+        
+        text: "You got hurt badly walking on the rocks of the river and now you are Wounded (-1 of Fight until recover).",
+        function: () => ronin.status = "wounded"
+    },
+    re61c: {
+        header: "Road Encounter",
+        text: "You have found Kappa (Fight +1; Block 1). If you defeat him, you gain 1 Determination.",
+        function: () => {setWindowContext("re61c0");},
+        persons: [
             {
-                text: "",
-                goto: ""
+                type: "enemy",
+                background: "hater",
+                name: "Kappa",
+                fight: () => 1,
+                block: 1,
+                weapon: "None"
             }
         ]
+    },
+    re61c0: {
+        header: "Road Encounter",
+        text: "You have defeated the Kappa that has been bothering the people of this place. You gain 1 Determination.",
+        function: () => {setWindowContext("endRoute");updateStat("determination", +1)}
     }
 };
