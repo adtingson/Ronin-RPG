@@ -224,13 +224,392 @@ const rooms = {
         function: () => renderEncounter(urbanEncounters[Math.floor(Math.random() * urbanEncounters.length)])
     },
     ue00: {
-        header: "A Possible Ally",
+        header: "Urban Encounter",
         text: () => `A Possible Ally started contacting you on the streets. ${encounterPersons[0].gender == "Male" ? "His" : "Her"} name is ${encounterPersons[0].name}. ${encounterPersons[0].gender == "Male" ? "He" : "She"} is a ${encounterPersons[0].occupation}${["Fighter", "Mentor"].includes(encounterPersons[0].occupation) ? ` (${encounterPersons[0].technique.desc})` : ``}.`,
         persons: [
             {
                 class: "possibleAlly"
             }
         ]
+    },
+    ue01: {
+        header: "Urban Encounter",
+        text: () => `A Possible Ally bumped into you in the busy streets of the city. ${encounterPersons[0].gender == "Male" ? "He" : "She"} was ${Math.random() < 0.5 ? `running from someone` : `in a hurry to go somewhere`}.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => {personPreview(); encounterPersons.splice(0,1)},
+        buttons: [
+            {
+                text: "See you soon!",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue02: {
+        header: "Urban Encounter",
+        text: "In a bar, you start a conversation with a Possible Ally and, over time, you get to know each other.",
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue03: {
+        header: "Urban Encounter",
+        text: () => `You meet someone from your past on the streets. Now ${encounterPersons[0].gender == "Male" ? "he" : "she"} is a Possible Ally.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue04: {
+        header: "Urban Encounter",
+        text: `A Possible Ally is being attacked by an Enemy (Fight +1; Block 0) in an alley.`,
+        buttons: [
+            {
+                text: "Intervene",
+                goto: "ue04a"
+            },
+            {
+                text: "Ignore",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue04a: {
+        header: "Urban Encounter",
+        function: () => setWindowContext("inDestination"),
+        persons: [
+            {
+                name: "Enemy",
+                fight: () => 1,
+                block: 0,
+                class: "enemy",
+                weapon: "Katana"
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    ue05: {
+        header: "Urban Encounter",
+        text: `You discover that a well-known blacksmith lives in this location. If you decide to look for them, they will be a Possible Ally with the occupation already determined as Blacksmith.`,
+        buttons: [
+            {
+                text: "Search for the Blacksmith",
+                goto: "ue05a"
+            },
+            {
+                text: "Maybe next time",
+                goto: "inDestination"
+            }
+        ],
+        function: () => setWindowContext("inDestination"),
+    },
+    ue05a: {
+        header: "",
+        text: "",
+        function: () => searchResult("Blacksmith")
+    },
+    ue06: {
+        header: "Urban Encounter",
+        text: () => {
+            let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
+            if (livingEnemies.length) {
+                livingEnemies.splice(Math.floor(Math.random() * livingEnemies.length), 1);
+                return `You find an enemy you let live in the locality. But now he is a Possible Ally.`
+            }
+            else {
+                return `You found a Possible Ally at the inn where you stay.`
+            }
+        },
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue07: {
+        header: "Urban Encounter",
+        text: () => `You have visited ${Math.random() < 0.5 ? "a shop" : "an inn"} owned by a Possible Ally.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue08: {
+        header: "Urban Encounter",
+        text: () => `You saw a Possible Ally being expelled from ${Math.random() < 0.5 ? "a shop" : "an inn"}.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue09: {
+        header: "Urban Encounter",
+        text: `You stayed in an inn and shared a room with a Possible Ally.`,
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("inDestination")
+    },
+    ue10: {
+        header: "Urban Encounter",
+        text: "You saw a Possible Ally being attacked by an Thief (Fight -1; Block 0).",
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Help Possible Ally",
+                goto: "ue10a"
+            },
+            {
+                text: "Do Nothing",
+                goto: "ue10b"
+            }
+        ]
+    },
+    ue10a: {
+        header: "Urban Encounter",
+        text: "You fight the Thief for the Possible Ally's belonging. If you succeed, the Possible Ally will be grateful.",
+        persons: [
+            {
+                class: "enemy",
+                name: "Thief",
+                fight: () => -1,
+                block: 0,
+                weapon: "Dagger"
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    ue10b: {
+        header: "Urban Encounter",
+        text: "The Thief runs away with a Possible Ally’s belonging. The Possible Ally is no longer interested in helping you.",
+        buttons: [
+            {
+                text: "Uh oh...",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue11: {
+        header: "Urban Encounter",
+        text: "You discover that a well-known weapon master lives in this location. If you decide to look for them, they will be a Possible Ally with the occupation already determined as Mentor.",
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Search for this Master",
+                goto: "ue11a"
+            },
+            {
+                text: "Maybe later",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue11a: {
+        header: "",
+        text: "",
+        function: () => searchResult("Mentor")
+    },
+    ue12: {
+        header: "Urban Encounter",
+        text: "A storm is raging. Some houses can’t take it and many people are losing their things to the rain.",
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Ignore them and worry about yourself",
+                goto: "ue12a"
+            },
+            {
+                text: "Help these people",
+                goto: () => ["ue12b0", "ue12b1", "ue12b1", "ue12b1", "ue12b1", "ue12b2"][rolld6()]
+            }
+        ]
+    },
+    ue12a: {
+        header: "Urban Encounter",
+        text: "You survived the raging, but ignored the cries for help of the people around you. You lose 1 compassion.",
+        function: () => updateStat("compassion", -1)
+    },
+    ue12b0: {
+        header: "Urban Encounter",
+        text: "You couldn’t help a lot of people and you got wounded (-1 to Fight until recover).",
+        function: () => ronin.status = "wounded"
+    },
+    ue12b1: {
+        header: "Urban Encounter",
+        text: "You were able to help some people."
+    },
+    ue12b2: {
+        header: "Urban Encounter",
+        text: "You were able to help everyone and fix the roofs and walls, earning 1 Determination.",
+        function: () => updateStat("determination", +1)
+    },
+    ue13: {
+        header: "Urban Encounter",
+        text: "The people of this place are strange. In addition to treating you strangely, their expressions seem false.",
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Ignore",
+                goto: "inDestination"
+            },
+            {
+                text: "Investigate",
+                goto: () => rolld6() > 0 ? "ue13a" : "ue13b"
+            }
+        ]
+    },
+    ue13a: {
+        header: "Urban Encounter",
+        text: "You find that it is just the normal way of people there."
+    },
+    ue13b: {
+        header: "Urban Encounter",
+        text: "You discover that they are under the control of a weird cult and their Leader (Fight +0; Block 0) is a madman who sacrifices humans on every new moon.",
+        buttons: [
+            {
+                text: "Face their Leader",
+                goto: "ue13b0"
+            },
+            {
+                text: "Get out of this place",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue13b0: {
+        header: "Urban Encounter",
+        text: "You try to face the Leader of this cult, but some Innocent People (Fight -2; Block 0) will protect him with their lives.",
+        persons: [
+            {
+                class: "enemy",
+                number: "d6",
+                name: "Innocent Person",
+                fight: () => -2,
+                block: 0,
+                weapon: "None",
+                background: "hater"
+            },
+            {
+                class: "enemy",
+                name: "Leader",
+                fight: () => 0,
+                block: 0,
+                weapon: "None",
+                background: "hater"
+            }
+        ]
+    },
+    ue14: {
+        header: "Urban Encounter",
+        text: "A Pickpocket (Fight -1; Block 0) passed by you and took all your things, except your weapon.",
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Attack it",
+                goto: "ue14a"
+            },
+            {
+                text: "Let it go",
+                goto: "inDestination"
+            }
+        ]
+    },
+    ue14a: {
+        header: "Urban Encounter",
+        text: "You confronted the Pickpocket to get your things back.",
+        persons: [
+            {
+                class: "enemy",
+                name: "Pickpocket",
+                fight: () => -1,
+                block: 0,
+                weapon: "Dagger"
+            }
+        ]
+    },
+    ue15: {
+        header: "Urban Encounter",
+        text: () => `An army of soldiers from ${randomNobleClan()} is here in this location.`,
+        function: () => setWindowContext("inDestination"),
+        buttons: [
+            {
+                text: "Ignore them",
+                goto: "inDestination"
+            },
+            {
+                text: "Get closer",
+                goto: "ue15a"
+            }
+        ]
+    },
+    ue15a: {
+        header: "Urban Encounter",
+        text: "You are approached by some Soldiers (Fight +1; Block 1). They hate ronins.",
+        persons: [
+            {
+                class: "enemy",
+                number: "d6",
+                name: "Soldier",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 1
+            }
+        ]
+    },
+    ue16: {
+        header: "Urban Encounter",
+        text: () => `You are approached by a Samurai (Fight +1; Block 1) from ${randomNobleClan()}. He doesn’t like you and anything you do could be a reason for him to attack.`,
+        function: () => setWindowContext("inDestination"),
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Samurai",
+                weapon: "Katana",
+                gender: "Male",
+                fight: () => 1,
+                block: 1
+            }
+        ]
+    },
+    ue17: {
+        header: "Urban Encounter",
+        text: `You discover that a doctor lives in this location. If you decide to look for him, he will be a Possible Ally with the occupation already determined as a Healer.`,
+        buttons: [
+            {
+                text: "Search for the Doctor",
+                goto: "ue17a"
+            },
+            {
+                text: "Maybe next time",
+                goto: "inDestination"
+            }
+        ],
+        function: () => setWindowContext("inDestination"),
+    },
+    ue17a: {
+        header: "",
+        text: "",
+        function: () => searchResult("Healer")
     },
     re66: {
         header: "Buddhist Temple",

@@ -15,6 +15,8 @@ function renderEncounter(encounter) {
     combatHeader.innerHTML = "";
     encounterPersons = [];
     encounterButtons.innerHTML = "";
+
+    encounterHeader.innerHTML = rooms[encounter].header;
     
     if (rooms[encounter].persons !== undefined) {
         rooms[encounter].persons.forEach(
@@ -24,6 +26,10 @@ function renderEncounter(encounter) {
                     let enemySpawned = 0;
 
                     if (person.number !== undefined || person.number !== 0) {
+                        if (person.number == "d6") {
+                            enemyNumber = rolld6() + 1;
+                        }
+
                         enemyNumber = person.number;
                     }
 
@@ -41,17 +47,14 @@ function renderEncounter(encounter) {
         );
     }
 
+    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
+
     if(rooms[encounter].function !== undefined){
         rooms[encounter].function();
     }
 
-    encounterHeader.innerHTML = rooms[encounter].header;
-    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
-
-    renderUI();
-    enemyPreview();
-
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
+        renderUI();
         return;
     }
 
@@ -75,6 +78,8 @@ function renderEncounter(encounter) {
 
         encounterButtons.appendChild(btn);
     });
+
+    renderUI();
 }
 
 function updateStat(stat,change) {
@@ -268,6 +273,10 @@ function renderInteractions() {
 
     interactButtons.innerHTML = "";
 
+    if (target == undefined && encounterButtons.innerHTML == "") {
+        interactButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
+    }
+
     if (target == undefined) {
         return;
     }
@@ -279,7 +288,7 @@ function renderInteractions() {
         interactButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
     }
 
-    if (!cannotTalk && !["fighting", "winning"].includes(target.status)) {
+    if (!cannotTalk && !["fighting", "winning"].includes(target.status) && target.morale !== "emboldened") {
         interactButtons.innerHTML += `<button onclick="talk()">Talk</button>`;
     }
 
@@ -302,6 +311,7 @@ function renderInteractions() {
 }
 
 function renderUI() {
+    personPreview();
     renderInteractions();
     renderDisplay();
 }
@@ -366,7 +376,7 @@ function villainFight() {
     
 }
 
-function enemyPreview() {
+function personPreview() {
     const target = getTarget();
 
     if (target == undefined) {
@@ -376,14 +386,80 @@ function enemyPreview() {
     enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
 
     if (enemies.includes(target) || villainsList.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> uses <i>${target.techniqueID}</i> [${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+        combatHeader.innerHTML = `<b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+    }
+    else if (possibleAllies.includes(target) || allies.includes(target)) {
+        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})`;
+    }
+}
+
+function searchResult(quarry) {
+    const searchEnemy = {
+        name: "Enemy",
+        fight: () => 2,
+        block: 1,
+        weapon: "Katana"
+    };
+    const searchRoll = rolld6();
+    const searchTable = [
+        {
+            text: "You find what you were looking for, but before you have to face an Enemy (Fight +2; Block 1).",
+            success: "success",
+            person: searchEnemy
+        },
+        {
+            text: "You find what you were looking for, but it ended up drawing a lot of attention. Add 1 Reputation.",
+            success: "success",
+            function: () => updateStat("reputation", +1)
+        },
+        {
+            text: "You find what you were looking for, but it’s not quite what you expected.",
+            success: "mixed"
+        },
+        {
+            text: "You don’t find what you were looking for.",
+            success: "fail"
+        },
+        {
+            text: "You don’t find what you were looking for and ended up drawing a lot of attention. Add 1 Reputation.",
+            success: "fail",
+            function: () => updateStat("reputation", +1)
+        },
+        {
+            text: "You don’t find what you were looking for and ended up having to face an Enemy (Fight +2; Block 1).",
+            success: "fail",
+            person: searchEnemy
+        }
+    ];
+    const searchResults = searchTable[searchRoll];
+
+    encounterHeader.innerHTML = "Search Result";
+    encounterText.innerHTML = `${searchResults.text}`;
+
+    if (searchResults.function !== undefined) {
+        searchResults.function();
     }
 
-    return;
+    if (searchResults.person !== undefined) {
+        encounterPersons.push(generateEnemy(searchResults.person));
+    }
+
+    if (["Blacksmith", "Mentor", "Healer", "Fighter", "Innocent"].includes(quarry)) {
+        switch (searchResults.success) {
+            case "success":
+                let newCorrectPossibleAlly = generatePossibleAlly({occupation: quarry});
+                encounterPersons.push(newCorrectPossibleAlly);
+                encounterText.innerHTML += `<br><br>You found ${newCorrectPossibleAlly.name}. ${newCorrectPossibleAlly.gender == "Male" ? "He" : "She"} is a ${newCorrectPossibleAlly.occupation}.`;
+                break;
+            case "mixed":
+                let newPossibleAlly = generatePossibleAlly();
+                encounterPersons.push(newPossibleAlly);
+                encounterText.innerHTML += `<br><br>You found ${newPossibleAlly.name}. ${newPossibleAlly.gender == "Male" ? "He" : "She"} is a ${newPossibleAlly.occupation}.`;
+                break;
+            case "fail":
+                break;
+        }
+    }    
 }
 
 renderEncounter("destination");
-generatePossibleAlly({occupation: "Blacksmith"});
-updateStat("compassion",+6);
-encounterPersons.push(possibleAllies[0]);
-renderUI();

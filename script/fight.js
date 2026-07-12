@@ -117,17 +117,19 @@ function checkFightWinner() {
     }
 
     if (target.brokenWeapons.length) {
-        enemyFightStat = 0;
+        if (enemyFightStat >= 0) {
+            enemyFightStat = 0;
+        }
     }
 
     if (roninSide.brokenWeapons.length && roninSide !== ronin) {
-        roninSideFightStat = 0;
+        if (roninSideFightStat >= 0) {
+            roninSideFightStat = 0;
+        }
     }
 
     const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninBonus;
     const enemyFight = rolld6() + enemyFightStat + villainFightBonus;
-
-    console.log(roninSide.scar);
 
     if (roninFight > enemyFight) {
         renderCombatHeader(target)
@@ -369,11 +371,11 @@ function healWounds() {
 
     if (heal >= 3) {
         ronin.status = "alive";
-        encounterText.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i><br><br>`;
+        combatHeader.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i>`;
     }
     else {
         ronin.status = "wounded";
-        encounterText.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i><br><br>`;
+        combatHeader.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i>`;
     }
 }
 
