@@ -21,6 +21,8 @@ function generateRonin() {
     ronin.weapons = [firstTechnique.weapon]
 };
 
+const honor = () => (ronin.determination * 2) + ronin.compassion;
+
 let encounterPersons = [];
 
 const possibleAllies = [];

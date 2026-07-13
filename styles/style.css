@@ -17,6 +17,10 @@ pre {
     word-break: break-word;
 }
 
+div {
+    padding: 16px 0;
+}
+
 h1,
 h2 {
     text-align: center;

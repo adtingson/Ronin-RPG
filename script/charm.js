@@ -35,6 +35,7 @@ function charm() {
 
     encounterPersons.splice(0,1);
 
+    personPreview();
     renderUI();
 }
 
@@ -72,7 +73,19 @@ function applyAllyBuff(target) {
             
             ronin.technique.push({...taughtTechnique});
 
-            ronin.weapons.push(taughtTechnique.weapon);
+            if (taughtTechnique.weapon == "Katana" && ronin.weapons.includes("Katana and Wakizashi") || taughtTechnique.weapon == "Katana and Wakizashi" && ronin.weapons.includes("Katana") || taughtTechnique.weapon == "Katana" && ronin.weapons.includes("Katana")) {
+                if (taughtTechnique.weapon == "Katana" && ronin.weapons.includes("Katana and Wakizashi") || taughtTechnique.weapon == "Katana" && ronin.weapons.includes("Katana")) {
+                    // do nothing
+                }
+                else if (taughtTechnique.weapon == "Katana and Wakizashi" && ronin.weapons.includes("Katana")) {
+                    let oldKatana = ronin.weapons.find(weapon => weapon === "Katana");
+                    ronin.weapons.splice(ronin.weapons.indexOf(oldKatana), 1);
+                    ronin.weapons.push(taughtTechnique.weapon);
+                }
+            }
+            else {
+                ronin.weapons.push(taughtTechnique.weapon);
+            }
 
             interactText.innerHTML += `${ronin.name} spent some time under the guidance of ${target.name}. ${ronin.name} learns ${target.technique.desc}!`;
         }

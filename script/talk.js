@@ -98,6 +98,7 @@ function talk() {
     <br>
     ${talkMessage}`;
 
+    personPreview();
     renderUI();
 }
 

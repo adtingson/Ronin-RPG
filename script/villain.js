@@ -48,7 +48,7 @@ const uniquePowers = [
     {
         condition: () => {},
         text: () => `This Villain is very observant and gains +1 in Fight each time he spends a Block point.`,
-        fightBonus: (user,enemy) => user.block - enemyBlock
+        fightBonus: (user,enemy) => villainBlock
     },
     {
         condition: () => {},

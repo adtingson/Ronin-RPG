@@ -36,6 +36,7 @@ function intimidate() {
     }
 
     interactText.innerHTML = `<p>${intimidateMessage}</p>`;
+    personPreview();
     renderUI();
 }
 

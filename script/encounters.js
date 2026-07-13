@@ -11,6 +11,7 @@ const combatHeader = document.getElementById("combatHeader");
 const interactButtons = document.getElementById("interactButtons");
 
 function renderEncounter(encounter) {
+    console.log(encounter);
     interactText.innerHTML = "";
     combatHeader.innerHTML = "";
     encounterPersons = [];
@@ -21,6 +22,7 @@ function renderEncounter(encounter) {
     if (rooms[encounter].persons !== undefined) {
         rooms[encounter].persons.forEach(
             person => {
+                console.log(person);
                 if (person.class == "enemy") {
                     let enemyNumber = 1;
                     let enemySpawned = 0;
@@ -54,6 +56,7 @@ function renderEncounter(encounter) {
     }
 
     if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
+        personPreview();
         renderUI();
         return;
     }
@@ -79,6 +82,7 @@ function renderEncounter(encounter) {
         encounterButtons.appendChild(btn);
     });
 
+    personPreview();
     renderUI();
 }
 
@@ -203,6 +207,11 @@ function addEnemyToEndRoute() {
 }
 
 function endOfRouteCheck() {
+    if (["dead", "lost"].includes(finalVillain.status)) {
+        renderEncounter("endGame");
+        return;
+    }
+
     if (endRouteEnemies.length === 0) {
         return;
     }
@@ -311,7 +320,6 @@ function renderInteractions() {
 }
 
 function renderUI() {
-    personPreview();
     renderInteractions();
     renderDisplay();
 }
@@ -464,8 +472,113 @@ function searchResult(quarry) {
 
 
     if (encounterButtons.innerHTML == "" && interactButtons.innerHTML == "") {
+        personPreview();
         renderUI();
     }
 }
 
-renderEncounter("enRoute");
+function endGameCheck(isSeppuku) {
+    let seppukuBonus = rolld6() + rolld6() + 2;
+    let honorScore = honor() + (isSeppuku == true ? seppukuBonus : 0);
+
+    let conclusionText;
+
+
+    if (honorScore <= 2) {
+        conclusionText = `Your character has become a spiteful person or even the villain in someone else’s story.`;
+    }
+    else if (3 <= honorScore && honorScore <= 6) {
+        conclusionText = `Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.`;
+    }
+    else if (7 <= honorScore && honorScore <= 10) {
+        conclusionText = `Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.`;
+    }
+    else if (11 <= honorScore && honorScore <= 14) {
+        conclusionText = `Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.`;
+    }
+    else if (15 <= honorScore) {
+        conclusionText = `Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.`;
+    }
+
+    let seppukuText = ``;
+
+    if (isSeppuku) {
+        seppukuText = `${ronin.name} decided to commit Seppuku. Because of this, he gained ${seppukuBonus} honor.<br><br>`;
+        conclusionText += `<br><br>In the end, ${ronin.gender == "Male" ? "he" : "she"} felt ${ronin.gender == "Male" ? "he" : "she"} hasn't done enough and committed Seppuku to save ${ronin.gender == "Male" ? "his" : "her"} honor.`;
+        ronin.status = "dead";
+    }
+
+    encounterText.innerHTML = `${seppukuText}<b>The End:</b> ${conclusionText}`;
+}
+
+function searchExisting(list) {
+    let livingMembers = list.filter(member => member.status !== "dead");
+
+    if (list == villainsList) {
+        livingMembers = list.find(member => member.status == "active");
+    }
+
+    if (!livingMembers.length) {
+        renderEncounter(windowContext);
+        interactText.innerHTML = "Nothing valid exists in this category."
+        return;
+    }
+
+    livingMembers.forEach(member => {
+        let formatted = `${member.name}${member.occupation ? ` (${member.occupation})` : ``}${member.technique ? `Fight: ${member.technique.fight}; Block: ${member.technique.block}` : `Fight: ${member.fight}; Block: ${member.block}`}`;
+
+        encounterButtons.innerHTML += `<button>${formatted}</button>`
+    });
+}
+
+let storageVar = {};
+
+function itemsStolen(isTemporary, fightWith) {
+    let target = getTarget();
+
+    if (isTemporary) {
+        target = storageVar;
+    }
+
+    target.stolenWeapons ??= [];
+    target.stolenItems ??= [];
+    target.stolenBrokenWeapons ??= [];
+    target.stolenWeapons.push(ronin.weapons);
+    target.stolenItems.push(ronin.items);
+    target.stolenBrokenWeapons.push(ronin.brokenWeapons);
+    
+    ronin.weapons = [];
+    ronin.items = [];
+    ronin.brokenWeapons = [];
+
+    if (fightWith == "Stick") {
+        const stickFight = {
+            id: "Stick",
+            desc: "Stick (Fight +0; Block 1)",
+            weapon: "Stick",
+            fight: (user,enemy) => 0,
+            block: 1
+        }
+
+        storageVar.technique ??= [];
+        storageVar.technique.push(ronin.technique);
+        ronin.technique = [stickFight];
+        ronin.weapons.push("Stick");
+    }
+}
+
+function returnStolen(thief) {
+    let target = thief !== undefined ? thief : storageVar;
+
+    ronin.weapons.push(target.stolenWeapons);
+    ronin.items.push(target.stolenItems);
+    ronin.brokenWeapons.push(target.stolenBrokenWeapons);
+    ronin.technique.push(storageVar.technique);
+
+    target.stolenWeapons = [];
+    target.stolenItems = [];
+    target.stolenBrokenWeapons = [];
+    storageVar.technique = [];
+}
+
+renderEncounter("re55b");

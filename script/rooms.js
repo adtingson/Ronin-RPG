@@ -31,6 +31,7 @@ const rooms = {
     },
     searchPossibleAlly: {
         header: "Searching for a Possible Ally",
+        function: () => {setWindowContext("searchRoom")},
         text: "Are you searching for a new or existing Possible Ally?",
         buttons: [
             {
@@ -38,7 +39,8 @@ const rooms = {
                 goto: "searchNewPossibleAlly"
             },
             {
-                text: "Existing"
+                text: "Existing",
+                goto: "searchExistingNewPossibleAlly"
             }
         ]
     },
@@ -68,6 +70,11 @@ const rooms = {
             }
         ]
     },
+    searchExistingNewPossibleAlly: {
+        header: "Searching for a Possible Ally",
+        text: "",
+        function: () => {setWindowContext("searchPossibleAlly"); searchExisting(possibleAllies)}
+    },
     villain: {
         header: "A Villain in Your Tracks",
         text: "",
@@ -93,6 +100,70 @@ const rooms = {
             }
         ],
         function: () => {endOfRouteCheck()}
+    },
+    endGame: {
+        header: "The Redemption",
+        text: () =>
+        `After defeating the Final Villain, your character may have achieved redemption. The result of ${ronin.gender == "Male" ? "his" : "her"} redemption is based on ${ronin.gender == "Male" ? "his" : "her"} honor: ${honor()}.<br><br>
+        <table>
+            <tr>
+                <th>HONOR</th>
+                <th>DESCRIPTION</th>
+            </tr>
+            <tr>
+                <td>2 or less</td>
+                <td>Your character has become a spiteful person or even the villain in someone else’s story.</td>
+            </tr>
+            <tr>
+                <td>3 – 6</td>
+                <td>Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.</td>
+            </tr>
+            <tr>
+                <td>7 – 10</td>
+                <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.</td>
+            </tr>
+            <tr>
+                <td>11 – 14</td>
+                <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.</td>
+            </tr>
+            <tr>
+                <td>15 or more</td>
+                <td>Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.</td>
+            </tr>
+        <table>
+        <br><br>
+        <i>If ${ronin.gender == "Male" ? "his" : "her"} honor is too low, ${ronin.gender == "Male" ? "he" : "she"} can still try one last action to achieve redemption: Seppuku. ${ronin.gender == "Male" ? "He" : "She"} then takes ${ronin.gender == "Male" ? "his" : "her"} own life, adding 2 – 12 to the result of ${ronin.gender == "Male" ? "his" : "her"} honor.</i>
+        `,
+        buttons: [
+            {
+                text: "Commit Seppuku",
+                goto: "endGame0"
+            },
+            {
+                text: "Accept End",
+                goto: "endGame1"
+            }
+        ]
+    },
+    endGame0: {
+        header: "The Redemption",
+        function: () => endGameCheck(true),
+        text: "",
+        buttons: [
+            {
+                text: "New Game?"
+            }
+        ]
+    },
+    endGame1: {
+        header: "The Redemption",
+        function: () => endGameCheck(false),
+        text: "",
+        buttons: [
+            {
+                text: "New Game?"
+            }
+        ]
     },
     destination: {
         header: "Destination",
@@ -936,7 +1007,7 @@ const rooms = {
         function: () => {setWindowContext("re61c0");},
         persons: [
             {
-                type: "enemy",
+                class: "enemy",
                 background: "hater",
                 name: "Kappa",
                 fight: () => 1,
@@ -949,5 +1020,142 @@ const rooms = {
         header: "Road Encounter",
         text: "You have defeated the Kappa that has been bothering the people of this place. You gain 1 Determination.",
         function: () => {setWindowContext("endRoute");updateStat("determination", +1)}
-    }
+    },
+    re56: {
+        header: "Road Encounter",
+        text: "You discovered an abandoned house by the road that was rumored to be haunted.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Ignore",
+                goto: "endRoute"
+            },
+            {
+                text: "Investigate",
+                goto: () => ["re56a", "re56a", "re56a", "re56a", "re56b", "re56c"][rolld6()]
+            }
+        ]
+    },
+    re56a: {
+        header: "Road Encounter",
+        text: "You have found nothing."
+    },
+    re56b: {
+        header: "Road Encounter",
+        text: "You have found a homeless person living in the place."
+    },
+    re56c: {
+        header: "Road Encounter",
+        text: "You have actually found a Samurai Ghost (Fight +3; Block 2).",
+        persons: [
+            {
+                class: "enemy",
+                name: "Samurai Ghost",
+                weapon: "Katana",
+                fight: () => 3,
+                block: 2
+            }
+        ]
+    },
+    re55: {
+        header: "Road Encounter",
+        text: "You found a farm halfway. The family that lives there is very welcoming and offers shelter and food.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Ignore",
+                goto: "endRoute"
+            },
+            {
+                text: "Stay",
+                goto: () => rolld6() > 0 ? "re55a" : "re55b"
+            }
+        ]
+    },
+    re55a: {
+        header: "Road Encounter",
+        text: "You get 1 Determination and you are feeling great and happy.",
+        function: () => updateStat("determination", +1)
+    },
+    re55b: {
+        header: "Road Encounter",
+        text: "You wake up the next day trapped in a cell and find that the family imprisons travelers to make a soup with human meat. To escape from prison, you will have to beat the 1–6 Cannibals (Fight +0; Block 0), using only a stick (Fight +0; Block 1). You will be able to recover your weapon if you escape.",
+        function: () => {itemsStolen(true, "Stick"); setWindowContext("re55b0")},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                number: "d6",
+                name: "Cannibal",
+                weapon: "None",
+                fight: () => 0,
+                block: 0
+            }
+        ]
+    },
+    re55b0: {
+        header: "Road Encounter",
+        function: () => {returnStolen(); setWindowContext("endRoute")},
+        text: "You managed to escape the cannibals and retrieve your things."
+    },
+    re54: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "",
+                goto: ""
+            },
+            {
+                text: "",
+                goto: ""
+            }
+        ]
+    },
+    re53: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "",
+                goto: ""
+            },
+            {
+                text: "",
+                goto: ""
+            }
+        ]
+    },
+    re52: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "",
+                goto: ""
+            },
+            {
+                text: "",
+                goto: ""
+            }
+        ]
+    },
+    re51: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "",
+                goto: ""
+            },
+            {
+                text: "",
+                goto: ""
+            }
+        ]
+    },
 };

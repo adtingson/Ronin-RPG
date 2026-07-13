@@ -1,5 +1,6 @@
 let roninSide;
 const livingInnocents = () => allies.filter(ally => ally.occupation == "Innocent" && ally.status !== "dead");
+let villainBlock = 0;
 
 function fight() {
     const target = getTarget();
@@ -12,7 +13,6 @@ function fight() {
 
         if (fighterAlliesQueue.length) {
             roninSide = fighterAlliesQueue[0];
-
             roninSide.techniqueID = roninSide.technique.id;
             roninSide.weapon = roninSide.technique.weapon;
             roninSide.fight = roninSide.technique.fight;
@@ -33,8 +33,9 @@ function fight() {
         });
     }
 
-    roninBlock = roninSide.firstStrike == "available" ? roninSide.block:roninBlock;
-    enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
+    roninBlock = roninSide.firstStrike == "available" ? roninSide.block : roninBlock;
+    enemyBlock = target.firstStrike == "available" ? target.block : enemyBlock;
+    villainBlock = target.firstStrike == "available" ? 0 : villainBlock;
 
     const fightWinner = checkFightWinner();
 
@@ -95,24 +96,28 @@ function checkFightWinner() {
         if (weaponsBonus < 0) {
             weaponsBonus = 0;
             roninSideFightStat = 0;
+            roninBlock = 0;
         }
 
         roninFightBonus = weaponsBonus + livingInnocents().length;
 
         if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon))) {
             roninSideFightStat = 0;
+            roninBlock = 0;
         }
     }
 
     if (target.brokenWeapons?.length) {
         if (enemyFightStat >= 0) {
             enemyFightStat = 0;
+            enemyBlock = 0;
         }
     }
 
     if (roninSide.brokenWeapons?.length && roninSide !== ronin) {
         if (roninSideFightStat >= 0) {
             roninSideFightStat = 0;
+            roninBlock = 0;
         }
     }
 
@@ -143,6 +148,7 @@ function checkEnemyBlock() {
     const target = getTarget();
     if (enemyBlock > 0) {
         enemyBlock += -1;
+        villainBlock += 1;
         target.blockState = "blocked";
         target.status = "fighting";
 
@@ -405,5 +411,16 @@ function renderCombatHeader(target) {
         }
     }
 
-    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+    let targetWeaponModifier = ``;
+
+    if (target.brokenWeapons?.length) {
+        if (target.weapon == "None") {
+            target.weapon = "Injured";
+        }
+        else {
+            targetWeaponModifier = `Broken `;
+        }
+    }
+
+    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${targetWeaponModifier}${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
 }
