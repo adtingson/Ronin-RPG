@@ -1,6 +1,6 @@
 const familyVals = [
     () => `Samurai from ${randomNobleClan()}. You were thrown out of the family for dishonor.`,
-    () => `Samurai from an extinct clan (${uniqueClan()}) after losing a war to another Noble Clan.`,
+    () => `Samurai from an extinct clan (${uniqueClan()}) after losing a war to ${randomNobleClan()}.`,
     () => `Plebeian family murdered by ${randomNobleClan()} for not paying tribute to the Daimio.`,
     () => `Plebeian family that revolted against the dominant ${randomNobleClan()} and now is persecuted by it.`,
     () => `Family of renowned artisans. Your ${motherFather()} revealed a terrible secret to you before they passed away.`,

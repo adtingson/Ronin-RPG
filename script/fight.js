@@ -214,6 +214,7 @@ function spareEnemy() {
     interactText.innerHTML += `<br><br>${target.name} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.`;
 
     target.status = "lost";
+    target.firstStrike = "available"
     target.brokenWeapons = undefined;
     encounterPersons.splice(0,1);
     updateStat("reputation",+1);

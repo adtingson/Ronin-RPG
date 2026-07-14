@@ -22,7 +22,6 @@ function renderEncounter(encounter) {
     if (rooms[encounter].persons !== undefined) {
         rooms[encounter].persons.forEach(
             person => {
-                console.log(person);
                 if (person.class == "enemy") {
                     let enemyNumber = 1;
                     let enemySpawned = 0;
@@ -401,6 +400,7 @@ function personPreview() {
     }
 }
 
+
 function searchResult(quarry) {
     const searchEnemy = {
         name: "Enemy",
@@ -525,9 +525,10 @@ function searchExisting(list) {
     }
 
     livingMembers.forEach(member => {
-        let formatted = `${member.name}${member.occupation ? ` (${member.occupation})` : ``}${member.technique ? `Fight: ${member.technique.fight}; Block: ${member.technique.block}` : `Fight: ${member.fight}; Block: ${member.block}`}`;
+        let formatted = `${member.name}${member.occupation ? `<br>(${member.occupation})` : ``}`;
 
-        encounterButtons.innerHTML += `<button>${formatted}</button>`
+
+        encounterText.innerHTML += `<button onclick="">${formatted}</button>`
     });
 }
 
@@ -581,4 +582,10 @@ function returnStolen(thief) {
     storageVar.technique = [];
 }
 
-renderEncounter("re55b");
+generatePossibleAlly();
+generatePossibleAlly();
+generatePossibleAlly();
+generatePossibleAlly();
+generatePossibleAlly();
+generatePossibleAlly();
+renderEncounter("endRoute");

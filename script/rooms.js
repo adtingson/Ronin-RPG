@@ -168,13 +168,7 @@ const rooms = {
     destination: {
         header: "Destination",
         text: "You have reached your destination.",
-        function: () => {setWindowContext("inDestination");healWounds();},
-        buttons: [
-            {
-                text: "Proceed",
-                goto: () => ["destination0", "destination1", "destination2", "destination3", "destination4", "destination4"][rolld6()]
-            }
-        ]
+        function: () => {setWindowContext("inDestination"); renderEncounter(["destination0", "destination1", "destination2", "destination3", "destination4", "destination4"][rolld6()]);},
     },
     inDestination: {
         header: "Somewhere in the destination",
@@ -233,7 +227,7 @@ const rooms = {
                 goto: () => ronin.reputation >= 4 ? "destination0a" : "destination0b"
             }
         ],
-        function: () => weaponsDeliveryCheck()
+        function: () => {healWounds(); weaponsDeliveryCheck();}
     },
     destination0a: {
         header: "At the Gates",
@@ -269,7 +263,8 @@ const rooms = {
                 text: "Next",
                 goto: () => ronin.reputation >= 5 ? "destination0a" : "destination0b"
             }
-        ]
+        ],
+        function: () => {healWounds();}
     },
     destination2: {
         header: "Small Town",
@@ -279,7 +274,8 @@ const rooms = {
                 text: "Next",
                 goto: () => ronin.reputation >= 6 ? "destination2a" : "destination2b"
             }
-        ]
+        ],
+        function: () => {healWounds();}
     },
     destination2a: {
         header: "At the gates",
@@ -319,7 +315,7 @@ const rooms = {
                 goto: "destination3a"
             }
         ],
-        function: () => weaponsDeliveryCheck()
+        function: () => {healWounds(); weaponsDeliveryCheck()}
     },
     destination3a: {
         header: "Taking a shelter",
@@ -338,7 +334,8 @@ const rooms = {
                 text: "Take shelter",
                 goto: "destination3a"
             }
-        ]
+        ],
+        function: () => {healWounds();}
     },
     destination4a: {
         header: "Lending a hand",
@@ -1100,62 +1097,137 @@ const rooms = {
     },
     re54: {
         header: "Road Encounter",
-        text: "",
+        text: "You are walking down the road when you encounter a Ninja Master (Fight +2; Block 0) and 2 Ninjas (Fight +0; Block 0) intimidating a man. There is a chance that the man is a nobleman.",
         function: () => {setWindowContext("endRoute");},
         buttons: [
             {
-                text: "",
-                goto: ""
+                text: "Ignore",
+                goto: () => Math.random() < 0.5 ? "re54a" : "re54b"
             },
             {
-                text: "",
-                goto: ""
+                text: "Intervene",
+                goto: () => Math.random() < 0.5 ? "re54c" : "re54d"
+            }
+        ]
+    },
+    re54a: {
+        header: "Road Encounter",
+        text: "You find out the man is just a lost merchant. When you left, he was alone at the mercy of the ninjas."
+    },
+    re54b: {
+        header: "Road Encounter",
+        text: () => `You find out the man is a Samurai (Fight +1; Block 1) from ${randomNobleClan()} and had two Jitte hidden. When you left, he fought against the ninjas alone.`
+    },
+    re54c: {
+        header: "Road Encounter",
+        text: `You placed yourself in between the ninjas and the man. You find out the man is a lost merchant.`,
+        function: () => setWindowContext("re54c0"),
+        persons: [
+            {
+                class: "enemy",
+                number: 2,
+                name: "Ninja",
+                weapon: "Katana",
+                fight: () => 0,
+                block: 0
+            },
+            {
+                class: "enemy",
+                name: "Ninja Master",
+                weapon: "Katana",
+                fight: () => 2,
+                block: 0
+            }
+        ]
+    },
+    re54c0: {
+        header: "Road Encounter",
+        function: () => setWindowContext("endRoute"),
+        text: `The lost merchant is thankful for your intervention.`,
+        buttons: [
+            {
+                text: "No problem",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re54d: {
+        header: "Road Encounter",
+        text: () => `You placed yourself in between the ninjas and the man. You find out the man is a Samurai (Fight +1; Block 1) from ${randomNobleClan()} and had two Jitte hidden.`,
+        persons: [
+            {
+                class: "enemy",
+                number: 2,
+                name: "Ninja",
+                weapon: "Katana",
+                fight: () => 0,
+                block: 0
+            },
+            {
+                class: "enemy",
+                name: "Ninja Master",
+                weapon: "Katana",
+                fight: () => 2,
+                block: 0
+            },
+            {
+                class: "enemy",
+                name: "Samurai",
+                gender: "Male",
+                weapon: "Jitte",
+                fight: () => 1,
+                block: 1
             }
         ]
     },
     re53: {
         header: "Road Encounter",
-        text: "",
+        text: "An Old Man (Fight -2; Block 1) approached you halfway using an old rusty sword. He seems to be delusional and says he needs to kill you to restore his family’s honor.",
         function: () => {setWindowContext("endRoute");},
-        buttons: [
+        persons: [
             {
-                text: "",
-                goto: ""
-            },
-            {
-                text: "",
-                goto: ""
+                class: "enemy",
+                name: "Old Man",
+                gender: "Male",
+                weapon: "Old Rusty Katana",
+                fight: () => -2,
+                block: 1
             }
         ]
     },
     re52: {
         header: "Road Encounter",
-        text: "",
+        text: "Walking on the road, you find a man lying on the ground. As you approach, you are surprised by 3 more Mercenaries (Fight +1; Block 0) that come out from behind the trees using Naginatas.",
         function: () => {setWindowContext("endRoute");},
-        buttons: [
+        persons: [
             {
-                text: "",
-                goto: ""
-            },
-            {
-                text: "",
-                goto: ""
+                class: "enemy",
+                name: "Mercenary",
+                number: 3,
+                weapon: "Naginata",
+                fight: () => 1,
+                block: 0
             }
         ]
     },
     re51: {
         header: "Road Encounter",
-        text: "",
-        function: () => {setWindowContext("endRoute");},
-        buttons: [
-            {
-                text: "",
-                goto: ""
-            },
-            {
-                text: "",
-                goto: ""
+        text: () => {
+            let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
+            let revenger;
+            
+            if (livingEnemies.length) {
+                revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
+                let oldFight = revenger.fight;
+                revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+
+                encounterPersons.push(revenger);
+                return `An enemy you recently left alive, comes your way with Fight +1.`;
             }
-        ]
+            else {
+                return `You found nothing.`;
+            }
+        },
+        function: () => setWindowContext("endRoute")
     },
 };
