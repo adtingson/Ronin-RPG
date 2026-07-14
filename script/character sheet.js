@@ -39,6 +39,12 @@ const villainPrisoners = [];
 
 let weaponsDelivery = [];
 
+let parcel = undefined;
+
+let quarryList;
+
+let assassinMark;
+
 function getTarget() {
     return encounterPersons[0];
 }

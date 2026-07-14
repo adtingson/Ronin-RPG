@@ -183,7 +183,40 @@ const rooms = {
                 goto: "searchRoom"
             }
         ],
-        function: () => {setWindowContext("inDestination")}
+        function: () => {setWindowContext("inDestination"); hasParcel(); hasMark()}
+    },
+    parcelDeliveryMission: {
+        header: "Deliver Item?",
+        text: () => `It seems that you have an item that can be delivered to its recepient in this location.`,
+        buttons: [
+            {
+                text: "Search Recepient",
+                function: () => searchResult("receiver")
+            },
+            {
+                text: "Abandon Delivery",
+                function: () => renderEncounter(windowContext)
+            }
+        ]
+    },
+    assassinationMission: {
+        header: "Assassination",
+        text: () => `It seems that you have a target in this location.`,
+        buttons: [
+            {
+                text: "Proceed with the Kill",
+                goto: "assassinationMission0"
+            },
+            {
+                text: "Abandon Mission",
+                function: () => renderEncounter(windowContext)
+            }
+        ]
+    },
+    assassinationMission0: {
+        header: "Assassination",
+        text: () => `You now face ${assassinMark.name} to kill ${assassinMark.gender == "Male" ? "him" : "her"}.`,
+        function: () => encounterPersons.push(assassinMark)
     },
     characterOver: {
         header: "The Ronin’s Death",
@@ -264,7 +297,7 @@ const rooms = {
                 goto: () => ronin.reputation >= 5 ? "destination0a" : "destination0b"
             }
         ],
-        function: () => {healWounds();}
+        function: () => {healWounds()}
     },
     destination2: {
         header: "Small Town",
@@ -275,7 +308,7 @@ const rooms = {
                 goto: () => ronin.reputation >= 6 ? "destination2a" : "destination2b"
             }
         ],
-        function: () => {healWounds();}
+        function: () => {healWounds()}
     },
     destination2a: {
         header: "At the gates",
@@ -335,7 +368,7 @@ const rooms = {
                 goto: "destination3a"
             }
         ],
-        function: () => {healWounds();}
+        function: () => {healWounds()}
     },
     destination4a: {
         header: "Lending a hand",
@@ -1211,6 +1244,344 @@ const rooms = {
         ]
     },
     re51: {
+        header: "Road Encounter",
+        text: () => {
+            let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
+            let revenger;
+            
+            if (livingEnemies.length) {
+                revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
+                let oldFight = revenger.fight;
+                revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+
+                encounterPersons.push(revenger);
+                return `An enemy you recently left alive, comes your way with Fight +1.`;
+            }
+            else {
+                return `You found nothing.`;
+            }
+        },
+        function: () => setWindowContext("endRoute")
+    },
+    re46: {
+        header: "Road Encounter",
+        text: () => `Walking down the road, you find a Possible Ally surrounded by 2 Samurai (Fight +1; Block 1). By their robes, they are from ${randomNobleClan()} and are wearing armor and katanas.`,
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                name: "Samurai",
+                number: 2,
+                weapon: "Katana",
+                fight: () => 1,
+                block: 1
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re45: {
+        header: "Road Encounter",
+        text: "You are walking down the road when you encounter a Possible Ally being attacked by a Samurai (Fight +2; Block 1) wearing a shiny new katana.",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                name: "Samurai",
+                weapon: "Katana",
+                fight: () => 2,
+                block: 1
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re44: {
+        header: "Road Encounter",
+        text: "You are walking down the road when you encounter a Young Samurai (Fight +2; Block 0) attacking innocents to “train” (Tsujigiri).",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                name: "Young Samurai",
+                weapon: "Katana",
+                fight: () => 2,
+                block: 0
+            }
+        ]
+    },
+    re43: {
+        header: "Road Encounter",
+        text: "You are walking down the road when you encounter a Wild Tiger (Fight +0; Block 3) attacking a family.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Help",
+                goto: "re43a"
+            },
+            {
+                text: "Ignore",
+                goto: "re43b"
+            }
+        ]
+    },
+    re43a: {
+        header: "Road Encounter",
+        text: "You jumped in to help the family against the Wild Tiger.",
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Wild Tiger",
+                weapon: "Bite and Claws",
+                fight: () => 0,
+                block: 3
+            }
+        ]
+    },
+    re43b: {
+        header: "Road Encounter",
+        text: "You ignored the situation. You lose 1 Compassion.",
+        function: () => updateStat("compassion",-1)
+    },
+    re42: {
+        header: "Road Encounter",
+        text: () => `You found a letter on the ground that was apparently written by a samurai from ${randomNobleClan()} before entering a battle. It is aimed at his family, who seems to live in the next location. If you deliver this card, you will gain 1 Determination.`,
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Take the Letter",
+                goto: "endRoute",
+                function: () => courierMission("Letter", "determination", +1)
+            },
+            {
+                text: "Ignore the Letter",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re41: {
+        header: "Road Encounter",
+        text: () => {
+            let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
+            let revenger;
+            
+            if (livingEnemies.length) {
+                revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
+                let oldFight = revenger.fight;
+                revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+
+                encounterPersons.push(revenger);
+                return `An enemy you recently left alive, comes your way with Fight +1.`;
+            }
+            else {
+                return `You found nothing.`;
+            }
+        },
+        function: () => setWindowContext("endRoute")
+    },
+    re36: {
+        header: "Road Encounter",
+        text: "You arrive at a roadside inn and are amazed at the amount of cats in the place. As you enter, you hear an incredible melody played by a musician with his face covered. At the end of the song, the musician approaches you and says he needs to talk.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Accept",
+                goto: () => rolld6() > 0 ? "re36a" : "re36b"
+            },
+            {
+                text: "Refuse",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re36a: {
+        header: "Road Encounter",
+        text: "The musician reveals himself as a Possible Ally who needs you to take an object to the next location (you will gain 1 Determination if you do).",
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ],
+        function: () => setWindowContext("re36a0")
+    },
+    re36a0: {
+        header: "Road Encounter",
+        function: () => {setWindowContext("endRoute"); courierMission("Object", "determination", +1)},
+        text: "Before leaving, you took the object and promised to deliver it to the next destination."
+    },
+    re36b: {
+        header: "Road Encounter",
+        text: "The musician reveals to be a Yokai called Nekomata (Fight +2; Block 1).",
+        persons: [
+            {
+                class: "enemy",
+                name: "Nekomata",
+                weapon: "None",
+                fight: () => 2,
+                block: 1
+            }
+        ]
+    },
+    re35: {
+        header: "Road Encounter",
+        text: "A farm is on fire.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Rescue Survivors",
+                goto: "re35b"
+            },
+            {
+                text: "Ignore",
+                goto: "re35a"
+            }
+        ]
+    },
+    re35a: {
+        header: "Road Encounter",
+        text: "You choose not to help. You lose 1 Compassion.",
+        function: () => updateStat("compassion", +1)
+    },
+    re35b: {
+        header: "Road Encounter",
+        text: "You choose to help rescue survivors. Here is a summary of what happened:",
+        function: () => {fireRescue(); setWindowContext("re35b0")}
+    },
+    re35b0: {
+        header: "Road Encounter",
+        text: "The people of the farm are thankful for your help. You gain 1 Reputation.",
+        function: () => {updateStat("reputation", +1); setWindowContext("endRoute")}
+    },
+    re34: {
+        header: "Road Encounter",
+        text: "You were at a bar eating when you were approached by a handsome man. He said that his master wanted to talk to you.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Go with the man",
+                goto: () => rolld6() > 0 ? "re34c" : "re34d"
+            },
+            {
+                text: "Don't go with the man",
+                goto: () => rolld6() > 0 ? "re34a" : "re34b"
+            }
+        ]
+    },
+    re34a: {
+        header: "Road Encounter",
+        text: "The man let you go, without resistance."
+    },
+    re34b: {
+        header: "Road Encounter",
+        text: "A Guard appears (Fight +1; Block 0) to stop you.",
+        persons: [
+            {
+                class: "enemy",
+                name: "Guard",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 0
+            }
+        ]
+    },
+    re34c: {
+        header: "Road Encounter",
+        text: () => `The man takes you to a carriage where a nobleman offers you “lots of money” if you kill a Samurai (Fight +2; Block 1) from ${randomNobleClan()}, who will be in the next location.`,
+        buttons: [
+            {
+                text: "Accept",
+                goto: "re34c0"
+            },
+            {
+                text: "Refuse",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re34c0: {
+        header: "Road Encounter",
+        text: () => `You accepted the nobleman's offer and will try to kill this Samurai from ${contextClan}.`,
+        function: () => assassinate(`Samurai from ${contextClan}`, 2, 1)
+    },
+    re34d: {
+        header: "Road Encounter",
+        text: "The man takes you to an alley where you are attacked by 1–6 Guards (Fight +1; Block 0).",
+        persons: [
+            {
+                class: "enemy",
+                number: "d6",
+                name: "Guard",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 0
+            }
+        ]
+    },
+    re33: {
+        header: "Road Encounter",
+        text: "You have been surrounded by 4 Guards from the region (Fight +0; Block 0). They are after a thief and they want to arrest you so they can interrogate you.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Surrender",
+                goto: "re33b"
+            },
+            {
+                text: "Escape",
+                goto: "re33a"
+            }
+        ]
+    },
+    re33a: {
+        header: "Road Encounter",
+        text: "In order to escape, you have to fight all the guards.",
+        persons: [
+            {
+                class: "enemy",
+                number: 4,
+                name: "Guard",
+                weapon: "Katana",
+                fight: () => 0,
+                block: 0,
+                type: "arrester"
+            }
+        ]
+    },
+    re33a0: {
+        header: "Road Encounter",
+        text: "You fought your best, but you got overwhelmed. You have been arrested. After a few days, you have been released for finding the real thief (lose 1 Determination).",
+        function: () => updateStat("determination", -1)
+    },
+    re33b: {
+        header: "Road Encounter",
+        text: "After a few days, you have been released for finding the real thief (lose 1 Determination).",
+        function: () => updateStat("determination", -1)
+    },
+    re32: {
+        header: "Road Encounter",
+        text: "On the road, you find a child carrying a Naginata (Fight -2; Block 0). She looks shaken and says she wants to kill the ronin who murdered her family. The child thinks it was you.",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                type: "confused",
+                gender: "Female",
+                name: "Child",
+                weapon: "Naginata",
+                fight: () => -2,
+                block: 0
+            }
+        ]
+    },
+    re32a: {
+        header: "Road Encounter",
+        text: "By talking to the child, you have cleared the misunderstanding. You gain 1 Compassion.",
+        function: () => updateStat("compassion", +1)
+    },
+    re31: {
         header: "Road Encounter",
         text: () => {
             let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");

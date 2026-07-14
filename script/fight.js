@@ -176,7 +176,12 @@ function roninWinCleanUp() {
     combatHeader.innerHTML = `<b>${roninSide.name}</b>[${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
     interactText.innerHTML += `<br><br>${target.name} has lost this duel. How do you want this to end?`;
 
-    encounterButtons.innerHTML = `<button onclick="slayEnemy()">Kill</button><button onclick="spareEnemy()">Knock Out</button>`;
+    if (target.type !== "toKill") {
+        encounterButtons.innerHTML = `<button onclick="slayEnemy()">Kill</button><button onclick="spareEnemy()">Knock Out</button>`;
+    }
+    else {
+        encounterButtons.innerHTML = `<button onclick="slayEnemy()">Kill Target</button>`;
+    }
 }
 
 function slayEnemy() {
@@ -326,6 +331,11 @@ function roninLossCleanUp() {
     if (target.type == "finisher") {
         roninSide.status = "dead";
         renderEncounter("characterOver");
+        return;
+    }
+
+    if (target.type == "arrester") {
+        renderEncounter("re33a0");
         return;
     }
 

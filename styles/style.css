@@ -17,7 +17,7 @@ pre {
     word-break: break-word;
 }
 
-div {
+#encounterText {
     padding: 16px 0;
 }
 
@@ -168,9 +168,10 @@ select {
     cursor: pointer;
 }
 
+
 #game {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     height: 100vh;
 }
 

@@ -29,6 +29,12 @@ function talk() {
             target.background = "pastInfo";
             target.pastInfo = result;
             talkMessage = `${result}<p>You can try talking to them again to learn their dark secret.</p>`;
+
+            if (target.type == "confused") {
+                renderEncounter("re32a");
+                encounterPersons.splice(0, 1);
+                enemies.splice(enemies.indexOf(target), 1);
+            }
         }
     }
     else if (target.background == "talkFailed") {
@@ -40,10 +46,6 @@ function talk() {
         if (result == "Failed") {
             target.background = "darkSecretFailed";
             talkMessage = "Nothing about their dark secret.";
-
-            if (target.type == "tricky") {
-                renderEncounter("re62a0");
-            }
         }
         else {
             target.background = "darkSecret";
