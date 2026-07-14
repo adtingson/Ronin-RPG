@@ -587,7 +587,7 @@ function searchExisting(list) {
 
 let storageVar = {};
 
-function itemsStolen(isTemporary, fightWith) {
+function itemsStolen(isTemporary, stolenWhat, fightWith) {
     let target = getTarget();
 
     if (isTemporary) {
@@ -597,13 +597,21 @@ function itemsStolen(isTemporary, fightWith) {
     target.stolenWeapons ??= [];
     target.stolenItems ??= [];
     target.stolenBrokenWeapons ??= [];
-    target.stolenWeapons.push(ronin.weapons);
-    target.stolenItems.push(ronin.items);
-    target.stolenBrokenWeapons.push(ronin.brokenWeapons);
-    
-    ronin.weapons = [];
-    ronin.items = [];
-    ronin.brokenWeapons = [];
+
+    if (stolenWhat == "all") {
+        target.stolenWeapons.push(...ronin.weapons);
+        target.stolenItems.push(...ronin.items);
+        target.stolenBrokenWeapons.push(...ronin.brokenWeapons);
+
+        ronin.weapons = [];
+        ronin.items = [];
+        ronin.brokenWeapons = [];
+    }
+    else if (stolenWhat == "items") {
+        target.stolenItems.push(...ronin.items);
+        ronin.items = [];
+    }
+
 
     if (fightWith == "Stick") {
         const stickFight = {
@@ -624,11 +632,22 @@ function itemsStolen(isTemporary, fightWith) {
 function returnStolen(thief) {
     let target = thief !== undefined ? thief : storageVar;
 
-    ronin.weapons.push(target.stolenWeapons);
-    ronin.items.push(target.stolenItems);
-    ronin.brokenWeapons.push(target.stolenBrokenWeapons);
-    ronin.technique.push(storageVar.technique);
+    if (target.stolenWeapons?.length) {
+        ronin.weapons.push(...target.stolenWeapons);
+    }
 
+    if (target.stolenItems?.length) {
+        ronin.items.push(...target.stolenItems);
+    }
+    
+    if (target.stolenBrokenWeapons?.length) {
+        ronin.brokenWeapons.push(...target.stolenBrokenWeapons);
+    }
+    
+    if (storageVar.technique?.length) {
+        ronin.technique.push(...storageVar.technique);
+    }
+    
     target.stolenWeapons = [];
     target.stolenItems = [];
     target.stolenBrokenWeapons = [];

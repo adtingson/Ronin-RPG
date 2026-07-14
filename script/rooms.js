@@ -686,17 +686,30 @@ const rooms = {
             },
             {
                 text: "Let it go",
-                function: () => {
-                    ronin.items ??= [];
-                    ronin.items = [];
-                },
-                goto: "inDestination"
+                goto: "ue14b"
             }
         ]
     },
     ue14a: {
         header: "Urban Encounter",
         text: "You confronted the Pickpocket to get your things back.",
+        persons: [
+            {
+                class: "enemy",
+                name: "Pickpocket",
+                fight: () => -1,
+                block: 0,
+                weapon: "Dagger"
+            }
+        ]
+    },
+    ue14b: {
+        header: "Urban Encounter",
+        text: "You let the Pickpocket go with your items.",
+        function: () => {
+            itemsStolen(false, "items");
+            encounterPersons.splice(0, 1);
+        },
         persons: [
             {
                 class: "enemy",
@@ -993,13 +1006,9 @@ const rooms = {
         text: "You have been tricked by the Kitsune. You've lost 1 Determination and wake up without your belongings by the side of the road.",
         function: () => {
             updateStat("determination", -1);
-            ronin.items ??= [];
-            ronin.weapons ??= [];
-            ronin.brokenWeapons ??= [];
-
-            ronin.items = [];
-            ronin.weapons = [];
-            ronin.brokenWeapons = [];
+            encounterPersons.push(enemies.at(-1));
+            itemsStolen(false, "all");
+            encounterPersons = [];
         }
     },
     re62b: {
@@ -1110,7 +1119,7 @@ const rooms = {
     re55b: {
         header: "Road Encounter",
         text: "You wake up the next day trapped in a cell and find that the family imprisons travelers to make a soup with human meat. To escape from prison, you will have to beat the 1–6 Cannibals (Fight +0; Block 0), using only a stick (Fight +0; Block 1). You will be able to recover your weapon if you escape.",
-        function: () => {itemsStolen(true, "Stick"); setWindowContext("re55b0")},
+        function: () => {itemsStolen(true, "all", "Stick"); setWindowContext("re55b0")},
         persons: [
             {
                 class: "enemy",

@@ -6,19 +6,21 @@ function generateRonin() {
     const name = nameFunc(gender);
     const firstTechnique = randomTechnique();
 
-    ronin.name = name,
-    ronin.gender = gender,
-    ronin.appearance = normalizeText(randoAppearance()),
-    ronin.family = generateFamilyBG(),
-    ronin.nightmare = nightmare(),
-    ronin.scar = generateScar(),
-    ronin.meaning = generateScarMeaning(),
-    ronin.technique = [firstTechnique],
-    ronin.firstStrike = "available",
-    ronin.reputation = 0,
-    ronin.compassion = 2,
-    ronin.determination = 2,
-    ronin.weapons = [firstTechnique.weapon]
+    ronin.name = name;
+    ronin.gender = gender;
+    ronin.appearance = normalizeText(randoAppearance());
+    ronin.family = generateFamilyBG();
+    ronin.nightmare = nightmare();
+    ronin.scar = generateScar();
+    ronin.meaning = generateScarMeaning();
+    ronin.technique = [firstTechnique];
+    ronin.firstStrike = "available";
+    ronin.reputation = 0;
+    ronin.compassion = 2;
+    ronin.determination = 2;
+    ronin.weapons = [firstTechnique.weapon];
+    ronin.items = [];
+    ronin.brokenWeapons = [];
 };
 
 const honor = () => (ronin.determination * 2) + ronin.compassion;
