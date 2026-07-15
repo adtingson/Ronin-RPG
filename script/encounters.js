@@ -155,9 +155,7 @@ function routeBuilder() {
 function nada() {
     encounterText.innerHTML = "Nothing happened.";
     encounterButtons.innerHTML =
-    `<button>Search for Something</button>
-    <button onclick="renderEncounter('endRoute')">Continue Journey</button>
-    `;
+    `<button onclick="renderEncounter('endRoute')">Continue Journey</button>`;
 }
 
 
@@ -210,17 +208,17 @@ function endOfRouteCheck() {
     }
 
     if (endRouteEnemies.length === 0) {
-        return;
+        renderEncounter("endRoute0");
     }
     else {
+        renderEncounter("endRouteFight");
         endRouteEnemies.forEach(
             enemy => {
                 enemy.firstStrike = "available";
-                enemyQueue.push(enemy);
+                enemy.status = "alive";
+                encounterPersons.push(enemy);
             }
-        )
-
-        fight();
+        );
     }
 }
 
@@ -308,11 +306,14 @@ function renderInteractions() {
 
     if ((villainsList.includes(target) || enemies.includes(target)) && target.status == "fighting") {
         interactButtons.innerHTML += `<button onclick="fight()">Fight</button>`;
-        return;
     }
 
-    if ((villainsList.includes(target) || enemies.includes(target)) && neutralStatus) {
+    if ((villainsList.includes(target) || enemies.includes(target)) && neutralStatus && target.status !== "fighting") {
         interactButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
+    }
+
+    if ((villainsList.includes(target) || enemies.includes(target))) {
+        interactButtons.innerHTML += `<button onclick="surrenderFight()">Surrender</button>`;
     }
 }
 
@@ -322,7 +323,7 @@ function renderUI() {
 }
 
 function villainFight() {
-    const villainToFight = villainsList.find(villain => villain.status == "active");
+    const villainToFight = villainsList.find(villain => villain.status == "active" || villain.status == "facedBefore");
 
     if (villainToFight.status !== "facedBefore") {
         if (typeof villainToFight.trait === "function") {
@@ -345,7 +346,7 @@ function villainFight() {
 
         villainToFight.block = villainToFight.technique.block + villainBonusBlock;
 
-        if (villainToFight.power !== undefined && villainToFight.power.buffer !== undefined) {
+        if (villainToFight.power?.buffer) {
             let traitor = villainToFight.power.buffer();
 
             traitor.techniqueID = traitor.technique.id;
@@ -358,10 +359,13 @@ function villainFight() {
             allies.includes(traitor) ? allies.splice(allies.indexOf(traitor), 1) : possibleAllies.splice(possibleAllies.indexOf(traitor), 1);
         }
 
-        if (villainToFight.power !== undefined && villainToFight.power.prisoner !== undefined) {
+        if (villainToFight.power?.prisoner) {
             let allyInPrison = villainToFight.power.prisoner();
-            villainPrisoners.push(allyInPrison);
-            allies.splice(allies.indexOf(allyInPrison), 1);
+
+            if (!villainPrisoners.length) {
+                villainPrisoners.push(allyInPrison);
+                allies.splice(allies.indexOf(allyInPrison), 1);
+            }
         }
     }
 
@@ -495,6 +499,62 @@ function searchResult(quarry) {
                 break;
             }
         }
+        else if (allies.includes(quarry)) {
+            let randomIndex = () => Math.floor(Math.random() * livingAllies().length);
+            let otherPerson;
+
+            switch (searchResults.success) {
+            case "success":
+                encounterPersons.push(quarry);
+                encounterText.innerHTML += `<br><br>You found ${quarry.name}(${quarry.occupation}).`;
+                break;
+
+            case "mixed":
+                if (livingAllies().length == 1) {
+                    encounterText.innerHTML += `<br><br>You found ${quarry.name}, however, ${quarry.gender == "Male" ? "he" : "she"} is in a hurry to go somewhere.`;
+                }
+                else {
+                    do {
+                        otherPerson = livingAllies()[randomIndex()];
+                    } while(otherPerson == quarry);
+                    encounterPersons.push(otherPerson);
+                    encounterText.innerHTML += `<br><br>You found ${otherPerson.name}(${otherPerson.occupation}) instead.`;
+                }
+                break;
+
+            case "fail":
+                break;
+            }
+        }
+        else if (enemies.includes(quarry)) {
+            let aliveEnemies = enemies.filter(person => person.status !== "dead");
+            const randomIndex = () => Math.floor(Math.random() * aliveEnemies.length);
+            let otherPerson;
+
+            switch (searchResults.success) {
+            case "success":
+                encounterPersons.push(quarry);
+                encounterText.innerHTML += `<br><br>You found ${quarry.name}(${quarry.occupation}).`;
+                break;
+
+            case "mixed":
+                if (aliveEnemies.length == 1) {
+                    encounterText.innerHTML += `<br><br>You found ${quarry.name}, however, ${quarry.gender == "Male" ? "he" : "she"} is in a hurry to go somewhere.`;
+                }
+                else {
+                    do {
+                        otherPerson = aliveEnemies[randomIndex()];
+                    } while(otherPerson == quarry);
+                    encounterPersons.push(otherPerson);
+                    encounterText.innerHTML += `<br><br>You found ${otherPerson.name}(Fight: ${otherPerson.fight()}; Block: ${otherPerson.block}) instead.`;
+                }
+                break;
+
+            case "fail":
+                break;
+            }
+        }
+            
     }
     else if (quarry == "receiver") {
         switch (searchResults.success) {
@@ -559,18 +619,20 @@ function searchExisting(list) {
     let livingMembers = list.filter(member => member.status !== "dead");
 
     if (list == villainsList) {
-        livingMembers = list.find(member => member.status == "active");
+        livingMembers = [list.find(member => member.status == "active" || member.status == "facedBefore")];
     }
 
     if (!livingMembers.length) {
         renderEncounter(windowContext);
-        interactText.innerHTML = "Nothing valid exists in this category."
+        interactText.innerHTML = "NOTICE: No valid search exists in your selected category."
         return;
     }
 
     quarryList = livingMembers;
 
     encounterText.innerHTML = "Which person are you searching for?"
+
+    encounterButtons.innerHTML += `<button onclick="renderEncounter('searchRoom')">Back</button>`;
 
     livingMembers.forEach((member, index) => {
         let formatted = `${member.name}${member.occupation ? `<br>(${member.occupation})` : ``}`;
@@ -666,7 +728,7 @@ function hasParcel() {
             renderEncounter("parcelDeliveryMission");
         }
         else {
-            combatHeader.innerHTML += `Notice: You failed to deliver ${parcel.content}.`;
+            combatHeader.innerHTML += `Notice: You failed to deliver ${parcel.content}.<br>`;
             parcel = undefined;
         }
     }
@@ -676,11 +738,11 @@ function deliverParcel(isDelivered) {
     if (isDelivered) {
         ronin.items.splice(ronin.items.indexOf(parcel.content), 1);
         updateStat(parcel.stat, parcel.change);
-        combatHeader.innerHTML += `You have successfully delivered ${parcel.content}. You gained ${parcel.change} ${parcel.stat}`;
+        combatHeader.innerHTML += `You have successfully delivered ${parcel.content}. You gained ${parcel.change} ${parcel.stat}<br>`;
         parcel = undefined;
     }
     else {
-        combatHeader.innerHTML += `Notice: You failed to deliver ${parcel.content}.`;
+        combatHeader.innerHTML += `Notice: You failed to deliver ${parcel.content}.<br>`;
         parcel = undefined;
     }
 }
@@ -702,7 +764,9 @@ function fireRescue() {
     </ul>`;
 }
 
-function assassinate(target, fight, block) {
+let assassinBounty;
+
+function assassinate(target, fight, block, reward) {
     let mark = {
         class: "enemy",
         background: "hater",
@@ -714,6 +778,8 @@ function assassinate(target, fight, block) {
     };
 
     assassinMark = generateEnemy(mark);
+
+    assassinBounty = reward;
 }
 
 function hasMark() {
@@ -723,8 +789,10 @@ function hasMark() {
 
     if (assassinMark !== undefined) {
         if (assassinMark.status == "dead") {
-            combatHeader.innerHTML += `Your assassination target, ${assassinMark.name}, is already dead.`;
+            combatHeader.innerHTML += `Your assassination target, ${assassinMark.name}, is already dead. You gained ${assassinBounty} from your patron.<br>`;
+            ronin.items.push(assassinBounty);
             assassinMark == undefined;
+            assassinBounty == undefined;
             return;
         }
 
@@ -732,10 +800,7 @@ function hasMark() {
     }
 }
 
-generatePossibleAlly();
-generatePossibleAlly();
-generatePossibleAlly();
-generatePossibleAlly();
-generatePossibleAlly();
-generatePossibleAlly();
-renderEncounter("re42");
+generateEnemy();
+generateEnemy();
+generateEnemy();
+renderEncounter("re66");

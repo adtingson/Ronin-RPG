@@ -4,8 +4,8 @@ function rolld6() {
 
 const clanNames = ["Ukiryuu (Dragon)", "Kitsune (Fox)", "Nezumi (Rat)", "Kasaitori (Bird)", "Tsukiinu (Dog)", "Mushi (Insect)", "Akaitora (Tiger)", "Yamabuta (Boar)", "Osuushi (Ox)", "Shiroiuma (Horse)", "Kinsaru (Monkey)", "Fuyukumo (Spider)", "Kazekani (Crab)", "Tetsukoi (Carp)", "Harihebi (Serpent)", "Kuroineko (Cat)", "Usagi (Rabbit)", "Karasu (Crow)", "Ondori (Roster)", "Shinkame (Turtle)", "Ushi (Cow)", "Kuma (Bear)", "Ookami (Wolf)", "Tokage (Lizard)", "Akirisu (Squirrel)", "Shimayagi (Goat)", "Ahiru (Duck)", "Natsusai (Rhino)", "Umisame (Shark)", "Yukiga (Moth)", "Sasori (Scorpion)", "Suzume (Sparrow)", "Washi (Eagle)", "Tsuru (Crane)", "Yorutako (Octopus)", "Kaeru (Frog)"];
 
-const nobleClans = [];
 const nobleClanNames = [];
+const nobleClans = [];
 
 let contextClan;
 

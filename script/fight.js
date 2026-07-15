@@ -20,6 +20,12 @@ function fight() {
             roninSide.fight = roninSide.technique.fight;
             roninSide.block = roninSide.technique.block;
         }
+
+        if (target == finalVillain) {
+            if (villainPrisoners.length && target.firstStrike == "available") {
+                interactText.innerHTML += `This villain has ${villainPrisoners[0].name} as prisoner. They will block your attack with this ally. If you surrender, this villain will keep your ally as a prisoner.<br>`;
+            }
+        }
     }
 
     if (roninSide == ronin && encounterPersons.some(person => villainsList.includes(person)) && livingInnocents().length && ronin.firstStrike == "available") {
@@ -60,14 +66,18 @@ function fight() {
             if (target.brokenWeapons == undefined || !target.brokenWeapons.some(weapon => weapon.includes(target.weapon))) {
                 target.brokenWeapons ??= [];
                 target.brokenWeapons.push(target.weapon);
-                interactText.innerHTML += `However, you had broken their weapon.`;
+                interactText.innerHTML += `However, you had broken their weapon.<br>`;
             }
         }
         if (target.techniqueID == "Jitte") {
             if (!roninSide.brokenWeapons?.length || roninSide.weapons?.filter(weapon => weapon.includes(roninSide.weapon)).length > roninSide.brokenWeapons?.filter(weapon => weapon.includes(roninSide.weapon)).length) {
                 roninSide.brokenWeapons ??= [];
                 roninSide.brokenWeapons.push(roninSide.weapon);
-                interactText.innerHTML += `And also, they had broken your weapon.`;
+                interactText.innerHTML += `And also, they had broken your weapon.<br>`;
+                if (roninSide == ronin && minorDamage.some(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon))) {
+                    let weaponRemove = minorDamage.find(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon));
+                    minorDamage. splice(minorDamage.indexOf(weaponRemove), 1);
+                }
             }
         }
     }
@@ -143,19 +153,19 @@ function checkFightWinner() {
 
     if (roninFight > enemyFight) {
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${roninSide.name} won the exchange.`;
+        interactText.innerHTML += `${roninSide.name} won the exchange.<br>`;
         target.status = "fighting";
         return "ronin";
     }
     else if (enemyFight > roninFight) {
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${target.name} won the exchange.`;
+        interactText.innerHTML += `${target.name} won the exchange.<br>`;
         target.status = "winning";
         return "enemy";
     }
     else {
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${roninSide.name} and ${target.name} have exchanged blows. The fight is even.`;
+        interactText.innerHTML += `${roninSide.name} and ${target.name} have exchanged blows. The fight is even.<br>`;
         target.status = "fighting";
         return "draw";
     }
@@ -170,13 +180,19 @@ function checkEnemyBlock() {
         target.status = "fighting";
 
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${target.name} blocked your hit.`;
+        interactText.innerHTML += `${target.name} blocked your hit.<br>`;
+
+        if (target == finalVillain && finalVillain.power?.prisoner && villainPrisoners.length && finalVillain.status !== "facedBefore") {
+            interactText.innerHTML += `${villainPrisoners[0].name} took the hit. This Ally is now dead.<br>`;
+            villainPrisoners[0].status = "dead";
+            villainPrisoners.length = 0;
+        }
 
         return "proceed";
     }
     else {
         combatHeader.innerHTML = `<b>${roninSide.name}</b>[${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
-        interactText.innerHTML += `<br><br>${roninSide.name} landed a decisive blow on ${target.name}.`;
+        interactText.innerHTML += `${roninSide.name} landed a decisive blow on ${target.name}.<br>`;
         target.status = "lost";
 
         return "roninWin";
@@ -191,7 +207,7 @@ function roninWinCleanUp() {
     }
 
     combatHeader.innerHTML = `<b>${roninSide.name}</b>[${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <s><b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</s>`;
-    interactText.innerHTML += `<br><br>${target.name} has lost this duel. How do you want this to end?`;
+    interactText.innerHTML += `${target.name} has lost this duel. How do you want this to end?<br>`;
 
     if (target.type !== "toKill") {
         encounterButtons.innerHTML = `<button onclick="slayEnemy()">Kill</button><button onclick="spareEnemy()">Knock Out</button>`;
@@ -204,7 +220,7 @@ function roninWinCleanUp() {
 function slayEnemy() {
     let target = getTarget();
 
-    interactText.innerHTML += `<br><br>${target.name} has been slain. This cold-hearted act lost ${ronin.name} 1 Compassion.`;
+    interactText.innerHTML += `${target.name} has been slain. This cold-hearted act lost ${ronin.name} 1 Compassion.<br>`;
 
     target.status = "dead";
     encounterPersons.splice(0,1);
@@ -216,16 +232,16 @@ function slayEnemy() {
     }
     
     if (encounterPersons.length === 0) {
-        renderEncounter(windowContext);
         roninBlock = roninSide.block;
         roninSide.firstStrike = "available";
+        renderEncounter(windowContext);
         return;
     }
 
     target = getTarget();
 
     renderCombatHeader(target)
-    interactText.innerHTML += "<br><br>Next enemy is here. Be ready.";
+    interactText.innerHTML += "Next enemy is here. Be ready.<br>";
 
     renderUI();
 }
@@ -233,7 +249,7 @@ function slayEnemy() {
 function spareEnemy() {
     let target = getTarget();
 
-    interactText.innerHTML += `<br><br>${target.name} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.`;
+    interactText.innerHTML += `${target.name} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.<br>`;
 
     target.status = "lost";
     target.firstStrike = "available"
@@ -242,16 +258,16 @@ function spareEnemy() {
     updateStat("reputation",+1);
     
     if (encounterPersons.length === 0) {
-        renderEncounter(windowContext);
         roninBlock = roninSide.block;
         roninSide.firstStrike = "available";
+        renderEncounter(windowContext);
         return;
     }
 
     target = getTarget();
 
     renderCombatHeader(target)
-    interactText.innerHTML += "<br><br>Next enemy is here. Be ready.";
+    interactText.innerHTML += "Next enemy is here. Be ready.<br>";
 
     encounterButtons.innerHTML = "";
     renderUI();
@@ -267,12 +283,12 @@ function renderBlockDeterminationOption() {
             roninSide.blockState = "blocked";
 
             renderCombatHeader(target)
-            interactText.innerHTML += `<br><br>${roninSide.name} blocks the blow. The fight continues.`;
+            interactText.innerHTML += `${roninSide.name} blocks the blow. The fight continues.<br>`;
             target.status = "fighting";
             encounterButtons.innerHTML = "";
         }
         else if (roninBlock == 0) {
-            interactText.innerHTML += `<br><br>${roninSide.name} is already in ${roninSide.gender == "Male" ? "his" : "her"} limits and can no longer block. ${roninSide.name} is slain. You have lost a valuable ally.`;
+            interactText.innerHTML += `${roninSide.name} is already in ${roninSide.gender == "Male" ? "his" : "her"} limits and can no longer block. ${roninSide.name} is slain. You have lost a valuable ally.<br>`;
             combatHeader.innerHTML = `<s><b>${roninSide.name}</b>[${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock})</s> vs <b>${target.name}</b>[${target.weapon}](Fight: ${target.fight(target,roninSide)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
             roninSide.status = "dead";
             target.status = "fighting";
@@ -283,7 +299,7 @@ function renderBlockDeterminationOption() {
     }
 
     renderCombatHeader(target)
-    interactText.innerHTML += `<br><br>${target.name} is about to land a hit on you. What do you do?`;
+    interactText.innerHTML += `${target.name} is about to land a hit on you. What do you do?<br>`;
     target.status = "winning";
 
     encounterButtons.innerHTML = `<button onclick="extraEffort()">Extra Effort</button><button onclick="blockHit()">Block</button>`;
@@ -296,7 +312,7 @@ function extraEffort() {
         updateStat("determination",-1);
 
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${roninSide.name} pushed ${roninSide.gender == "Male" ? "his" : "her"} limits to avoid this hit.`;
+        interactText.innerHTML += `${roninSide.name} pushed ${roninSide.gender == "Male" ? "his" : "her"} limits to avoid this hit.<br>`;
         target.status = "fighting";
     }
     else if (roninSide.determination == 0) {
@@ -306,7 +322,7 @@ function extraEffort() {
             return;
         }
 
-        interactText.innerHTML += `${roninSide.name} has already ran out of determination. Try something else.`;
+        interactText.innerHTML += `${roninSide.name} has already ran out of determination. Try something else.<br>`;
         encounterButtons.innerHTML = `<button onclick="blockHit()">Block</button>`;
     }
 
@@ -323,7 +339,7 @@ function blockHit() {
         roninSide.blockState = "blocked";
 
         renderCombatHeader(target)
-        interactText.innerHTML += `<br><br>${roninSide.name} blocks the blow. The fight continues.`;
+        interactText.innerHTML += `${roninSide.name} blocks the blow. The fight continues.<br>`;
         target.status = "fighting";
         encounterButtons.innerHTML = "";
     }
@@ -334,7 +350,7 @@ function blockHit() {
             return;
         }
 
-        interactText.innerHTML += `<br><br>${roninSide.name} is already in his limits and can no longer block. Try something else.`;
+        interactText.innerHTML += `${roninSide.name} is already in his limits and can no longer block. Try something else.<br>`;
         encounterButtons.innerHTML = `<button onclick="extraEffort()">Extra Effort</button>`;
     }
 
@@ -376,6 +392,7 @@ function roninLossCleanUp() {
 function surrenderFight() {
     const lossOutcome = rolld6();
     const target = getTarget();
+    target.status = "facedBefore";
 
     if (target.type == "finisher") {
         roninSide.status = "dead";
@@ -407,11 +424,11 @@ function healWounds() {
 
     if (heal >= 3) {
         ronin.status = "alive";
-        combatHeader.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i>`;
+        combatHeader.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i><br>`;
     }
     else {
         ronin.status = "wounded";
-        combatHeader.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i>`;
+        combatHeader.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i><br>`;
     }
 }
 
@@ -450,5 +467,5 @@ function renderCombatHeader(target) {
         }
     }
 
-    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${targetWeaponModifier}${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+    combatHeader.innerHTML = `<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock}) vs <b>${target.name}</b>[${targetWeaponModifier}${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})<br>`;
 }

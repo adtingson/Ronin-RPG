@@ -76,7 +76,7 @@ const uniquePowers = [
                 finalVillain.power.condition();
             }
         },
-        text: () => `This Final Villain has one of your Allies as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.`,
+        text: () => `This Final Villain has one of your Allies as prisoner. ${finalVillain.gender == "Male" ? "He" : "She"} blocks the first attack received using your Ally as a shield (killing the Ally). If you surrender, the villain will keep the ally prisoner.`,
         prisoner: () => {
             return livingAllies()[Math.floor(Math.random() * livingAllies.length)];
         }

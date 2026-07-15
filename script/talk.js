@@ -2,12 +2,12 @@ function talk() {
     const target = getTarget();
 
     if (target == undefined) {
-        interactText.innerHTML = "There is no one to talk to.";
+        interactText.innerHTML += "There is no one to talk to.<br>";
         return;
     }
     
     if (target.morale == "emboldened" || target.background == "hater") {
-        interactText.innerHTML = "Trying to talk to this person is pointless. They are eager to fight you!";
+        interactText.innerHTML += "Trying to talk to this person is pointless. They are eager to fight you!<br>";
         return;
     }
 
@@ -38,7 +38,7 @@ function talk() {
         }
     }
     else if (target.background == "talkFailed") {
-        talkMessage = "They are not interested in talking right now.<br><br>Try interacting in other ways.";
+        talkMessage = "They are not interested in talking right now.<br>Try interacting in other ways.";
     }
     else if (target.background == "pastInfo") {
         const result = talkForDarkSecret();
@@ -95,10 +95,7 @@ function talk() {
         }
     }
 
-    interactText.innerHTML =
-    `You tried talking to ${target.name} and you learned...
-    <br>
-    ${talkMessage}`;
+    interactText.innerHTML += `You tried talking to ${target.name} and you learned...<br>${talkMessage}<br>`;
 
     personPreview();
     renderUI();

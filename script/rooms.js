@@ -15,23 +15,46 @@ const rooms = {
                 goto: "searchPossibleAlly"
             },
             {
-                text: "Ally"
+                text: "Ally",
+                goto: "searchAlly"
             },
             {
-                text: "Enemy"
+                text: "Enemy",
+                goto: "searchEnemy"
             },
             {
-                text: "Villain"
-            },
-            {
-                text: "Object"
+                text: "Something Else",
+                goto: "searchSomething"
             }
             
         ]
     },
+    searchSomething: {
+        header: "Searching for Something",
+        text: "If you are searching for something just to give narrative flavor, please proceed.",
+        buttons: [
+            {
+                text: "Search",
+                function: () => searchResult()
+            },
+            {
+                text: "Back",
+                goto: "searchRoom"
+            }
+        ]
+    },
+    searchEnemy: {
+        header: "Searching for an Enemy",
+        text: "",
+        function: () => searchExisting(enemies)
+    },
+    searchAlly: {
+        header: "Searching for an Ally",
+        text: "",
+        function: () => searchExisting(allies)
+    },
     searchPossibleAlly: {
         header: "Searching for a Possible Ally",
-        function: () => {setWindowContext("searchRoom")},
         text: "Are you searching for a new or existing Possible Ally?",
         buttons: [
             {
@@ -73,7 +96,7 @@ const rooms = {
     searchExistingNewPossibleAlly: {
         header: "Searching for a Possible Ally",
         text: "",
-        function: () => {setWindowContext("searchPossibleAlly"); searchExisting(possibleAllies)}
+        function: () => {searchExisting(possibleAllies)}
     },
     villain: {
         header: "A Villain in Your Tracks",
@@ -81,25 +104,34 @@ const rooms = {
         function: () => {setWindowContext("endRoute");villainFight()}
     },
     enRoute: {
-        header: "En route to next destination...",
+        header: "En Route",
 	    text: "",
         function: () => {routeBuilder()}
     },
     endRoute: {
         header: "End of Route",
+        text: "",
+        function: () => {endOfRouteCheck()}
+    },
+    endRouteFight: {
+        header: "End of Route",
+        text: "There are some enemies that are waiting you.",
+        function: () => {setWindowContext("endRoute0")}
+    },
+    endRoute0: {
+        header: "End of Route",
         text: "You have reached the end of the route.",
         buttons: [
             {
-                text: "Continue to Destination",
+                text: "Continue",
                 goto: "destination"
             },
             {
                 text: "Search",
                 goto: 'searchRoom',
-                function: () => {setWindowContext("endRoute")}
+                function: () => {setWindowContext("endRoute0")}
             }
-        ],
-        function: () => {endOfRouteCheck()}
+        ]
     },
     endGame: {
         header: "The Redemption",
@@ -166,20 +198,20 @@ const rooms = {
         ]
     },
     destination: {
-        header: "Destination",
+        header: "Location",
         text: "You have reached your destination.",
         function: () => {setWindowContext("inDestination"); renderEncounter(["destination0", "destination1", "destination2", "destination3", "destination4", "destination4"][rolld6()]);},
     },
     inDestination: {
-        header: "Somewhere in the destination",
+        header: "In Location",
         text: "What do you do?",
         buttons: [
             {
-                text: "Leave to Next Destination",
+                text: "Leave",
                 goto: "enRoute"
             },
             {
-                text: "Find Something",
+                text: "Search",
                 goto: "searchRoom"
             }
         ],
@@ -223,33 +255,37 @@ const rooms = {
 	    text: () => `${ronin.name} has officially reached the end of their story and of their life. However, this is not the end of this story if you'd like.`,
 	    buttons: [
 		    {
-			    text: "New Character"
+			    text: "Continue Game using a New Character"
 		    },
             {
 			    text: "Continue Game using an Ally"
-		    }
+		    },
+            {
+                text: "New Game"
+            }
         ]
     },
     lostSomewhereLoss: {
         header: "You have been Spared.",
-	    text: "You have lost the fight, but you have been spared. You find yourself <i>Wounded</i> in a ditch somewhere. Your <i>Determination</i> is down.",
-	    buttons: [
-		    {
-			    text: "Continue"
-		    }
-        ]
+	    text: "You have lost the fight, but you have been spared. You find yourself Wounded (-1 Fight until healed) in a ditch somewhere. Your Determination is set to 0.",
     },
     lostSomewhereSurrender: {
         header: "You have been Spared.",
-	    text: "You have given up the fight, but you have been spared. You find yourself <i>Wounded</i> in a ditch somewhere. But your <i>Determination</i> is in tact.",
-	    buttons: [
-		    {
-			    text: "Continue"
-		    }
-        ]
+	    text: "You have given up the fight, but you have been spared. You find yourself Wounded (-1 Fight until healed) in a ditch somewhere.",
     },
     allyHealer: {
-        header: "Saved by an Ally"
+        header: "Saved by an Ally",
+        text: () => {
+            let livingHealers = allies.filter(ally => ally.occupation == "Healer" && ally.status !== "dead");
+            let allySaviour = livingHealers[Math.floor(Math.random() * livingHealers.length)];
+            return `After losing the fight, ${allySaviour.name}, a Healer ally, has found you and nursed you back to health. However, you are still Wounded (-1 Fight until healed).`
+        },
+        buttons: [
+            {
+                text: "Thanks!",
+                function: () => renderEncounter(windowContext)
+            }
+        ]
     },
     destination0: {
         header: "Large City",
@@ -786,32 +822,23 @@ const rooms = {
         function: () => searchResult("Healer")
     },
     re66: {
-        header: "Buddhist Temple",
+        header: "Road Encounter",
         text: "You have found a Buddhist temple. There, a monk invited you to spend a few days meditating.",
         buttons: [
             {
-                text: "Stay for a week.",
-                goto: () => rolld6() > 1 ?  "temple26":"temple1"
+                text: "Meditate",
+                goto: () => rolld6() > 1 ?  "re66a":"re66b"
             },
             {
-                text: "Leave",
-                goto: "templeLeave"
-            }
-        ]
-    },
-    templeLeave : {
-        header: "You Left",
-	    text: "You refused the monk's offer, and continued your journey to the next destination.",
-	    buttons: [
-            {
-                text: "Continue Journey",
+                text: "Refuse",
                 goto: "endRoute"
             }
-        ]
+        ],
+        function: () => {setWindowContext("endRoute");}
     },
-    temple26: {
-        header: "A Week of Meditation",
-	    text: "You spent your days at the temple meditating.<br><br>Your reputation is reduced by 1.",
+    re66a: {
+        header: "Road Encounter",
+	    text: "You spent a week at the temple meditating.<br>Your reputation is reduced by 1.",
 	    buttons: [
             {
                 text: "Continue Journey",
@@ -820,20 +847,24 @@ const rooms = {
         ],
         function: () => {updateStat("reputation",-1);}
     },
-    temple1: {
-        header: "A Ghost from the Past",
+    re66b: {
+        header: "Road Encounter",
 	    text: "You have been visited by the spirit of one of your victims (Fight +1; Block 0). He will fight you and will only disappear if he kills you. If you defeat him, he will still appear at the end of each route to fight you.",
         persons: [
             {
                 name: "The Spirit of your Victim",
                 weapon: "Katana",
+                gender: "Male",
                 fight: () => 1,
                 block: 0,
                 class: "enemy",
                 background: "hater"
             }
         ],
-        function: () => {addEnemyToEndRoute();setWindowContext("destination");}
+        function: () => {
+            addEnemyToEndRoute();
+            encounterPersons.length = 0;
+        }
     },
     re65: {
         header: "Road Encounter",
@@ -949,7 +980,10 @@ const rooms = {
         buttons: [
             {
                 text: "Take it to repair",
-                function: () => addToPersonalEffects("Umbrella")
+                function: () => {
+                    ronin.items.push("Umbrella");
+                },
+                goto: "endRoute"
             },
             {
                 text: "Leave it on the floor",
@@ -1022,7 +1056,7 @@ const rooms = {
         function: () => {setWindowContext("endRoute");},
         buttons: [
             {
-                text: "Explore the river at night (when Kappa is supposed to appear)",
+                text: "Explore",
                 goto: () => ["re61a", "re61a", "re61a", "re61a", "re61b", "re61c"][rolld6()]
             },
             {
@@ -1033,16 +1067,16 @@ const rooms = {
     },
     re61a: {
         header: "Road Encounter",
-        text: "Nothing happens."
+        text: "You explored the river at night when Kappa is supposed to appear, but nothing happens."
     },
     re61b: {
         
-        text: "You got hurt badly walking on the rocks of the river and now you are Wounded (-1 of Fight until recover).",
+        text: "You explored the river at night when Kappa is supposed to appear. You got hurt badly walking on the rocks of the river and now you are Wounded (-1 of Fight until recover).",
         function: () => ronin.status = "wounded"
     },
     re61c: {
         header: "Road Encounter",
-        text: "You have found Kappa (Fight +1; Block 1). If you defeat him, you gain 1 Determination.",
+        text: "You explored the river at night when Kappa is supposed to appear. You have found Kappa (Fight +1; Block 1). If you defeat him, you gain 1 Determination.",
         function: () => {setWindowContext("re61c0");},
         persons: [
             {
@@ -1513,7 +1547,7 @@ const rooms = {
     re34c0: {
         header: "Road Encounter",
         text: () => `You accepted the nobleman's offer and will try to kill this Samurai from ${contextClan}.`,
-        function: () => assassinate(`Samurai from ${contextClan}`, 2, 1)
+        function: () => assassinate(`Samurai from ${contextClan}`, 2, 1, "Lots of Money")
     },
     re34d: {
         header: "Road Encounter",
@@ -1821,7 +1855,7 @@ const rooms = {
                 class: "enemy",
                 background: "hater",
                 name: "Wild Dog",
-                weapon: "None",
+                weapon: "Bite",
                 fight: () => 0,
                 block: 0
             }
@@ -1880,7 +1914,10 @@ const rooms = {
             setWindowContext("endRoute");
             if (ronin.weapons.length) {
                 let randomWeapon = ronin.weapons[Math.floor(Math.random() * ronin.weapons.length)];
-                minorDamage.push(randomWeapon);
+                if (!minorDamage.some(weapon => randomWeapon.includes(weapon) || weapon.includes(randomWeapon))) {
+                    minorDamage.push(randomWeapon);
+                }
+                combatHeader.innerHTML += `${ronin.name} notices some damage on ${ronin.gender == "Male" ? "his" : "her"} ${randomWeapon}<br>`;
             }
         },
     },

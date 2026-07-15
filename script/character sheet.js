@@ -59,7 +59,7 @@ const livingAllies = () => allies.filter(ally => ally.status !== "dead");
 const minorDamage = [];
 
 function getTarget() {
-    if (encounterPersons[0].occupation == "Blacksmith" && minorDamage.length) {
+    if (encounterPersons[0]?.occupation == "Blacksmith" && minorDamage.length) {
         combatHeader.innerHTML += `You found a blacksmith and got your weapon's minor damages fixed.`;
         minorDamage.length = 0;
     }
@@ -104,6 +104,10 @@ function renderVillains() {
     document.getElementById("villains").innerHTML = JSON.stringify(villainsList, null, 4);
 }
 
+function renderNobleClans() {
+    document.getElementById("nobleClans").innerHTML = JSON.stringify(nobleClans, null, 4);
+}
+
 function renderDisplay() {
     renderRoninSheet();
     renderAllies();
@@ -112,10 +116,5 @@ function renderDisplay() {
     renderLivingEnemies();
     renderEndRouteEnemies();
     renderVillains();
-}
-
-function addToPersonalEffects(item) {
-    ronin.items ??= [];
-
-    ronin.items.push(item);
+    renderNobleClans();
 }

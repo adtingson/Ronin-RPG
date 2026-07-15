@@ -2,22 +2,22 @@ function intimidate() {
     const target = getTarget();
 
     if (target == undefined) {
-        interactText.innerHTML = "There is no one left to intimidate.";
+        interactText.innerHTML += "There is no one left to intimidate.<br>";
         return;
     }
 
     if (target.type == "tricky") {
-        interactText.innerHTML = "This creature can't be intimidated.";
+        interactText.innerHTML += "This creature can't be intimidated.<br>";
         return;
     }
 
     if (!enemies.includes(target)) {
-        interactText.innerHTML = `You cannot intimidate ${target.name}. ${target.name} is ${(allies.includes(target)?`an ally.`:possibleAllies.includes(target)?`a possible ally.`:`a villain!`)}`;
+        interactText.innerHTML += `You cannot intimidate ${target.name}. ${target.name} is ${(allies.includes(target)?`an ally.`:possibleAllies.includes(target)?`a possible ally.`:`a villain!`)}<br>`;
         return;
     }
 
     if(target.morale == "emboldened") {
-        interactText.innerHTML = `You cannot intimidate ${target.name}. They are emboldened to fight you!`;
+        interactText.innerHTML += `You cannot intimidate ${target.name}. ${target.gender == "Male" ? "He" : "She"} is emboldened to fight you!<br>`;
         return;
     }
 
@@ -31,11 +31,11 @@ function intimidate() {
         renderDisplay();
     }
     else {
-        intimidateMessage = `${target.name} is not intimidated by you. He becomes emboldened to fight!<br>(${target.name} gets +1 to their next Fight roll)`;
+        intimidateMessage = `${target.name} is not intimidated by you. ${target.gender == "Male" ? "He" : "She"} becomes emboldened to fight!<br>(${target.name} gets +1 to their next Fight roll)`;
         target.morale = "emboldened";
     }
 
-    interactText.innerHTML = `<p>${intimidateMessage}</p>`;
+    interactText.innerHTML += `${intimidateMessage}<br>`;
     personPreview();
     renderUI();
 }
