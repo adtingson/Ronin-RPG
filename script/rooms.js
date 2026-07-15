@@ -1610,4 +1610,278 @@ const rooms = {
         },
         function: () => setWindowContext("endRoute")
     },
+    re26: {
+        header: "Road Encounter",
+        text: () => `You found a Mercenary (Fight +1; Block 0) that starts by telling you about ${finalVillain.name}, the Final Villain, and then attacks you.`,
+        function: () => {setWindowContext("re26a");},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Mercenary",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 0
+            }
+        ]
+    },
+    re26a: {
+        header: "Road Encounter",
+        function: () => {setWindowContext("endRoute"); ronin.items.push("Proof of Villainy")},
+        text: "The mercenary leaves you an object that reveals how terrible the final villain is. As long as you have this object, you gain +1 Fight against any villain."
+    },
+    re25: {
+        header: "Road Encounter",
+        text: "You were walking on the road when you were surprised by a Shuriken attack. You will now have -1 on your next attack. A Ninja (Fight +3; Block 0) jumps from a tree and attacks you.",
+        function: () => {setWindowContext("endRoute"); firstStrikeDebuff = 1},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Ninja",
+                weapon: "Katana",
+                fight: () => 3,
+                block: 0
+            }
+        ]
+    },
+    re24: {
+        header: "Road Encounter",
+        text: () => `You are approached by a Samurai (Fight +1; Block 1) from ${randomNobleClan()}. He doesn’t like you and anything you do could be a reason for him to attack you.`,
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Samurai",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 1
+            }
+        ]
+    },
+    re23: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {
+            setWindowContext("endRoute");
+
+            if (livingAllies().length) {
+                renderEncounter("re23a");
+            }
+            else {
+                renderEncounter("re23b");
+            }
+        },
+    },
+    re23a: {
+        header: "Road Encounter",
+        text: () => {
+            let randomAlly = livingAllies()[Math.floor(Math.random() * livingAllies().length)];
+            let nextVillain = villainsList.find(villain => villain.status === "active");
+            return `You find ${randomAlly.name} by the side of the road. ${randomAlly.gender == "Male" ? "He" : "She"} is injured and says that it was ${nextVillain.name}, the next villain, who hurt ${randomAlly.gender == "Male" ? "him" : "her"}. Add 1 Reputation.`
+        },
+        function: () => updateStat("reputation", +1)
+    },
+    re23b: {
+        header: "Road Encounter",
+        text: "You find a Possible Ally walking down the road.",
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re22: {
+        header: "Road Encounter",
+        text: "You find a Possible Ally lying in the middle of the road.",
+        function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Help",
+                goto: "re22a"
+            },
+            {
+                text: "Ignore",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re22a: {
+        header: "Road Encounter",
+        text: "You see that the Possible Ally have a head wound. It looks like someone attacked the Possible Ally.",
+        buttons: [
+            {
+                text: "Find Attacker",
+                goto: () => rolld6() == 5 ? "re22a0" : "re22a1"
+            },
+            {
+                text: "Go Away",
+                goto: "endRoute"
+            }
+        ]
+    },
+    re22a0: {
+        header: "Road Encounter",
+        text: "You were able to find an arrogant Samurai (Fight +1; Block 1) who possibly attacked the Possible Ally.",
+        persons: [
+            {
+                class: "enemy",
+                name: "Samurai",
+                weapon: "Katana",
+                fight: () => 1,
+                block: 1
+            },
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re22a1: {
+        header: "Road Encounter",
+        text: "You have found nothing.",
+        persons: [
+            {
+                class: "possibleAlly"
+            }
+        ]
+    },
+    re21: {
+        header: "Road Encounter",
+        text: () => {
+            let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
+            let revenger;
+            
+            if (livingEnemies.length) {
+                revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
+                let oldFight = revenger.fight;
+                revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+
+                encounterPersons.push(revenger);
+                return `An enemy you recently left alive, comes your way with Fight +1.`;
+            }
+            else {
+                return `You found nothing.`;
+            }
+        },
+        function: () => setWindowContext("endRoute")
+    },
+    re16: {
+        header: "Road Encounter",
+        text: "",
+        function: () => {
+            setWindowContext("endRoute");
+            
+            if (villainsList.some(villain => villain.status == "dead") || enemies.some(enemy => enemy.name.includes("Samurai") && enemy.status == "dead")) {
+                renderEncounter("re16a");
+            }
+            else {
+                renderEncounter("re16b");
+            }
+        },
+    },
+    re16a: {
+        header: "Road Encounter",
+        text: () => {
+            if (villainsList.some(villain => villain.status == "dead") && enemies.some(enemy => enemy.name.includes("Samurai") && enemy.status == "dead")) {
+                const deadVillains = villainsList.filter(villain => villain.status == "dead");
+                let theVillain = deadVillains[Math.floor(Math.random() * deadVillains.length)];
+                let result = Math.random() < 0.5 ? `A relative of a Samurai that you have slain appears to take revenge. He is also a Samurai (Fight +2; Block 1).` : `A relative of the villain ${theVillain.name}, that you have slain, appears to take revenge. He is also a Samurai (Fight +2; Block 1).`;
+                return result;
+            }
+            else if (enemies.some(enemy => enemy.name.includes("Samurai") && enemy.status == "dead")) {
+                return `A relative of a Samurai that you have slain appears to take revenge. He is also a Samurai (Fight +2; Block 1).`
+            }
+            else if (villainsList.some(villain => villain.status == "dead")) {
+                const deadVillains = villainsList.filter(villain => villain.status == "dead");
+                let theVillain = deadVillains[Math.floor(Math.random() * deadVillains.length)];
+                return `A relative of the villain ${theVillain.name}, that you have slain, appears to take revenge. He is also a Samurai (Fight +2; Block 1).`
+            }
+        },
+        persons: [
+            {
+                class: "enemy",
+                name: "Samurai",
+                weapon: "Katana",
+                fight: () => 2,
+                block: 1
+            }
+        ]
+    },
+    re16b: {
+        header: "Road Encounter",
+        text: "Nothing happens."
+    },
+    re15: {
+        header: "Road Encounter",
+        text: "You are attacked by a Wild Dog (Fight +0; Block 0).",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Wild Dog",
+                weapon: "None",
+                fight: () => 0,
+                block: 0
+            }
+        ]
+    },
+    re14: {
+        header: "Road Encounter",
+        text: "You are attacked by a Bear (Fight +2; Block 0).",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                background: "hater",
+                name: "Bear",
+                weapon: "None",
+                fight: () => 2,
+                block: 0
+            }
+        ]
+    },
+    re13: {
+        header: "Road Encounter",
+        text: "You are surrounded by 3 Thugs (Fight +0; Block 0) with clubs.",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                number: 3,
+                name: "Thug",
+                weapon: "Club",
+                fight: () => 0,
+                block: 0
+            }
+        ]
+    },
+    re12: {
+        header: "Road Encounter",
+        text: "You are surrounded by two burglars (Fight -1; Block 0) who want something of value or will attack.",
+        function: () => {setWindowContext("endRoute");},
+        persons: [
+            {
+                class: "enemy",
+                number: 2,
+                background: "hater",
+                name: "Burglar",
+                weapon: "Dagger",
+                fight: () => -1,
+                block: 0
+            }
+        ]
+    },
+    re11: {
+        header: "Road Encounter",
+        text: "You notice that your weapon was damaged in the last fight you had. You will have to find a Blacksmith to fix it (he/she doesn’t need to be an Ally for that). Until then, you will have -1 Fight.",
+        function: () => {
+            setWindowContext("endRoute");
+            if (ronin.weapons.length) {
+                let randomWeapon = ronin.weapons[Math.floor(Math.random() * ronin.weapons.length)];
+                minorDamage.push(randomWeapon);
+            }
+        },
+    },
 };

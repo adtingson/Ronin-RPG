@@ -1,6 +1,13 @@
 const ronin = {};
 generateRonin();
 
+const encounterHeader = document.getElementById("encounterHeader");
+const encounterText = document.getElementById("encounterText");
+const encounterButtons = document.getElementById("encounterButtons");
+const interactText = document.getElementById("interactText");
+const combatHeader = document.getElementById("combatHeader");
+const interactButtons = document.getElementById("interactButtons");
+
 function generateRonin() {
     const gender = genderFunc();
     const name = nameFunc(gender);
@@ -47,7 +54,15 @@ let quarryList;
 
 let assassinMark;
 
+const livingAllies = () => allies.filter(ally => ally.status !== "dead");
+
+const minorDamage = [];
+
 function getTarget() {
+    if (encounterPersons[0].occupation == "Blacksmith" && minorDamage.length) {
+        combatHeader.innerHTML += `You found a blacksmith and got your weapon's minor damages fixed.`;
+        minorDamage.length = 0;
+    }
     return encounterPersons[0];
 }
 

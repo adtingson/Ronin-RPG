@@ -71,30 +71,26 @@ const uniquePowers = [
         buffer: () => possibleAllies.at(-1)
     },
     {   condition: () => {
-            if (allies.filter(ally => ally.status !== "dead").length === 0) {
+            if (livingAllies().length === 0) {
                 finalVillain.power = uniquePowers[rolld6()];
                 finalVillain.power.condition();
             }
         },
         text: () => `This Final Villain has one of your Allies as prisoner. He blocks the first attack received using your Ally as a shield(killing him). If you surrender, the villain will keep the ally prisoner.`,
         prisoner: () => {
-            let livingAllies = allies.filter(ally => ally.status !== "dead");
-
-            return livingAllies[Math.floor(Math.random() * livingAllies.length)];
+            return livingAllies()[Math.floor(Math.random() * livingAllies.length)];
         }
     },
     {
         condition: () => {
-            if (allies.filter(ally => ally.status !== "dead").length === 0) {
+            if (livingAllies().length === 0) {
                 finalVillain.power = uniquePowers[rolld6()];
                 finalVillain.power.condition();
             }
         },
         text: () => `One of your Allies reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now.`,
         buffer: () => {
-            let livingAllies = allies.filter(ally => ally.status !== "dead");
-
-            return livingAllies[Math.floor(Math.random() * livingAllies.length)];
+            return livingAllies()[Math.floor(Math.random() * livingAllies.length)];
         }
     }
 ];

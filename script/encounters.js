@@ -3,12 +3,6 @@ const routeEvents = [
 ];
 
 let windowContext;
-const encounterHeader = document.getElementById("encounterHeader");
-const encounterText = document.getElementById("encounterText");
-const encounterButtons = document.getElementById("encounterButtons");
-const interactText = document.getElementById("interactText");
-const combatHeader = document.getElementById("combatHeader");
-const interactButtons = document.getElementById("interactButtons");
 
 function renderEncounter(encounter) {
     console.log(encounter);

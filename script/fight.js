@@ -1,6 +1,8 @@
 let roninSide;
 const livingInnocents = () => allies.filter(ally => ally.occupation == "Innocent" && ally.status !== "dead");
 let villainBlock = 0;
+let firstStrikeDebuff = 0;
+
 
 function fight() {
     const target = getTarget();
@@ -44,6 +46,7 @@ function fight() {
     target.blockState = "attacked";
     target.firstStrike = "done";
     target.morale = "normal";
+    firstStrikeDebuff = 0;
 
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();
@@ -105,6 +108,16 @@ function checkFightWinner() {
             roninSideFightStat = 0;
             roninBlock = 0;
         }
+
+        if (villainsList.includes(target)) {
+            let proofs = ronin.items.filter(item => item === "Proof of Villainy").length;
+            roninFightBonus += proofs;
+        }
+
+        if (minorDamage.some(weapon => ronin.weapon.includes(weapon) || weapon.includes(ronin.weapon))) {
+            roninFightBonus -= 1;
+        }
+
     }
 
     if (target.brokenWeapons?.length) {
@@ -119,6 +132,10 @@ function checkFightWinner() {
             roninSideFightStat = 0;
             roninBlock = 0;
         }
+    }
+
+    if (roninSide.firstStrike == "available") {
+        roninFightBonus -= firstStrikeDebuff;
     }
 
     const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninFightBonus;
