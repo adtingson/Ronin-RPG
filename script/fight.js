@@ -105,7 +105,7 @@ function checkFightWinner() {
     if (roninSide == ronin) {
         let weaponsBonus = 0;
 
-        weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon)).length ?? 0);
+        weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0);
         
         if (weaponsBonus < 0) {
             weaponsBonus = 0;
@@ -115,7 +115,7 @@ function checkFightWinner() {
 
         roninFightBonus = weaponsBonus + livingInnocents().length;
 
-        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon))) {
+        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon)  || ronin.weapon.includes(weapon))) {
             roninSideFightStat = 0;
             roninBlock = 0;
         }
@@ -203,7 +203,16 @@ function checkEnemyBlock() {
 function roninWinCleanUp() {
     const target = getTarget();
 
-    if (target.background !== "hater") {
+    if (target.background == "hater") {
+        target.background = "hater";
+    }
+    else if (target.pastInfo) {
+        target.background = "pastInfo";
+    }
+    else if (target.darkSecret) {
+        target.background = "darkSecret";
+    }
+    else {
         target.background = "interactedWith";
     }
 
@@ -252,9 +261,27 @@ function spareEnemy() {
 
     interactText.innerHTML += `${target.name} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.<br>`;
 
-    target.status = "lost";
+    target.status = "active";
     target.firstStrike = "available"
     target.brokenWeapons = undefined;
+    
+    if (villainsList.includes(target)) {
+        target.status = "spared";
+    }
+
+    if (target.background == "hater") {
+        target.background = "hater";
+    }
+    else if (target.pastInfo) {
+        target.background = "pastInfo";
+    }
+    else if (target.darkSecret) {
+        target.background = "darkSecret";
+    }
+    else {
+        target.background = "interactedWith";
+    }
+
     encounterPersons.splice(0,1);
     updateStat("reputation",+1);
     
@@ -442,8 +469,8 @@ function renderCombatHeader(target) {
     }
 
     if (roninSide == ronin) {
-        let weaponsMod = ronin.weapons.filter(weapon => weapon.includes(ronin.weapon)).length - 1;
-        let brokenWeaponsMod = ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon)).length ?? 0;
+        let weaponsMod = ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1;
+        let brokenWeaponsMod = ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0;
 
         if (weaponsMod > brokenWeaponsMod) {
             weaponModifier = `+${weaponsMod - brokenWeaponsMod} `;
@@ -452,7 +479,7 @@ function renderCombatHeader(target) {
             weaponModifier = `Broken `;
         }
 
-        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon))) {
+        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon))) {
             weaponModifier = `No `;
         }
     }

@@ -1,51 +1,9 @@
-function renderRoninSheet() {
-   document.getElementById("stats").innerHTML = renderCard(ronin);
-    /*
-    Object.entries(ronin).forEach(
-        ([key,data]) => {
-            document.getElementById("stats").innerHTML += `<li>${key}: ${data}</li>`;
-        }
-    );
-    */
-}
-
-function renderAllies() {
-    document.getElementById("allies").innerHTML = JSON.stringify(allies, null, 4);
-}
-
-function renderPossibleAllies() {
-    document.getElementById("possibleallies").innerHTML = JSON.stringify(possibleAllies, null, 4);
-}
-
-function renderEncounterPersons() {
-    document.getElementById("encounterpersons").innerHTML = JSON.stringify(encounterPersons, null, 4);
-}
-
-function renderLivingEnemies() {
-    document.getElementById("enemies").innerHTML = JSON.stringify(enemies, null, 4);
-}
-
-function renderEndRouteEnemies() {
-    document.getElementById("endrouteenemies").innerHTML = JSON.stringify(endRouteEnemies, null, 4);
-}
-
-function renderVillains() {
-    document.getElementById("villains").innerHTML = renderCard("villains");
-}
-
-function renderNobleClans() {
-    document.getElementById("nobleClans").innerHTML = renderCard("nobleClans");
+function renderRoninStats() {
+    document.getElementById("roninStats").innerHTML = renderCard("roninStats");
 }
 
 function renderDisplay() {
-    renderRoninSheet();
-    renderAllies();
-    renderPossibleAllies();
-    renderEncounterPersons();
-    renderLivingEnemies();
-    renderEndRouteEnemies();
-    renderVillains();
-    renderNobleClans();
+    renderRoninStats();
 }
 
 function renderInteractions() {
@@ -88,7 +46,7 @@ function renderInteractions() {
         interactButtons.innerHTML += `<button onclick="renderTechniqueSelection()">Fight</button>`;
     }
 
-    if ((villainsList.includes(target) || enemies.includes(target))) {
+    if ((villainsList.includes(target) || enemies.includes(target)) && target.status !== "lost") {
         interactButtons.innerHTML += `<button onclick="surrenderFight()">Surrender</button>`;
     }
 }
@@ -129,7 +87,7 @@ function renderCard(person) {
             </tr>
             <tr>
                 <td>Technique</td>
-                <td colspan="3">${ronin.technique.map(technique => technique.desc).join("\n")}</td>
+                <td colspan="3">${renderRoninTechniques()}</td>
             </tr>
             <tr>
                 <td>Family</td>
@@ -148,35 +106,54 @@ function renderCard(person) {
                 <td colspan="3">${ronin.meaning}</td>
             </tr>
             <tr>
-                <td>Reputation</td>
-                <td colspan="3">${statBalls(ronin.reputation, 6)}</td>
+                <td>Weapons</td>
+                <td colspan="3">${renderRoninWeapons()}</td>
             </tr>
             <tr>
-                <td>Compassion</td>
-                <td colspan="3">${statBalls(ronin.compassion, 6)}</td>
-            </tr>
-            <tr>
-                <td>Determination</td>
-                <td colspan="3">${statBalls(ronin.determination, 6)}</td>
-            </tr>
-            <tr>
-                <td>Wounded</td>
-                <td colspan="3">${ronin.status == "wounded" ? "●" : "○"}</td>
-            </tr>
-            <tr>
-                <td>Dead</td>
-                <td colspan="3">${ronin.status == "dead" ? "●" : "○"}</td>
+                <td>Items</td>
+                <td colspan="3">${ronin.items.length ? ronin.items.join(", ") : `Empty`}</td>
             </tr>
         </table>`;
     }
     else if (villainsList.includes(person)) {
-
-    }
-    else if (enemies.includes(person)) {
-
-    }
-    else if (possibleAllies.includes(person) || allies.includes(person)) {
-
+        return `<table>
+            <tr>
+                <td>Name</td>
+                <td colspan="3">${person.name}</td>
+            </tr>
+            <tr>
+                <td>Appearance</td>
+                <td colspan="3">${person.gender == "Male" ? "He" : "She"} ${person.appearance}</td>
+            </tr>
+            <tr>
+                <td>Technique</td>
+                <td colspan="3">${person.technique.desc}</td>
+            </tr>
+            ${person.power ? `<tr>
+                <td>Power</td>
+                <td colspan="3">${person.power.text()}</td>
+            </tr>` : ``}
+            <tr>
+                <td>Trait</td>
+                <td colspan="3">${person.trait}</td>
+            </tr>
+            ${person.scar ? `<tr>
+                <td>Scar</td>
+                <td colspan="3">${person.scar}</td>
+            </tr>` : ``}
+            ${person.meaning ? `<tr>
+                <td>Meaning</td>
+                <td colspan="3">${person.meaning}</td>
+            </tr>` : ``}
+        </table>
+        <table>
+            <tr>
+                <th>Slain</th>
+                <td colspan="3">${person.status == "dead" ? "●" : "○"}</td>
+                <th>Spared</th>
+                <td colspan="3">${person.status == "spared" ? "●" : "○"}</td>
+            </tr>
+        </table>`;
     }
     else if (person == "nobleClans") {
         let result = "";
@@ -198,39 +175,21 @@ function renderCard(person) {
     else if (person == "villains") {
         let result = "";
         villainsToDisplay.forEach(villain => {
-            result += `<table>
-            <tr>
-                <td>Name</td>
-                <td colspan="3">${villain.name}</td>
-            </tr>
-            <tr>
-                <td>Appearance</td>
-                <td colspan="3">${villain.gender == "Male" ? "He" : "She"} ${villain.appearance}</td>
-            </tr>
-            <tr>
-                <td>Technique</td>
-                <td colspan="3">${villain.technique.desc}</td>
-            </tr>
-            ${villain.power ? `<tr>
-                <td>Power</td>
-                <td colspan="3">${villain.power.text()}</td>
-            </tr>` : ``}
-            <tr>
-                <td>Trait</td>
-                <td colspan="3">${villain.trait}</td>
-            </tr>
-            ${villain.scar ? `<tr>
-                <td>Scar</td>
-                <td colspan="3">${villain.scar}</td>
-            </tr>` : ``}
-            ${villain.meaning ? `<tr>
-                <td>Meaning</td>
-                <td colspan="3">${villain.meaning}</td>
-            </tr>` : ``}
-        </table>`;
+            result += renderCard(villain);
         });
 
         return result;
+    }
+    else if (person == "roninStats") {
+        return `<div id="roninStatBalls">
+            <div><b>Reputation</b>${statBalls(ronin.reputation, 6)}</div>
+            <div><b>Compassion</b>${statBalls(ronin.compassion, 6)}</div>
+            <div><b>Determination</b>${statBalls(ronin.determination, 6)}</div>
+        </div>
+        <div id="roninStatusBalls">
+            <div>${ronin.status == "wounded" ? "●" : "○"}<b>Wounded</b></div>
+            <div>${ronin.status == "dead" ? "●" : "○"}<b>Dead</b></div>
+        </div>`;
     }
 }
 
@@ -238,4 +197,33 @@ function statBalls(stat, max) {
     let result = "●".repeat(stat) + "○".repeat(max - stat);
 
     return result;
+}
+
+function renderRoninWeapons() {
+    if (!ronin.weapons.length) {
+        return `Unarmed`;
+    }
+
+    const weapons = ronin.weapons;
+    const brokenWeapons = ronin.brokenWeapons;
+    const uniqueWeapons = new Set(weapons);
+    
+    if (uniqueWeapons.has("Katana and Wakizashi") && uniqueWeapons.has("Katana")) {
+        uniqueWeapons.delete("Katana");
+    }
+
+    const shortUnique = [...uniqueWeapons];
+
+    const weaponMods = [];
+
+    shortUnique.forEach(uniqueWeapon => {
+        let positive = weapons.filter(weapon => weapon.includes(uniqueWeapon) || uniqueWeapon.includes(weapon)).length - 1;
+        let negative = brokenWeapons.filter(weapon => weapon.includes(uniqueWeapon) || uniqueWeapon.includes(weapon)).length;
+        let netMod = positive - negative;
+        let modifier = netMod > 0 ? `+${netMod} ` : netMod == 0 ? `` : `Broken `;
+
+        weaponMods.push(`${modifier}${uniqueWeapon}`);
+    });
+
+    return weaponMods.join(", ");
 }

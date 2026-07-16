@@ -6,67 +6,31 @@
         <title>Ronin</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="styles/style.css">
-        <link rel="stylesheet" href="styles/JetBrains Mono.css">
-        <link rel="stylesheet" href="styles/Blobmoji.css">
+        <link rel="stylesheet" href="styles/Courier Prime.css">
     </head>
-    <header>
-        <h1>Ronin</h1>
-    </header>
     <body>
+        <header>
+            <h1>Ronin</h1>
+        </header>
         <div id="game">
-            <aside id="ronin">
-                <section>
-                    <h3>The Ronin</h3>
-                    <div id="stats"></div>
-                </section>
-                <section>
-                    <h3>Allies</h3>
-                    <div id="allies"></div>
-                </section>
-                <section>
-                    <h3>Possible Allies</h3>
-                    <div id="possibleallies"></div>
-                </section>
-                <section>
-                    <h3>Noble Clans</h3>
-                    <div id="nobleClans"></div>
-                </section>
-            </aside>
-            <main id="encounter">
-                <h3 id="encounterHeader"></h3>
+            <div id="encounter">
+                <h2 id="encounterHeader"></h2>
 
-                <div id="encounterText" style="text-align: center;"></div>
+                <div id="encounterText"></div>
 
-                <div id="combatHeader" style="text-align: center;"></div>
+                <div id="combatHeader"></div>
 
-                <div id="interactText" style="text-align: center;"></div>
+                <div id="interactText"></div>
 
                 <div class="buttonContainer">
                     <div id="encounterButtons"></div>
                     <div id="interactButtons"></div>
                 </div>
-                
-            </main>
-            <aside id="queues">
-                <section>
-                    <h3>Persons in Encounter</h3>
-                    <div id="encounterpersons"></div>
-                </section>
-                <section>
-                    <h3>Living Enemies</h3>
-                    <div id="enemies"></div>
-                </section>
-                <section>
-                    <h3>End of the Route Enemies</h3>
-                    <div id="endrouteenemies"></div>
-                </section>
-                <section>
-                    <h3>Villains</h3>
-                    <div id="villains"></div>
-                </section>
-            </aside>
-        </div>
 
+                <div id="roninStats"></div>
+                
+            </div>
+        </div>
 
         
         <script src="script/clans.js" defer></script>

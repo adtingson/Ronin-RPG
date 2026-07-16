@@ -320,17 +320,11 @@ function villainFight() {
     encounterPersons.push(villainToFight);
 
     encounterText.innerHTML =
-    `${generateExoticLocation()}.
-    <br><br>
-    Before you stands ${villainToFight.name}. ${villainToFight.gender == "Male" ? "He" : "She"} ${villainToFight.appearance}.
-    <br><br>
-    ${villainToFight.trait}
-    <br><br>
-    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}
-    <br><br>` : ``}
+    `${generateExoticLocation()}.<br><br>
+    Before you stands ${villainToFight.name}. ${villainToFight.gender == "Male" ? "He" : "She"} ${villainToFight.appearance}.<br><br>
+    ${villainToFight.trait}<br><br>
+    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}<br><br>` : ``}
     Without another word, the villain reaches for their weapon.`;
-
-    
 }
 
 function endGameCheck(isSeppuku) {
@@ -522,4 +516,4 @@ function hasMark() {
     }
 }
 
-renderEncounter("villain");
+renderEncounter("enRoute");
