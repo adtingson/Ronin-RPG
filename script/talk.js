@@ -28,7 +28,7 @@ function talk() {
         else {
             target.background = "pastInfo";
             target.pastInfo = result;
-            talkMessage = `${result}<p>You can try talking to them again to learn their dark secret.</p>`;
+            talkMessage = `${result}`;
 
             if (target.type == "confused") {
                 renderEncounter("re32a");
@@ -38,7 +38,7 @@ function talk() {
         }
     }
     else if (target.background == "talkFailed") {
-        talkMessage = "They are not interested in talking right now.<br>Try interacting in other ways.";
+        talkMessage = "They are not interested in talking right now.";
     }
     else if (target.background == "pastInfo") {
         const result = talkForDarkSecret();
@@ -51,10 +51,10 @@ function talk() {
             target.background = "darkSecret";
             target.darkSecret = result;
             if (villainsList.includes(target) || allies.includes(target)) {
-                talkMessage = `${result}<p>There is nothing left important to learn about them.</p>`;
+                talkMessage = `${result}`;
             }
             else if (possibleAllies.includes(target)) {
-                talkMessage = `${result}<p>You now seem to know what is important to them. You can charm them to be your ally!</p>`;
+                talkMessage = `${result}`;
             }
             else {
                 let newAlly;
@@ -69,7 +69,7 @@ function talk() {
                 enemies.splice(enemies.indexOf(target),1);
 
                 talkMessage =
-                `${result}<p>And now that you learned their dark secret, they are now a possible ally.</p>
+                `${result}<br>And now that you learned their dark secret, they are now a possible ally.<br>
                 <ul>
                     <li>Name: ${newAlly.name}</li>
                     <li>Gender: ${newAlly.gender}</li>
@@ -84,14 +84,14 @@ function talk() {
         }
     }
     else if (target.background == "darkSecretFailed") {
-        talkMessage = `They've had enough talking for now.<p>Try interacting in other ways.</p>`;
+        talkMessage = `They've had enough talking for now.`;
     }
     else if (target.background == "darkSecret") {
         if (villainsList.includes(target) || allies.includes(target)) {
             talkMessage = "There is nothing left important to learn about them.";
         }
         else {
-            talkMessage = "There is nothing left important to learn about them.<p>You can charm them to be your ally!</p>";
+            talkMessage = "There is nothing left important to learn about them.";
         }
     }
 

@@ -2,12 +2,12 @@ let firstPossibleAlly;
 
 const exoticlocations = {
     place: [
-        "canebrake",
-        "cherry forest",
-        "stone staircase of an old temple",
-        "deserted beach",
-        "large wooden bridge",
-        "deserted road"],
+        "In a canebrake",
+        "In a cherry forest",
+        "On a stone staircase of an old temple",
+        "On a deserted beach",
+        "On a large wooden bridge",
+        "On a deserted road"],
     weather: ["at night, under the moonlight", "in the late afternoon", "at sunrise", "during a windstorm", "in the rain", "while it snows lightly"]
 };
 
@@ -78,7 +78,7 @@ const uniquePowers = [
         },
         text: () => `This Final Villain has one of your Allies as prisoner. ${finalVillain.gender == "Male" ? "He" : "She"} blocks the first attack received using your Ally as a shield (killing the Ally). If you surrender, the villain will keep the ally prisoner.`,
         prisoner: () => {
-            return livingAllies()[Math.floor(Math.random() * livingAllies.length)];
+            return livingAllies()[Math.floor(Math.random() * livingAllies().length)];
         }
     },
     {
@@ -90,7 +90,7 @@ const uniquePowers = [
         },
         text: () => `One of your Allies reveals himself as a servant of this Final Villain and you will have to face him first. If he did not have a technique, determine now.`,
         buffer: () => {
-            return livingAllies()[Math.floor(Math.random() * livingAllies.length)];
+            return livingAllies()[Math.floor(Math.random() * livingAllies().length)];
         }
     }
 ];
@@ -103,15 +103,15 @@ function generateExoticLocation() {
 }
 
 const villainTraits = [
-    (villain) => villain.trait = `This villain was a character involved in your past. It was probably one of the causes of his tragedy, but not the main cause.`,
-    (villain) => villain.trait = `This villain is a Minion of ${finalVillain.name}. He talks about his master and his motivations.`,
-    (villain) => villain.trait = `This villain is a mercenary hired by the final villain, ${finalVillain.name}. You still don’t know who this final villain is, but you already know his name and that he wants you dead.`,
+    (villain) => villain.trait = `This villain was a character involved in your past. It was probably one of the causes of ${villain.gender == "Male" ? "his" : "her"} tragedy, but not the main cause.`,
+    (villain) => villain.trait = `This villain is a minion of ${finalVillain.name}, the Final Villain. ${villain.gender == "Male" ? "He" : "She"} talks about ${villain.gender == "Male" ? "his" : "her"} master and ${finalVillain.gender == "Male" ? "his" : "her"} motivations.`,
+    (villain) => villain.trait = `This villain is a mercenary hired by the final villain, ${finalVillain.name}. You still don’t know who this final villain is, but you already know ${finalVillain.gender == "Male" ? "his" : "her"} name and that ${finalVillain.gender == "Male" ? "he" : "she"} wants you dead.`,
     (villain) => {
-        villain.trait = `This villain is actually someone who loves you. But something happened in his past that has now made your destruction more important than his ties. You lose 2 Compassion if you kill this villain.`;
+        villain.trait = `This villain is actually someone who loves you. But something happened in ${villain.gender == "Male" ? "his" : "her"} past that has now made your destruction more important than ${villain.gender == "Male" ? "his" : "her"} ties. You lose 2 Compassion if you kill this villain.`;
         villain.compassionBonus = 2;
     },
     (villain) => villain.trait = `This villain is your ${villain.gender == "Male" ? "brother" : "sister"}. You didn’t expect this. But now you find out that ${villain.gender == "Male" ? "he" : "she"} was there, along with you, when you got your scar. However, ${villain.gender == "Male" ? "he" : "she"} blames you for everything and now ${villain.gender == "Male" ? "he" : "she"} wants your death.`,
-    (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. It has no purpose other than doing what your code of honor says. It belongs to ${randomNobleClan()}.`
+    (villain) => villain.trait = `This villain is an honorable samurai who wants to end the ronins and samurai without honor. ${villain.gender == "Male" ? "He" : "She"} has no purpose other than doing what ${villain.gender == "Male" ? "his" : "her"} code of honor says. ${villain.gender == "Male" ? "He" : "She"} belongs to ${randomNobleClan()}.`
 ];
 
 const villainNames = [];
@@ -179,3 +179,4 @@ const secondVillain = {
 };
 
 const villainsList = [firstVillain, secondVillain, finalVillain];
+const villainsToDisplay = [];

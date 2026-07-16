@@ -106,7 +106,7 @@ const rooms = {
     enRoute: {
         header: "En Route",
 	    text: "",
-        function: () => {routeBuilder()}
+        function: () => {routeBuilder();setWindowContext("endRoute")}
     },
     endRoute: {
         header: "End of Route",
@@ -1296,6 +1296,7 @@ const rooms = {
                 revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
                 let oldFight = revenger.fight;
                 revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+                revenger.status = "active";
 
                 encounterPersons.push(revenger);
                 return `An enemy you recently left alive, comes your way with Fight +1.`;
@@ -1415,6 +1416,7 @@ const rooms = {
                 revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
                 let oldFight = revenger.fight;
                 revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+                revenger.status = "active";
 
                 encounterPersons.push(revenger);
                 return `An enemy you recently left alive, comes your way with Fight +1.`;
@@ -1634,6 +1636,7 @@ const rooms = {
                 revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
                 let oldFight = revenger.fight;
                 revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+                revenger.status = "active";
 
                 encounterPersons.push(revenger);
                 return `An enemy you recently left alive, comes your way with Fight +1.`;
@@ -1790,6 +1793,7 @@ const rooms = {
                 revenger = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
                 let oldFight = revenger.fight;
                 revenger.fight = (user, enemy) => oldFight(user, enemy) + 1;
+                revenger.status = "active";
 
                 encounterPersons.push(revenger);
                 return `An enemy you recently left alive, comes your way with Fight +1.`;

@@ -54,7 +54,13 @@ let quarryList;
 
 let assassinMark;
 
-const livingAllies = () => allies.filter(ally => ally.status !== "dead");
+let storageVar = {};
+
+let assassinBounty;
+
+function livingAllies() {
+    return allies.filter(ally =>  !["dead", "prisoner"].includes(ally.status));
+}
 
 const minorDamage = [];
 
@@ -69,52 +75,3 @@ function getTarget() {
 let roninBlock;
 
 let enemyBlock;
-
-function renderRoninSheet() {
-    document.getElementById("stats").innerHTML = "";
-
-    Object.entries(ronin).forEach(
-        ([key,data]) => {
-            document.getElementById("stats").innerHTML += `<li>${key}: ${data}</li>`;
-        }
-    );
-}
-
-function renderAllies() {
-    document.getElementById("allies").innerHTML = JSON.stringify(allies, null, 4);
-}
-
-function renderPossibleAllies() {
-    document.getElementById("possibleallies").innerHTML = JSON.stringify(possibleAllies, null, 4);
-}
-
-function renderEncounterPersons() {
-    document.getElementById("encounterpersons").innerHTML = JSON.stringify(encounterPersons, null, 4);
-}
-
-function renderLivingEnemies() {
-    document.getElementById("enemies").innerHTML = JSON.stringify(enemies, null, 4);
-}
-
-function renderEndRouteEnemies() {
-    document.getElementById("endrouteenemies").innerHTML = JSON.stringify(endRouteEnemies, null, 4);
-}
-
-function renderVillains() {
-    document.getElementById("villains").innerHTML = JSON.stringify(villainsList, null, 4);
-}
-
-function renderNobleClans() {
-    document.getElementById("nobleClans").innerHTML = JSON.stringify(nobleClans, null, 4);
-}
-
-function renderDisplay() {
-    renderRoninSheet();
-    renderAllies();
-    renderPossibleAllies();
-    renderEncounterPersons();
-    renderLivingEnemies();
-    renderEndRouteEnemies();
-    renderVillains();
-    renderNobleClans();
-}

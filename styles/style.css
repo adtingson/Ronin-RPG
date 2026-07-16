@@ -22,12 +22,13 @@ pre {
 }
 
 h1,
-h2 {
+h2,
+h3 {
     text-align: center;
     color: #222;
 }
 
-h3, h4, h5, h6 {
+h4, h5, h6 {
     color: #222;
 }
 
@@ -171,7 +172,7 @@ select {
 
 #game {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     height: 100vh;
 }
 
@@ -192,6 +193,26 @@ main {
     margin: 16px 0;
     display: flex;
     justify-content: center;
+}
+
+#interactText {
+    overflow-y: auto;
+    height: 200px;
+}
+
+td {
+    vertical-align: top;
+    padding: 0 8px;
+}
+
+td:first-child {
+    text-align: right;
+    color: #862D2D;
+    font-weight: bolder;
+}
+
+#stats > table {
+    max-width: 600px;
 }
 
 
