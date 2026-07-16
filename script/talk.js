@@ -2,12 +2,12 @@ function talk() {
     const target = getTarget();
 
     if (target == undefined) {
-        interactText.innerHTML += "There is no one to talk to.<br>";
+        interactText.innerHTML = "There is no one to talk to.<br>";
         return;
     }
     
     if (target.morale == "emboldened" || target.background == "hater") {
-        interactText.innerHTML += "Trying to talk to this person is pointless. They are eager to fight you!<br>";
+        interactText.innerHTML = "Trying to talk to this person is pointless. They are eager to fight you!<br>";
         return;
     }
 
@@ -95,7 +95,7 @@ function talk() {
         }
     }
 
-    interactText.innerHTML += `You tried talking to ${target.name} and you learned...<br>${talkMessage}<br>`;
+    interactText.innerHTML = `You tried talking to ${target.name} and you learned...<br>${talkMessage}<br>`;
 
     personPreview();
     renderUI();

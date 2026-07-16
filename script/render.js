@@ -182,9 +182,9 @@ function renderCard(person) {
     }
     else if (person == "roninStats") {
         return `<div id="roninStatBalls">
-            <div><b>Reputation</b>${statBalls(ronin.reputation, 6)}</div>
-            <div><b>Compassion</b>${statBalls(ronin.compassion, 6)}</div>
-            <div><b>Determination</b>${statBalls(ronin.determination, 6)}</div>
+            <div><b>Reputation</b> ${statBalls(ronin.reputation, 6)}</div>
+            <div><b>Compassion</b> ${statBalls(ronin.compassion, 6)}</div>
+            <div><b>Determination</b> ${statBalls(ronin.determination, 6)}</div>
         </div>
         <div id="roninStatusBalls">
             <div>${ronin.status == "wounded" ? "●" : "○"}<b>Wounded</b></div>
