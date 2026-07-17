@@ -54,7 +54,6 @@ function renderInteractions() {
 function renderUI() {
     renderInteractions();
     renderDisplay();
-    interactText.scrollTop = interactText.scrollHeight;
 }
 
 function personPreview() {
@@ -69,10 +68,10 @@ function personPreview() {
     enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
 
     if (enemies.includes(target) || villainsList.includes(target)) {
-        combatHeader.innerHTML = `${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</div>${target.status == "lost" ? `</s>` : ``}`;
+        combatHeader.innerHTML = `${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b> (Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</div>${target.status == "lost" ? `</s>` : ``}`;
     }
     else if (possibleAllies.includes(target) || allies.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})</div>`;
+        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation})</div>`;
     }
 }
 
@@ -82,7 +81,14 @@ function displayPersonsLeft() {
 
     renderer.innerHTML = personsLeft;
 
-    renderer.classList.toggle("persons", personsLeft !== "");
+    if (personsLeft > 0) {
+        renderer.classList.add("persons");
+        renderer.classList.remove("hidden");
+    }
+    else {
+        renderer.classList.remove("persons");
+        renderer.classList.add("hidden");
+    }
 }
 
 function renderCard(person) {

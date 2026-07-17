@@ -529,4 +529,4 @@ function hasMark() {
     }
 }
 
-renderEncounter("re12");
+renderEncounter("ue12");

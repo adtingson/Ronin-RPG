@@ -6,6 +6,7 @@
 
 html {
     font-size: 16px;
+    font-size: clamp(12px, 2.25dvh, 16px);
 }
 
 b {
@@ -24,10 +25,15 @@ button {
     font-size: 1rem;
 }
 
+.hidden {
+    display: none;
+}
+
 @media (max-width: 600px) {
     body {
         width: 100%;
         height: 100dvh;
+        min-height: 0;
         display: grid;
         grid-template-rows: auto 1fr;
         text-align: center;
@@ -46,11 +52,13 @@ button {
 
     #game {
         display: grid;
+        min-height: 0;
     }
 
     #encounter {
         display: grid;
-        grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto 2fr 0.5fr 1fr 1fr 1fr;
+        min-height: 0;
     }
 
     #roninStats {

@@ -1995,4 +1995,15 @@ const rooms = {
             }
         },
     },
+    introToRonin: {
+        header: "The Ronin",
+        text: `You are a Ronin, a masterless Samurai wandering the war-torn lands of feudal Japan.
+        <br><br>
+        Your path will take you across distant provinces, where you will seek redemption, honor, purpose, or revenge. Along the way, you will encounter forgotten places, unlikely allies, and enemies who will test the limits of your resolve.
+        <br><br>
+        This journey is not about victory. It is about the choices you make, the lives you touch, and the legacy you leave behind.
+        <br><br>
+        But before your story can begin, we must first discover who this Ronin truly is.`,
+        function: () => generateRonin()
+    },
 };
