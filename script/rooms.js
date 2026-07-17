@@ -628,11 +628,11 @@ const rooms = {
         function: () => setWindowContext("inDestination"),
         buttons: [
             {
-                text: "Ignore them and worry about yourself",
+                text: "Ignore",
                 goto: "ue12a"
             },
             {
-                text: "Help these people",
+                text: "Help",
                 goto: () => ["ue12b0", "ue12b1", "ue12b1", "ue12b1", "ue12b1", "ue12b2"][rolld6()]
             }
         ]
@@ -2004,6 +2004,16 @@ const rooms = {
         This journey is not about victory. It is about the choices you make, the lives you touch, and the legacy you leave behind.
         <br><br>
         But before your story can begin, we must first discover who this Ronin truly is.`,
-        function: () => generateRonin()
+        function: () => generateRonin(),
+        buttons: [
+            {
+                text: "Continue",
+                goto: "roninCreateApprearance"
+            }
+        ]
     },
+    roninCreateApprearance: {
+        header: "The Ronin",
+        text: ""
+    }
 };

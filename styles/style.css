@@ -16,12 +16,12 @@ b {
 button {
     background-color: #fff;
     color: #222;
-    padding: 4px;
+    padding: 8px;
     border: 1px solid #222;
     border-radius: 4px;
     font-weight: 400;
     cursor: pointer;
-    margin: 0 4px;
+    margin: 4px;
     font-size: 1rem;
 }
 
@@ -45,8 +45,6 @@ button {
     }
 
     button {
-        margin: 4px;
-        padding: 8px;
         white-space: nowrap;
     }
 
@@ -75,10 +73,13 @@ button {
 
     #roninStatusBalls {
         display: flex;
-        flex-wrap: wrap;
+    }
+
+    #roninStatusBalls > div {
+        flex: 1;
+        display: flex;
         justify-content: center;
         align-items: center;
-        gap: 32px;
     }
 
     #encounterText,
@@ -93,14 +94,19 @@ button {
 
     #buttonContainer {
         display: grid;
+        justify-content: center;
+        align-items: center;
     }
 
-    #buttonWrapper,
-    #buttonWrapper > div {
+    #buttonWrapper {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
+    }
+
+    buttonWrapper > div {
+        display: contents;
     }
 
     #combatHeaderWrapper {
