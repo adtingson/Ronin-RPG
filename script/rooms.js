@@ -477,6 +477,7 @@ const rooms = {
     },
     ue04a: {
         header: "Urban Encounter",
+        text: "You jumped in to save this Possible Ally.",
         function: () => setWindowContext("inDestination"),
         persons: [
             {
@@ -562,7 +563,7 @@ const rooms = {
     },
     ue10: {
         header: "Urban Encounter",
-        text: "You saw a Possible Ally being attacked by an Thief (Fight -1; Block 0).",
+        text: "You saw a Possible Ally being attacked by a Thief (Fight -1; Block 0).",
         function: () => setWindowContext("inDestination"),
         buttons: [
             {
@@ -1899,6 +1900,75 @@ const rooms = {
         header: "Road Encounter",
         text: "You are surrounded by two burglars (Fight -1; Block 0) who want something of value or will attack.",
         function: () => {setWindowContext("endRoute");},
+        buttons: [
+            {
+                text: "Give up an item",
+                goto: "re12b"
+            },
+            {
+                text: "Fight",
+                goto: "re12a"
+            }
+        ]
+    },
+    re12a: {
+        header: "Road Encounter",
+        text: "You decided to face the burglars!",
+        persons: [
+            {
+                class: "enemy",
+                number: 2,
+                background: "hater",
+                name: "Burglar",
+                weapon: "Dagger",
+                fight: () => -1,
+                block: 0
+            }
+        ]
+    },
+    re12b: {
+        header: "Road Encounter",
+        text: "What are you giving up?",
+        function: () => {
+            if (ronin.weapons.length) {
+                encounterButtons.innerHTML += `<button onclick="renderEncounter('re12c')">A Valuable Weapon</button>`;
+            }
+            if (ronin.items.length) {
+                encounterButtons.innerHTML += `<button onclick="renderEncounter('re12d')">A Valuable Item</button>`;
+            }
+        }
+    },
+    re12c: {
+        header: "Road Encounter",
+        text: "Which weapon are you giving up for them to leave you alone?",
+        function: () => {
+            let weaponsList = new Set(ronin.weapons);
+            let uniqueWeapons = [...weaponsList];
+
+            uniqueWeapons.forEach(weapon => {
+                encounterButtons.innerHTML += `<button onclick="itemsStolen(false,'${weapon}');renderEncounter(windowContext)">Give up a ${weapon}</button>`
+            });
+        },
+        persons: [
+            {
+                class: "enemy",
+                number: 2,
+                background: "hater",
+                name: "Burglar",
+                weapon: "Dagger",
+                fight: () => -1,
+                block: 0
+            }
+        ]
+    },
+    re12d: {
+        header: "Road Encounter",
+        text: "Which item are you giving up for them to leave you alone?",
+        function: () => {
+            ronin.items.forEach(item => {
+                encounterButtons.innerHTML += `<button onclick="itemsStolen(false,'${item}');renderEncounter(windowContext)">Give up ${item}</button>`
+            });
+        },
         persons: [
             {
                 class: "enemy",

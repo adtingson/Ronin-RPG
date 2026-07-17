@@ -59,6 +59,8 @@ function renderUI() {
 
 function personPreview() {
     const target = getTarget();
+    
+    displayPersonsLeft();
 
     if (target == undefined) {
         return;
@@ -67,11 +69,20 @@ function personPreview() {
     enemyBlock = target.firstStrike == "available" ? target.block:enemyBlock;
 
     if (enemies.includes(target) || villainsList.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})`;
+        combatHeader.innerHTML = `${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b> ${target.techniqueID !== undefined ? `uses <i>${target.techniqueID}</i> ` : ``}[${target.weapon}](Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})</div>${target.status == "lost" ? `</s>` : ``}`;
     }
     else if (possibleAllies.includes(target) || allies.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})`;
+        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation}${target.occupation == "Mentor" ? ` of ${target.technique.desc}` : target.occupation == "Fighter" ? ` who uses ${target.technique.desc}` : ``})</div>`;
     }
+}
+
+function displayPersonsLeft() {
+    const personsLeft = encounterPersons.length ? encounterPersons.length - 1 : "";
+    const renderer = document.getElementById("personsLeft");
+
+    renderer.innerHTML = personsLeft;
+
+    renderer.classList.toggle("persons", personsLeft !== "");
 }
 
 function renderCard(person) {
@@ -196,7 +207,7 @@ function renderCard(person) {
 function statBalls(stat, max) {
     let result = "●".repeat(stat) + "○".repeat(max - stat);
 
-    return result;
+    return `${result}`;
 }
 
 function renderRoninWeapons() {

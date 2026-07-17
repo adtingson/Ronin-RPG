@@ -62,14 +62,14 @@ function fight() {
         }
     }
     else if (fightWinner == "draw") {
-        if (roninSide.techniqueID == "Jitte") {
+        if (roninSide.techniqueID == "Jitte" && (roninSide.weapons?.includes("Jitte") || roninSide.weapon.includes("Jitte")) && (roninSide.brokenWeapons?.filter(weapon => weapon == "Jitte").length ?? 0) < (roninSide.weapons?.filter(weapon => weapon == "Jitte").length ?? 1)) {
             if (target.brokenWeapons == undefined || !target.brokenWeapons.some(weapon => weapon.includes(target.weapon))) {
                 target.brokenWeapons ??= [];
                 target.brokenWeapons.push(target.weapon);
                 interactText.innerHTML = `However, you had broken their weapon.<br>`;
             }
         }
-        if (target.techniqueID == "Jitte") {
+        if (target.techniqueID == "Jitte" && !target.brokenWeapons?.length) {
             if (!roninSide.brokenWeapons?.length || roninSide.weapons?.filter(weapon => weapon.includes(roninSide.weapon)).length > roninSide.brokenWeapons?.filter(weapon => weapon.includes(roninSide.weapon)).length) {
                 roninSide.brokenWeapons ??= [];
                 roninSide.brokenWeapons.push(roninSide.weapon);
@@ -232,6 +232,11 @@ function slayEnemy() {
 
     interactText.innerHTML = `${target.name} has been slain. This cold-hearted act lost ${ronin.name} 1 Compassion.<br>`;
 
+    if (target.stolenWeapons || target.stolenItems || target.stolenBrokenWeapons) {
+        returnStolen(target);
+        interactText.innerHTML += `${target.name} has also stolen from you before. You have retrieved the stolen items.<br>`;
+    }
+
     target.status = "dead";
     encounterPersons.splice(0,1);
     if (target.compassionBonus) {
@@ -240,7 +245,11 @@ function slayEnemy() {
     else {
         updateStat("compassion",-1);
     }
-    
+
+    encounterButtons.innerHTML = `<button onclick="slayEnemyCleanUp()">Continue</button>`;
+}
+
+function slayEnemyCleanUp() {
     if (encounterPersons.length === 0) {
         roninBlock = roninSide.block;
         roninSide.firstStrike = "available";
@@ -250,9 +259,20 @@ function slayEnemy() {
 
     target = getTarget();
 
+    if (!enemies.includes(target)) {
+        roninBlock = roninSide.block;
+        roninSide.firstStrike = "available";
+        interactText.innerHTML = "You now face the next person.<br>";
+        encounterButtons.innerHTML = "";
+        personPreview();
+        renderUI();
+        return;
+    }
+
     renderCombatHeader(target);
     interactText.innerHTML = "Next enemy is here. Be ready.<br>";
 
+    encounterButtons.innerHTML = "";
     renderUI();
 }
 
@@ -282,9 +302,18 @@ function spareEnemy() {
         target.background = "interactedWith";
     }
 
+    if (target.stolenWeapons || target.stolenItems || target.stolenBrokenWeapons) {
+        returnStolen(target);
+        interactText.innerHTML += `${target.name} has also stolen from you before. You have retrieved the stolen items.<br>`;
+    }
+
     encounterPersons.splice(0,1);
     updateStat("reputation",+1);
     
+    encounterButtons.innerHTML = `<button onclick="spareEnemyCleanUp()">Continue</button>`;
+}
+
+function spareEnemyCleanUp() {
     if (encounterPersons.length === 0) {
         roninBlock = roninSide.block;
         roninSide.firstStrike = "available";
@@ -293,6 +322,16 @@ function spareEnemy() {
     }
 
     target = getTarget();
+
+    if (!enemies.includes(target)) {
+        roninBlock = roninSide.block;
+        roninSide.firstStrike = "available";
+        interactText.innerHTML = "You now face the next person.<br>";
+        encounterButtons.innerHTML = "";
+        personPreview();
+        renderUI();
+        return;
+    }
 
     renderCombatHeader(target);
     interactText.innerHTML = "Next enemy is here. Be ready.<br>";
@@ -461,39 +500,74 @@ function healWounds() {
 }
 
 function renderCombatHeader(target) {
-    let villainFightBonus = 0;
-    let weaponModifier = ``;
+    let targetWeaponModifier = "";
+    let weaponModifier = "";
 
-    if ((target.power !== undefined && target.power.fightBonus !== undefined && roninSide.scar !== undefined)) {
+    let enemyFightStat = target.fight(target, roninSide);
+    let roninSideFightStat = roninSide.fight(roninSide, target);
+
+    let villainFightBonus = 0;
+    let roninFightBonus = 0;
+
+    if ((target.power?.fightBonus !== undefined && roninSide.scar !== undefined)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
     if (roninSide == ronin) {
-        let weaponsMod = ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1;
-        let brokenWeaponsMod = ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0;
+        let weaponsBonus = 0;
 
-        if (weaponsMod > brokenWeaponsMod) {
-            weaponModifier = `+${weaponsMod - brokenWeaponsMod} `;
-        }
-        else if (weaponsMod < brokenWeaponsMod) {
-            weaponModifier = `Broken `;
+        weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0);
+        
+        if (weaponsBonus < 0) {
+            weaponsBonus = 0;
+            roninSideFightStat = 0;
+            roninBlock = 0;
+            weaponModifier = "Broken "
         }
 
-        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon))) {
-            weaponModifier = `No `;
+        roninFightBonus = weaponsBonus + livingInnocents().length;
+
+        if (!ronin.weapons.some(weapon => weapon.includes(ronin.weapon)  || ronin.weapon.includes(weapon))) {
+            roninSideFightStat = 0;
+            roninBlock = 0;
+            weaponModifier = "No "
         }
+
+        if (villainsList.includes(target)) {
+            let proofs = ronin.items.filter(item => item === "Proof of Villainy").length;
+            roninFightBonus += proofs;
+        }
+
+        if (minorDamage.some(weapon => ronin.weapon.includes(weapon) || weapon.includes(ronin.weapon))) {
+            roninFightBonus -= 1;
+            weaponModifier = "Damaged "
+        }
+
     }
-
-    let targetWeaponModifier = ``;
 
     if (target.brokenWeapons?.length) {
-        if (target.weapon == "None") {
-            target.weapon = "Injured";
-        }
-        else {
-            targetWeaponModifier = `Broken `;
+        if (enemyFightStat >= 0) {
+            enemyFightStat = 0;
+            enemyBlock = 0;
+            targetWeaponModifier = "Broken "
         }
     }
 
-    combatHeader.innerHTML = `${roninSide.status == "dead" ? `<s>` : ``}<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninSide.fight(roninSide,target)}${roninSide.status == "wounded" ? " - 1 for Wounded" : ""}; Block: ${roninBlock})${roninSide.status == "dead" ? `</s>` : ``} vs ${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b>[${targetWeaponModifier}${target.weapon}](Fight: ${target.fight(target,roninSide)}${villainFightBonus !==0 ? ` + ${villainFightBonus}` : ``}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""}; Block: ${enemyBlock})${target.status == "lost" ? `</s>` : ``}<br>`;
+    if (roninSide.brokenWeapons?.length && roninSide !== ronin) {
+        if (roninSideFightStat >= 0) {
+            roninSideFightStat = 0;
+            roninBlock = 0;
+            weaponModifier = "Broken "
+        }
+    }
+
+    if (roninSide.firstStrike == "available") {
+        roninFightBonus -= firstStrikeDebuff;
+    }
+
+    const roninFight = roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninFightBonus;
+    const enemyFight = enemyFightStat + villainFightBonus;
+
+    displayPersonsLeft();
+    combatHeader.innerHTML = `${roninSide.status == "dead" ? `<s>` : ``}<b>${roninSide.name}</b>[${weaponModifier}${roninSide.weapon}](Fight: ${roninFight}}; Block: ${roninBlock})${roninSide.status == "dead" ? `</s>` : ``} vs ${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b>[${targetWeaponModifier}${target.weapon}](Fight: ${enemyFight}}; Block: ${enemyBlock})${target.status == "lost" ? `</s>` : ``}<br>`;
 }

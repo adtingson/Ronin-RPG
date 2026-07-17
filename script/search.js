@@ -75,7 +75,7 @@ function searchResult(quarry) {
             switch (searchResults.success) {
             case "success":
                 encounterPersons.push(quarry);
-                encounterText.innerHTML += `<br><br>You found ${quarry.name}(${quarry.occupation}).`;
+                encounterText.innerHTML += `<br><br>You found ${quarry.name}${quarry.occupation ? `(${quarry.occupation})` : ``}.`;
                 break;
 
             case "mixed":
@@ -197,7 +197,7 @@ function searchExisting(list) {
     encounterButtons.innerHTML += `<button onclick="renderEncounter('searchRoom')">Back</button>`;
 
     livingMembers.forEach((member, index) => {
-        let formatted = `${member.name}${member.occupation ? `<br>(${member.occupation})` : ``}`;
+        let formatted = `${member.name}${member.occupation ? `(${member.occupation})` : ``}`;
 
         encounterButtons.innerHTML += `<button onclick="searchResult(quarryList[${index}])">${formatted}</button>`
     });

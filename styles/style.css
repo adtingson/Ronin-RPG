@@ -27,7 +27,7 @@ button {
 @media (max-width: 600px) {
     body {
         width: 100%;
-        height: 100vh;
+        height: 100dvh;
         display: grid;
         grid-template-rows: auto 1fr;
         text-align: center;
@@ -50,19 +50,19 @@ button {
 
     #encounter {
         display: grid;
-        grid-template-rows: auto 1fr 0.5fr 1fr 1fr 1fr;
+        grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
     }
 
     #roninStats {
         display: grid;
+        grid-template-rows: 1fr 1fr;
     }
 
     #roninStatBalls {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 16px;
+        gap: 8px;
     }
 
     #roninStatusBalls {
@@ -93,5 +93,26 @@ button {
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
+    }
+
+    #combatHeaderWrapper {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+    }
+
+    #combatHeader {
+        justify-self: center;
+    }
+
+    .persons {
+        border: 1px solid #222;
+        border-radius: 4px;
+        margin: 0 4px;
+        height: 36px;
+        width: 36px;
+        justify-content: center;
+        align-items: center;
+        display: grid;
     }
 }

@@ -131,9 +131,10 @@ function setCombatStats(techniqueIndex) {
     fight();
 }
 
-function generateEnemy({name, weapon, fight, block, technique, type, status, background}={}) {
+function generateEnemy({name, weapon, fight, block, technique, type, status, background, gender}={}) {
     const addedEnemy = {
         name: name,
+        gender: gender,
         weapon: weapon,
         fight: fight,
         block: block,
@@ -385,6 +386,18 @@ function itemsStolen(isTemporary, stolenWhat, fightWith) {
         target.stolenItems.push(...ronin.items);
         ronin.items = [];
     }
+    else {
+        if (ronin.items.includes(stolenWhat)) {
+            let stolenItem = ronin.items.find(item => item == stolenWhat);
+            target.stolenItems.push(stolenItem);
+            ronin.items.splice(ronin.items.indexOf(stolenItem), 1);
+        }
+        else if (ronin.weapons.includes(stolenWhat)) {
+            let stolenWeapon = ronin.weapons.find(weapon => weapon == stolenWhat);
+            target.stolenWeapons.push(stolenWeapon);
+            ronin.weapons.splice(ronin.weapons.indexOf(stolenWeapon), 1);
+        }
+    }
 
 
     if (fightWith == "Stick") {
@@ -516,4 +529,4 @@ function hasMark() {
     }
 }
 
-renderEncounter("enRoute");
+renderEncounter("re12");

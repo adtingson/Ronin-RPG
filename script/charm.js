@@ -36,15 +36,12 @@ function charm() {
         possibleAllies.splice(index,1);
         interactText.innerHTML = `${target.name} is now your ally! Since ${target.gender == "Male" ? "he" : "she"} is ${target.occupation == "Innocent" ? `an Innocent` : `a ${target.occupation}`}, ${target.gender == "Male" ? "he" : "she"} gives you the following benefits:<br>${allyRoleDesc(target, target.occupation)}`;
         applyAllyBuff(target);
+        interactButtons.innerHTML = `<button onclick="cleanUp()">Thanks!</button>`;
     }
     else {
         interactText.innerHTML = `You failed to convince ${target.name} to become an ally. Maybe you can try again someday.<br>`;
+        interactButtons.innerHTML = `<button onclick="cleanUp()">See you!</button>`;
     }
-
-    encounterPersons.splice(0,1);
-
-    personPreview();
-    renderUI();
 }
 
 function charmAttempt() {
