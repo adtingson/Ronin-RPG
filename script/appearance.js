@@ -17,7 +17,7 @@ const appearanceList = [
     "has weird hair",
     "has grey hair",
     "is bald",
-    "has sex appeal",
+    "has an alluring presence",
     "has colored eyes",
     "uses a mask",
     "has a dead face",

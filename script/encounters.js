@@ -480,7 +480,7 @@ function deliverParcel(isDelivered) {
 
 function fireRescue() {
     const fireRescueTable = [
-        () => {ronin.status = "wounded"; return `You were Wounded (-1 to Fight until recover).`},
+        () => {ronin.status = "wounded"; return `You were Wounded (-1 to Fight until healed).`},
         () => `You have found no one else.`,
         () => `You have found no one else.`,
         () => {updateStat("determination", +1); return `You saved a random person. (+1 Determination)`},

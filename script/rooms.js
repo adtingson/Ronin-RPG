@@ -2004,16 +2004,381 @@ const rooms = {
         This journey is not about victory. It is about the choices you make, the lives you touch, and the legacy you leave behind.
         <br><br>
         But before your story can begin, we must first discover who this Ronin truly is.`,
-        function: () => generateRonin(),
+        function: () => {generateRonin(); hideStats()},
         buttons: [
             {
                 text: "Continue",
-                goto: "roninCreateApprearance"
+                goto: "roninCreateIntro"
             }
         ]
     },
-    roninCreateApprearance: {
+    roninCreateIntro: {
         header: "The Ronin",
-        text: ""
+        text: `To forge your Ronin, you must first answer a few questions about your past.
+        <br><br>
+        Each answer will shape not only who you are, but also how the world sees you. Old loyalties, forgotten deeds, and whispered rumors will echo throughout your journey, opening some paths while closing others.`,
+        buttons: [
+            {
+                text: "Continue",
+                goto: "roninCreateGender"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateGender: {
+        header: "The Ronin",
+        text: () => `What is your gender?<br><br>You're a <b>${ronin.gender}</b>.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateIntro"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("gender");
+                    renderEncounter("roninCreateGender");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateName"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateName: {
+        header: "The Ronin",
+        text: () => `What is your name?<br><br>You are <b>${ronin.name}</b>.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateGender"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("name");
+                    renderEncounter("roninCreateName");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateAppearance"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateAppearance: {
+        header: "The Ronin",
+        text: () => `What do you look like?<br><br>${ronin.name} <b>${ronin.appearance}</b>.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateName"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("appearance");
+                    renderEncounter("roninCreateAppearance");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateRonin"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateRonin: {
+        header: "The Ronin",
+        text: () => `Good. We now know your name.
+        <br><br>
+        You are <b>${ronin.name}</b>, and this is the face you will show to the world. Some will remember it with gratitude. Others with fear.
+        <br><br>
+        But a name and a face are only the beginning. Every Ronin has a past, and yours has yet to be told.
+        `,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateAppearance"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateFamily"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateFamily: {
+        header: "The Past",
+        text: () => `Now, tell us more about your past. What was your upbringing?<br><br><b>${ronin.family}</b>`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateRonin"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("family");
+                    renderEncounter("roninCreateFamily");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateNightmare"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateNightmare: {
+        header: "The Past",
+        text: () => `Sleep offers you no peace.
+        <br><br>
+        Again and again, you are drawn into the same dreadful vision, as though some unseen hand refuses to let the past rest.
+        <br><br>
+        What do you see within the nightmare?<br><br><b>${ronin.nightmare}</b>`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateFamily"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("nightmare");
+                    renderEncounter("roninCreateNightmare");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateScar"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateScar: {
+        header: "The Past",
+        text: () => `Steel can cut flesh, but fate leaves deeper marks.
+        <br><br>
+        Upon your body rests a scar, a lasting echo of the day your old life came to an end.
+        <br><br>
+        What scar do you bear?<br><br><b>${ronin.scar}</b>`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateNightmare"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("scar");
+                    renderEncounter("roninCreateScar");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateMeaning"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateMeaning: {
+        header: "The Past",
+        text: () => `Your scar is more than a wound left by the past.
+        <br><br>
+        It is a burden you carry, a promise you refuse to forget, and the reason you continue walking this road.
+        <br><br>
+        What does it mean to you?<br><br><b>${ronin.meaning.feeling}</b> — ${ronin.meaning.text}`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateScar"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("meaning");
+                    renderEncounter("roninCreateMeaning");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreatePast"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreatePast: {
+        header: "The Past",
+        text: `Now we know the road that led you here.
+        <br><br>
+        We know the life you have lived, the burdens you carry, and the conviction that drives your every step.
+        <br><br>
+        But the roads of Japan are not walked in peace. They are haunted by brigands, rival swordsmen, desperate souls, wild beasts, and those whose hearts have long surrendered to darkness. Some fight to survive. Others seek only your downfall.
+        <br><br>
+        A Ronin who cannot wield a blade does not remain a Ronin for long.
+        <br><br>
+        It is time to learn how you fight.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateMeaning"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateTechnique"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateTechnique: {
+        header: "The Blade",
+        text: () => `How do you fight?<br><br>I fight using <b>${ronin.technique[0].id}</b>.<br><br>${ronin.technique[0].desc}<br><br><i>“${ronin.technique[0].scroll}”</i>`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreatePast"
+            },
+            {
+                text: "Re-roll",
+                function: () => {
+                    roninChange("technique");
+                    renderEncounter("roninCreateTechnique");
+                }
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateSummary"
+            }
+        ],
+        function: () => hideStats(),
+    },
+    roninCreateSummary: {
+        header: "The Ronin",
+        text: () => `At last, the mist has lifted.
+        <br><br>
+        Now we know who you are.
+        <br><br>
+        You are <b>${ronin.name}</b>, who <i>${ronin.appearance}</i>. You bear <b>${ronin.scar.toLowerCase()}</b>, a constant reminder of the past you cannot escape. It is <b>${ronin.meaning.feeling.toLowerCase()}</b> that drives your every step. Your restless nights are haunted by visions of <i>${ronin.nightmare.toLowerCase()}</i> And in the dance of combat, you follow the way of <b>${ronin.technique[0].id}</b>: <i>“${ronin.technique[0].scroll}”</i>
+        <br><br>
+        The road ahead will not judge your past. It will judge your choices.
+        <br><br>
+        Now, it is time to discover the world that awaits you.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateTechnique"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateClans"
+            }
+        ],
+        function: () => showStats(),
+    },
+    roninCreateClans: {
+        header: "The Noble Clans",
+        text: () => `The life of a Ronin is a lonely one.
+        <br><br>
+        You belong to no lord. You swear no banner. To the clans, you are a blade without a master. To many, you are a wanderer to be feared. To others, a disgrace to the code you once served.
+        <br><br>
+        Yet no Ronin walks beyond the reach of power.
+        <br><br>
+        Across Japan, four great noble clans shape the fate of the land. Their ambitions, rivalries, and traditions touch every village, every battlefield, and every traveler who dares to walk the open road.
+        <br><br>
+        <b>${nobleClans[0].name}</b>
+        ${nobleClans[0].feature}
+        <br><br>
+        <b>${nobleClans[1].name}</b>
+        ${nobleClans[1].feature}
+        <br><br>
+        <b>${nobleClans[2].name}</b>
+        ${nobleClans[2].feature}
+        <br><br>
+        <b>${nobleClans[3].name}</b>
+        ${nobleClans[3].feature}`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateSummary"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateStats"
+            }
+        ]
+    },
+    roninCreateStats: {
+        header: "The Measure of a Ronin",
+        text: `A Ronin is measured by more than the edge of a blade.
+        <br><br>
+        The roads you walk will test not only your skill in battle, but also the strength of your character. Every choice you make leaves its mark, and in time, the world will come to know the person behind the sword.
+        <br><br>
+        <b>Compassion</b> is your ability to understand others, to earn their trust, and to see humanity where others see only enemies.
+        <br><br>
+        <b>Determination</b> is the strength of your spirit. It is the resolve to endure hardship, to challenge fate, and to press onward when others would yield.
+        <br><br>
+        <b>Reputation</b> is the name you leave behind. A noble deed may inspire hope, while a fearsome legend may cause your enemies to falter... or draw greater dangers to your path.
+        <br><br>
+        Guard these well, for they will shape your journey as surely as any weapon ever could.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateClans"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateVillains"
+            }
+        ]
+    },
+    roninCreateVillains: {
+        header: "The Villains",
+        text: `Every deed leaves an echo.
+        <br><br>
+        As your name spreads across Japan, it will reach ears that were never meant to hear it. Among them are three souls who will come to see you not as a traveler, but as an obstacle... or an obsession. They are the villains whose paths are destined to cross your own.
+        <br><br>
+        Do not expect to find them.
+        <br><br>
+        They will find you.
+        <br><br>
+        Only when you have faced the last of them, and lived to look back upon the road you have traveled, will your journey finally come to its end.
+        <br><br>
+        Until then, walk carefully. You never know who has already learned your name.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateStats"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateEmbark"
+            }
+        ]
+    },
+    roninCreateEmbark: {
+        header: "The Journey",
+        text: `There is nothing more I can teach you.
+        <br><br>
+        The road ahead will answer the questions that I cannot.
+        <br><br>
+        Go now, Ronin. Carry your convictions with you, for they will be tested as surely as your skill with the sword. The choices you make, the people you spare, the enemies you defeat, and the legacy you leave behind will become your true story.
+        <br><br>
+        May your journey be long... and your ending one worth telling.
+        <br><br>
+        The road awaits.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninCreateVillains"
+            },
+            {
+                text: "Begin",
+                goto: "enRoute"
+            }
+        ]
     }
 };

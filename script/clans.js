@@ -2,7 +2,47 @@ function rolld6() {
     return Math.floor(Math.random() * 6);
 }
 
-const clanNames = ["Ukiryuu (Dragon)", "Kitsune (Fox)", "Nezumi (Rat)", "Kasaitori (Bird)", "Tsukiinu (Dog)", "Mushi (Insect)", "Akaitora (Tiger)", "Yamabuta (Boar)", "Osuushi (Ox)", "Shiroiuma (Horse)", "Kinsaru (Monkey)", "Fuyukumo (Spider)", "Kazekani (Crab)", "Tetsukoi (Carp)", "Harihebi (Serpent)", "Kuroineko (Cat)", "Usagi (Rabbit)", "Karasu (Crow)", "Ondori (Roster)", "Shinkame (Turtle)", "Ushi (Cow)", "Kuma (Bear)", "Ookami (Wolf)", "Tokage (Lizard)", "Akirisu (Squirrel)", "Shimayagi (Goat)", "Ahiru (Duck)", "Natsusai (Rhino)", "Umisame (Shark)", "Yukiga (Moth)", "Sasori (Scorpion)", "Suzume (Sparrow)", "Washi (Eagle)", "Tsuru (Crane)", "Yorutako (Octopus)", "Kaeru (Frog)"];
+/*
+const clanNames = ["Ukiryuu (Dragon)", "Kitsune (Fox)", "Nezumi (Rat)", "Kasaitori (Bird)", "Tsukiinu (Dog)", "Mushi (Insect)", "Akaitora (Tiger)", "Yamabuta (Boar)", "Osuushi (Ox)", "Shiroiuma (Horse)", "Kinsaru (Monkey)", "Fuyukumo (Spider)", "Kazekani (Crab)", "Tetsukoi (Carp)", "Harihebi (Serpent)", "Kuroineko (Cat)", "Usagi (Rabbit)", "Karasu (Crow)", "Ondori (Rooster)", "Shinkame (Turtle)", "Ushi (Cow)", "Kuma (Bear)", "Ookami (Wolf)", "Tokage (Lizard)", "Akirisu (Squirrel)", "Shimayagi (Goat)", "Ahiru (Duck)", "Natsusai (Rhino)", "Umisame (Shark)", "Yukiga (Moth)", "Sasori (Scorpion)", "Suzume (Sparrow)", "Washi (Eagle)", "Tsuru (Crane)", "Yorutako (Octopus)", "Kaeru (Frog)"];
+*/
+const clanNames = [
+    "Ukiryuu",
+    "Kitsune",
+    "Nezumi",
+    "Kasaitori",
+    "Tsukiinu",
+    "Mushi",
+    "Akaitora",
+    "Yamabuta",
+    "Osuushi",
+    "Shiroiuma",
+    "Kinsaru",
+    "Fuyukumo",
+    "Kazekani",
+    "Tetsukoi",
+    "Harihebi",
+    "Kuroineko",
+    "Usagi",
+    "Karasu",
+    "Ondori",
+    "Shinkame",
+    "Ushi",
+    "Kuma",
+    "Ookami",
+    "Tokage",
+    "Akirisu",
+    "Shimayagi",
+    "Ahiru",
+    "Natsusai",
+    "Umisame",
+    "Yukiga",
+    "Sasori",
+    "Suzume",
+    "Washi",
+    "Tsuru",
+    "Yorutako",
+    "Kaeru"
+];
 
 const nobleClanNames = [];
 const nobleClans = [];

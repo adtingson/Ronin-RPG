@@ -9,6 +9,10 @@ html {
     font-size: clamp(12px, 2.25dvh, 16px);
 }
 
+ul {
+    padding-left: 1.5rem;
+}
+
 b {
     font-weight: bold;
 }
@@ -27,6 +31,10 @@ button {
 
 .hidden {
     display: none;
+}
+
+.ghost {
+    visibility: hidden;
 }
 
 @media (max-width: 600px) {
@@ -82,7 +90,7 @@ button {
         align-items: center;
     }
 
-    #encounterText,
+    #encounterTextWrapper,
     #combatHeader,
     #interactText {
         padding: 8px;
@@ -128,5 +136,11 @@ button {
         justify-content: center;
         align-items: center;
         display: grid;
+    }
+
+    #encounterText {
+        text-align: left;
+        display: block;
+        padding: 8px;
     }
 }

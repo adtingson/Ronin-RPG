@@ -54,6 +54,8 @@ function renderInteractions() {
 function renderUI() {
     renderInteractions();
     renderDisplay();
+    document.getElementById("encounterTextWrapper").scrollTop = 0;
+    interactText.scrollTop = 0;
 }
 
 function personPreview() {
@@ -243,4 +245,12 @@ function renderRoninWeapons() {
     });
 
     return weaponMods.join(", ");
+}
+
+function hideStats() {
+    document.getElementById("roninStats").classList.add("ghost");
+}
+
+function showStats() {
+    document.getElementById("roninStats").classList.remove("ghost");
 }
