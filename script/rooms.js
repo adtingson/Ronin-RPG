@@ -121,6 +121,9 @@ const rooms = {
     endRoute0: {
         header: "End of Route",
         text: "You have reached the end of the route.",
+        function: () => {
+            saveGame();
+        },
         buttons: [
             {
                 text: "Continue",
@@ -2037,6 +2040,7 @@ const rooms = {
                 text: "Re-roll",
                 function: () => {
                     roninChange("gender");
+                    roninChange("name");
                     renderEncounter("roninCreateGender");
                 }
             },
@@ -2378,6 +2382,163 @@ const rooms = {
             {
                 text: "Begin",
                 goto: "enRoute"
+            }
+        ]
+    },
+    homeScreen: {
+        header: "",
+        text: `<h1 class="logo">浪<br>人</h1>`,
+        function: () => hideStats(),
+        buttons: [
+            {
+                text: "New Game",
+                goto: "introToRonin"
+            },
+            {
+                text: "Continue",
+                function: () => {checkSavedGame()}
+            },
+            {
+                text: "Tutorial",
+                goto: "roninTutorialIntro"
+            }
+        ]
+    },
+    roninTutorialIntro: {
+        header: "Welcome to Ronin",
+        text: `Every journey begins with a single step.
+        <br><br>
+        In <b>Ronin</b>, a text-based adventure RPG inspired by Tiago Junges' solo RPG of the same name, you take the role of a masterless samurai wandering the roads of feudal Japan. The choices you make, the people you meet, and the battles you survive will shape the legend you leave behind.
+        <br><br>
+        Before you set foot upon the road, you must first learn how to navigate the world before you. This tutorial will teach you the game's interface and the mechanics that will guide you throughout your journey.
+        <br><br>
+        When you are ready, your story begins.`,
+        function: () => hideStats(),
+        buttons: [
+            {
+                text: "Exit",
+                goto: "homeScreen"
+            },
+            {
+                text: "Continue",
+                goto: "tutorial1"
+
+            }
+        ]
+    },
+    tutorial1: {
+        header: "The Basics",
+        text: `The road tells its story one encounter at a time.
+        <br><br>
+        Throughout your journey, the <b>Encounter Screen</b> will describe the people you meet, the places you discover, and the trials that stand before you. Every conversation, every battle, and every unexpected turn of fate will unfold here.
+        <br><br>
+        Beneath it are the <b>Context Buttons</b>. They represent the choices available to you in that very moment. As the world changes, so too will your options, revealing new paths, new opportunities, and new dangers.
+        <br><br>
+        You may have already noticed something...
+        <br><br>
+        You have been reading the Encounter Screen and using the Context Buttons since the very beginning.
+        <br><br>
+        The road is already teaching you.`,
+        function: () => hideStats(),
+        buttons: [
+            {
+                text: "Back",
+                goto: "roninTutorialIntro"
+            },
+            {
+                text: "Exit",
+                goto: "homeScreen"
+            },
+            {
+                text: "Continue",
+                goto: "tutorial2"
+            }
+        ]
+    },
+    tutorial2: {
+        header: "The People of this World",
+        text: `The road is never walked alone.
+        <br><br>
+        As you travel, pay close attention to the <b>Updates Bar</b> and the <b>Interaction Log</b>. They are marked below so you know where to find them.
+        <br><br>
+        The <b>Updates Bar</b> tells you who stands before you. If others still await your attention, a numbered marker will appear beside it, showing how many people remain in the current encounter. When no one else is waiting, the marker disappears.
+        <br><br>
+        From time to time, the Updates Bar will also carry important news about your Ronin. What those messages mean is something you will discover through your journey.
+        <br><br>
+        There is one more thing.
+        <br><br>
+        Select the <b>Updates Bar</b>, and it will reveal the notable people whose paths have crossed your own. Friends, enemies, allies, rivals, and villains alike are remembered there. As your legend grows, so too will your knowledge of them.
+        <br><br>
+        The <b>Interaction Log</b> records the outcome of your conversations and actions with the person before you. While the Encounter Screen tells you <b>what is happening</b>, the Interaction Log tells you <b>what happened because of your choices</b>.`,
+        function: () => {
+            hideStats();
+            combatHeader.innerHTML = "<i>This is the Updates Bar.</i>",
+            interactText.innerHTML = "<i>This is the Interaction Log.</i>"
+        },
+        buttons: [
+            {
+                text: "Back",
+                goto: "tutorial1"
+            },
+            {
+                text: "Exit",
+                goto: "homeScreen"
+            },
+            {
+                text: "Continue",
+                goto: "tutorial3"
+            }
+        ]
+    },
+    tutorial3: {
+        header: "The Status Bar",
+        text: `A Ronin carries more than a weapon.
+        <br><br>
+        The <b>Status Bar</b>, shown below, is a record of who you are and who you are becoming. Here you will find your current condition, whether you stand uninjured, wounded, or have fallen upon the road. It also keeps watch over your <b>Compassion</b>, <b>Determination</b>, and <b>Reputation</b>, the three virtues by which your journey will be remembered.
+        <br><br>
+        These are not fixed. Every choice you make leaves its mark.
+        <br><br>
+        Acts of mercy may strengthen your Compassion. Great deeds may spread your Reputation across Japan, reaching both friend and foe alike. Hardship, sacrifice, and loss will test your Determination, and only the strongest spirit will endure.
+        <br><br>
+        When your journey finally comes to an end, your legacy will be measured by your <b>Honor</b>, determined by your <b>Compassion</b> and <b>Determination</b>. A life lived with conviction is remembered long after the sword has fallen silent.
+        <br><br>
+        Should you wish to reflect upon your own story, select the <b>Status Bar</b>. There you will find a record of the Ronin you once were, and the one you have become.`,
+        function: () => showStats(),
+        buttons: [
+            {
+                text: "Back",
+                goto: "tutorial2"
+            },
+            {
+                text: "Exit",
+                goto: "homeScreen"
+            },
+            {
+                text: "Continue",
+                goto: "tutorial4"
+            }
+        ]
+    },
+    tutorial4: {
+        header: "The Road Awaits",
+        text: `The lesson is over.
+        <br><br>
+        From this moment on, no one can choose your path but you. Walk with honor or abandon it. Earn loyal companions or make bitter enemies. Whatever awaits beyond the next bend in the road, it will be your choices that define the journey.
+        <br><br>
+        May your name become one worth remembering.
+        <br><br>
+        Go now.
+        <br><br>
+        The road awaits.`,
+        function: () => hideStats(),
+        buttons: [
+            {
+                text: "Back",
+                goto: "tutorial2"
+            },
+            {
+                text: "Exit",
+                goto: "homeScreen"
             }
         ]
     }

@@ -498,11 +498,11 @@ function healWounds() {
 
     if (heal >= 3) {
         ronin.status = "alive";
-        combatHeader.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i><br>`;
+        combatHeader.innerHTML += `<i>After quite some time, you suddenly felt light and free. Your wounds healed.</i><br><br>`;
     }
     else {
         ronin.status = "wounded";
-        combatHeader.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i><br>`;
+        combatHeader.innerHTML += `<i>You carefully tend to your wounds, but the pain refuses to ease. Your movements remain restricted.</i><br><br>`;
     }
 }
 

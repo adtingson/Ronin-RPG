@@ -4,8 +4,11 @@ const routeEvents = [
 
 let windowContext;
 
+let lastEncounter;
+
 function renderEncounter(encounter) {
     console.log(encounter);
+    lastEncounter = encounter;
     interactText.innerHTML = "";
     combatHeader.innerHTML = "";
     encounterPersons = [];
@@ -529,4 +532,4 @@ function hasMark() {
     }
 }
 
-renderEncounter("introToRonin");
+renderEncounter("homeScreen");

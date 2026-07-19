@@ -37,6 +37,12 @@ button {
     visibility: hidden;
 }
 
+.logo {
+    font-size: 3.5rem;
+    margin: 0;
+    padding: 0;
+}
+
 @media (max-width: 600px) {
     body {
         width: 100%;
@@ -63,7 +69,7 @@ button {
 
     #encounter {
         display: grid;
-        grid-template-rows: auto 2fr 0.5fr 1fr 1fr 1fr;
+        grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
         min-height: 0;
     }
 
@@ -119,12 +125,18 @@ button {
 
     #combatHeaderWrapper {
         display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
     }
 
     #combatHeader {
+        grid-area: 1 / 1;
         justify-self: center;
+        align-self: center;
+    }
+
+    #personsLeft {
+        grid-area: 1 / 1;
+        justify-self: end;
+        align-self: center;
     }
 
     .persons {
