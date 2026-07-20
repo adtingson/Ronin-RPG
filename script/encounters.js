@@ -101,9 +101,14 @@ function updateStat(stat,change) {
     ronin[stat] += change;
 }
 
+let lastMessageBeforeRender;
+
 function renderTechniqueSelection() {
+    lastMessageBeforeRender = encounterText.innerHTML;
+
     if (!encounterPersons.length) {
         interactText.innerHTML = "There is no one to fight.";
+        lastMessageBeforeRender = undefined;
         return;
     }
 
@@ -115,11 +120,12 @@ function renderTechniqueSelection() {
     encounterText.innerHTML = "It seems that you have multiple techniques under your belt. Select one to use for the following combat.";
 
     encounterButtons.innerHTML = "";
+    interactButtons.innerHTML = "";
 
     ronin.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
-        `<button onclick="setCombatStats(${index})">${technique.id} ${technique.desc}</button>
+        `<button onclick="setCombatStats(${index})">${technique.id}</button>
         `;
         }
     );
@@ -130,6 +136,12 @@ function setCombatStats(techniqueIndex) {
     ronin.weapon = ronin.technique[techniqueIndex].weapon;
     ronin.fight = ronin.technique[techniqueIndex].fight;
     ronin.block = ronin.technique[techniqueIndex].block;
+
+    if (lastMessageBeforeRender !== undefined) {
+        encounterText.innerHTML = lastMessageBeforeRender;
+    }
+    
+    lastMessageBeforeRender = undefined;
 
     fight();
 }
@@ -571,4 +583,4 @@ function takeOver(index) {
     renderEncounter("allyTakeOver");
 }
 
-renderEncounter("ue14");
+renderEncounter("homeScreen");

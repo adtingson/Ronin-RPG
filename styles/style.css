@@ -296,6 +296,10 @@ p {
         overflow-y: auto;
     }
 
+    #interactText {
+        text-align: left;
+    }
+
     #buttonContainer {
         display: grid;
         justify-content: center;

@@ -65,9 +65,11 @@ function talk() {
                 else {
                     newAlly = generatePossibleAlly({background:target.background, pastInfo:target.pastInfo, darkSecret:target.darkSecret, gender:target.gender});
                 }
-
+                
+                encounterPersons.splice(0, 1);
+                encounterPersons.unshift(newAlly);
                 enemies.splice(enemies.indexOf(target),1);
-
+                
                 talkMessage =
                 `${result}<br>And now that you learned their dark secret, they are now a possible ally.<br>
                 <ul>
