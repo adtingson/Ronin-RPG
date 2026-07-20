@@ -16,17 +16,17 @@ function renderEncounter(encounter) {
 
     encounterHeader.innerHTML = rooms[encounter].header;
     
-    if (rooms[encounter].persons !== undefined) {
+    if (rooms[encounter].persons) {
         rooms[encounter].persons.forEach(
             person => {
-                if (person.class == "enemy") {
+                if (person.class === "enemy") {
                     let enemyNumber = 1;
                     let enemySpawned = 0;
 
-                    if (person.number !== undefined) {
+                    if (person.number) {
                         enemyNumber = person.number;
 
-                        if (person.number == "d6") {
+                        if (person.number === "d6") {
                             enemyNumber = rolld6() + 1;
                         }
                     }
@@ -37,7 +37,7 @@ function renderEncounter(encounter) {
                         enemySpawned += 1;
                     } while(enemySpawned !== enemyNumber);
                 }
-                else if (person.class == "possibleAlly") {
+                else if (person.class === "possibleAlly") {
                     const newPossibleAlly = generatePossibleAlly(person);
                     encounterPersons.push(newPossibleAlly);
                 }
@@ -47,8 +47,8 @@ function renderEncounter(encounter) {
 
     encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
 
-    if(rooms[encounter].buttons == undefined || !rooms[encounter].buttons.length) {
-        if(rooms[encounter].function !== undefined){
+    if(!rooms[encounter].buttons || !rooms[encounter].buttons.length) {
+        if(rooms[encounter].function){
             rooms[encounter].function();
         }
 
@@ -63,13 +63,13 @@ function renderEncounter(encounter) {
         btn.textContent = button.text;
 
         btn.onclick = () => {
-            if (button.goto !== undefined) {
+            if (button.goto) {
                 typeof button.goto === "function" ? 
                 renderEncounter(button.goto()):
                 renderEncounter(button.goto);
             }
 
-            if (button.function !== undefined) {
+            if (button.function) {
                 button.function();
             }
 
@@ -78,7 +78,7 @@ function renderEncounter(encounter) {
         encounterButtons.appendChild(btn);
     });
 
-    if(rooms[encounter].function !== undefined){
+    if(rooms[encounter].function){
         rooms[encounter].function();
     }
 
@@ -125,8 +125,7 @@ function renderTechniqueSelection() {
     ronin.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
-        `<button onclick="setCombatStats(${index})">${technique.id}</button>
-        `;
+        `<button onclick="setCombatStats(${index})">${technique.id}</button>`;
         }
     );
 }
@@ -137,7 +136,7 @@ function setCombatStats(techniqueIndex) {
     ronin.fight = ronin.technique[techniqueIndex].fight;
     ronin.block = ronin.technique[techniqueIndex].block;
 
-    if (lastMessageBeforeRender !== undefined) {
+    if (lastMessageBeforeRender) {
         encounterText.innerHTML = lastMessageBeforeRender;
     }
     
@@ -154,10 +153,10 @@ function generateEnemy({name, weapon, fight, block, technique, type, status, bac
         fight: fight,
         block: block,
         technique: technique,
-        type: type !== undefined ? type : "generic",
+        type: type ? type : "generic",
         firstStrike: "available",
-        status: status !== undefined ? status : undefined,
-        background: background !== undefined ? background : undefined
+        status: status ? status : undefined,
+        background: background ? background : undefined
     }
 
     enemies.push(addedEnemy);
@@ -220,7 +219,7 @@ function endOfRouteCheck() {
         return;
     }
 
-    if (endRouteEnemies.length === 0) {
+    if (!endRouteEnemies.length) {
         renderEncounter("endRoute0");
     }
     else {
@@ -241,11 +240,11 @@ function setWindowContext(destination) {
 
 function generatePossibleAlly({name,appearance,gender,technique,occupation,background,pastInfo,darkSecret}={}) {
     const occupationList = ["Mentor", "Blacksmith", "Healer", "Fighter", "Innocent"];
-    const generatedGender = gender !== undefined ? gender : genderFunc();
-    const generatedName = name !== undefined ? name : nameFunc(generatedGender);
-    const allyAppearance = appearance !== undefined ? appearance : normalizeText(randoAppearance());
-    const allyTechnique = technique !== undefined ? technique : randomTechnique();
-    const allyOccupation = occupation !== undefined ? occupation : occupationList[Math.floor(Math.random() * occupationList.length)];
+    const generatedGender = gender ? gender : genderFunc();
+    const generatedName = name ? name : nameFunc(generatedGender);
+    const allyAppearance = appearance ? appearance : normalizeText(randoAppearance());
+    const allyTechnique = technique ? technique : randomTechnique();
+    const allyOccupation = occupation ? occupation : occupationList[Math.floor(Math.random() * occupationList.length)];
 
 
     const possibleAlly = {
@@ -254,9 +253,9 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
         appearance: allyAppearance,
         technique: allyTechnique,
         occupation: allyOccupation,
-        background: background !== undefined ? background : undefined,
-        pastInfo: pastInfo !== undefined ? pastInfo : undefined,
-        darkSecret: darkSecret !== undefined ? darkSecret : undefined,
+        background: background,
+        pastInfo: pastInfo,
+        darkSecret: darkSecret,
         firstStrike: "available",
         status: "alive"
     };
@@ -265,7 +264,7 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
         possibleAlly.technique.block += -1;
     }
 
-    if (possibleAllies.length == 0 && firstPossibleAlly == undefined) {
+    if (!possibleAllies.length && !firstPossibleAlly) {
         firstPossibleAlly = possibleAlly;
     }
 
@@ -275,7 +274,7 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
 }
 
 function villainFight() {
-    const villainToFight = villainsList.find(villain => villain.status == "active" || villain.status == "facedBefore");
+    const villainToFight = villainsList.find(villain => ["active", "facedBefore"].includes(villain.status));
 
     if (villainToFight.status !== "facedBefore") {
         if (typeof villainToFight.trait === "function") {
@@ -326,17 +325,16 @@ function villainFight() {
 
     encounterPersons.push(villainToFight);
 
-    encounterText.innerHTML =
-    `${generateExoticLocation()}.<br><br>
-    Before you stands ${villainToFight.name}. ${villainToFight.gender == "Male" ? "He" : "She"} ${villainToFight.appearance}.<br><br>
+    encounterText.innerHTML = `${generateExoticLocation()}.<br><br>
+    Before you stands ${villainToFight.name}. ${villainToFight.gender === "Male" ? "He" : "She"} ${villainToFight.appearance}.<br><br>
     ${villainToFight.trait}<br><br>
-    ${villainToFight.power !== undefined ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}<br><br>` : ``}
+    ${villainToFight.power ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}<br><br>` : ``}
     Without another word, the villain reaches for their weapon.`;
 }
 
 function endGameCheck(isSeppuku) {
     let seppukuBonus = rolld6() + rolld6() + 2;
-    let honorScore = honor() + (isSeppuku == true ? seppukuBonus : 0);
+    let honorScore = honor() + (isSeppuku ? seppukuBonus : 0);
 
     let conclusionText;
 
@@ -345,23 +343,23 @@ function endGameCheck(isSeppuku) {
         conclusionText = `Your character has become a spiteful person or even the villain in someone else’s story.`;
     }
     else if (3 <= honorScore && honorScore <= 6) {
-        conclusionText = `Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.`;
+        conclusionText = `Despite what ${ronin.gender === "Male" ? "he" : "she"} did, ${ronin.gender === "Male" ? "his" : "her"} character is frustrated. ${ronin.gender === "Male" ? "He" : "She"} ends ${ronin.gender === "Male" ? "his" : "her"} story living as a beggar on the streets.`;
     }
     else if (7 <= honorScore && honorScore <= 10) {
-        conclusionText = `Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.`;
+        conclusionText = `Your character feels ${ronin.gender === "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender === "Male" ? "He" : "She"} decides to go to another continent in search of a new life.`;
     }
     else if (11 <= honorScore && honorScore <= 14) {
-        conclusionText = `Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.`;
+        conclusionText = `Your character feels ${ronin.gender === "Male" ? "he" : "she"} has done ${ronin.gender === "Male" ? "his" : "her"} part and decides to join ${ronin.gender === "Male" ? "his" : "her"} allies somewhere far away.`;
     }
     else if (15 <= honorScore) {
-        conclusionText = `Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.`;
+        conclusionText = `Your character became a better person and achieved ${ronin.gender === "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender === "Male" ? "him" : "her"}.`;
     }
 
     let seppukuText = ``;
 
     if (isSeppuku) {
         seppukuText = `${ronin.name} decided to commit Seppuku. Because of this, he gained ${seppukuBonus} honor.<br><br>`;
-        conclusionText += `<br><br>In the end, ${ronin.gender == "Male" ? "he" : "she"} felt ${ronin.gender == "Male" ? "he" : "she"} hasn't done enough and committed Seppuku to save ${ronin.gender == "Male" ? "his" : "her"} honor.`;
+        conclusionText += `<br><br>In the end, ${ronin.gender === "Male" ? "he" : "she"} felt ${ronin.gender === "Male" ? "he" : "she"} hasn't done enough and committed Seppuku to save ${ronin.gender === "Male" ? "his" : "her"} honor.`;
         ronin.status = "dead";
     }
 
@@ -379,7 +377,7 @@ function itemsStolen(isTemporary, stolenWhat, fightWith) {
     target.stolenItems ??= [];
     target.stolenBrokenWeapons ??= [];
 
-    if (stolenWhat == "all") {
+    if (stolenWhat === "all") {
         target.stolenWeapons.push(...ronin.weapons);
         target.stolenItems.push(...ronin.items);
         target.stolenBrokenWeapons.push(...ronin.brokenWeapons);
@@ -388,25 +386,25 @@ function itemsStolen(isTemporary, stolenWhat, fightWith) {
         ronin.items = [];
         ronin.brokenWeapons = [];
     }
-    else if (stolenWhat == "items") {
+    else if (stolenWhat === "items") {
         target.stolenItems.push(...ronin.items);
         ronin.items = [];
     }
     else {
         if (ronin.items.includes(stolenWhat)) {
-            let stolenItem = ronin.items.find(item => item == stolenWhat);
+            let stolenItem = ronin.items.find(item => item === stolenWhat);
             target.stolenItems.push(stolenItem);
             ronin.items.splice(ronin.items.indexOf(stolenItem), 1);
         }
         else if (ronin.weapons.includes(stolenWhat)) {
-            let stolenWeapon = ronin.weapons.find(weapon => weapon == stolenWhat);
+            let stolenWeapon = ronin.weapons.find(weapon => weapon === stolenWhat);
             target.stolenWeapons.push(stolenWeapon);
             ronin.weapons.splice(ronin.weapons.indexOf(stolenWeapon), 1);
         }
     }
 
 
-    if (fightWith == "Stick") {
+    if (fightWith === "Stick") {
         const stickFight = {
             id: "Stick",
             desc: "Stick (Fight +0; Block 1)",
@@ -416,14 +414,14 @@ function itemsStolen(isTemporary, stolenWhat, fightWith) {
         }
 
         storageVar.technique ??= [];
-        storageVar.technique.push(ronin.technique);
+        storageVar.technique = [...ronin.technique];
         ronin.technique = [stickFight];
         ronin.weapons.push("Stick");
     }
 }
 
 function returnStolen(thief) {
-    let target = thief !== undefined ? thief : storageVar;
+    let target = thief ? thief : storageVar;
 
     if (target.stolenWeapons?.length) {
         ronin.weapons.push(...target.stolenWeapons);
@@ -458,7 +456,7 @@ function courierMission(item, stat, change) {
 }
 
 function hasParcel() {
-    if (parcel !== undefined) {
+    if (parcel) {
         let hasItem = ronin.items.some(item => item === parcel.content);
 
         if (hasItem) {
@@ -518,16 +516,16 @@ function assassinate(target, fight, block, reward) {
 }
 
 function hasMark() {
-    if (parcel !== undefined) {
+    if (parcel) {
         return;
     }
 
-    if (assassinMark !== undefined) {
-        if (assassinMark.status == "dead") {
+    if (assassinMark) {
+        if (assassinMark.status === "dead") {
             combatHeader.innerHTML += `Your assassination target, ${assassinMark.name}, is already dead. You gained ${assassinBounty} from your patron.<br>`;
             ronin.items.push(assassinBounty);
-            assassinMark == undefined;
-            assassinBounty == undefined;
+            assassinMark = undefined;
+            assassinBounty = undefined;
             return;
         }
 

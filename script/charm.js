@@ -1,40 +1,13 @@
 function charm() {
     const target = getTarget();
 
-    if (target == undefined) {
-        interactText.innerHTML = `There is no one to charm. Maybe they left?<br>`;
-        personPreview();
-        renderUI();
-        return;
-    }
-
-    if (allies.includes(target)) {
-        interactText.innerHTML = `There is no point in charming ${target.name}. ${target.name} is already devoted to your cause.<br>`;
-        personPreview();
-        renderUI();
-        return;
-    }
-    else if (villainsList.includes(target)) {
-        interactText.innerHTML = `You can be charming all you want. ${target.name} doesn't care. ${target.name} is devoted to your downfall.<br>`;
-        personPreview();
-        renderUI();
-        return;
-    }
-
-    if (enemies.includes(target)) {
-        interactText.innerHTML = `You cannot charm ${target.name}.<br>Try other interactions with them first, and make them a possible ally.<br>`;
-        personPreview();
-        renderUI();
-        return;
-    }
-
     const result = charmAttempt();
 
     if (result == "Charmed") {
         allies.push(target);
         const index = possibleAllies.indexOf(target);
         possibleAllies.splice(index,1);
-        interactText.innerHTML = `${target.name} is now your ally! Since ${target.gender == "Male" ? "he" : "she"} is ${target.occupation == "Innocent" ? `an Innocent` : `a ${target.occupation}`}, ${target.gender == "Male" ? "he" : "she"} gives you the following benefits:<br>${allyRoleDesc(target, target.occupation)}<br>`;
+        interactText.innerHTML = `${target.name} is now your ally! Since ${target.gender == "Male" ? "he" : "she"} is ${target.occupation == "Innocent" ? `an Innocent` : `a ${target.occupation}`}, ${target.gender == "Male" ? "he" : "she"} gives you the following benefits:<br><br>${allyRoleDesc(target, target.occupation)}<br><br>`;
         applyAllyBuff(target);
         interactButtons.innerHTML = `<button onclick="cleanUp()">Thanks!</button>`;
     }

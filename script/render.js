@@ -50,7 +50,7 @@ function renderInteractions() {
         interactButtons.innerHTML += `<button onclick="charm()">Charm</button>`;
     }
 
-    if (enemies.includes(target) && target.morale !== "emboldened" && neutralStatus) {
+    if (enemies.includes(target) && target.morale !== "emboldened" && neutralStatus && target.type !== "toKill") {
         interactButtons.innerHTML += `<button onclick="intimidate()">Intimidate</button>`;
     }
 

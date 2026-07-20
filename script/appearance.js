@@ -23,7 +23,7 @@ const appearanceList = [
     "has a dead face",
     "has white hair",
     "has skin spots",
-    "is an androgen",
+    "is androgynous",
     "is an albino",
     "has gigantism",
     "is blind",
@@ -51,8 +51,7 @@ function randoAppearance() {
         return `${app1}, and ${app2}`;
     }
     else if (appearance.includes("*")) {
-        const filteredList1 = appearanceList.filter(word => !word.includes(normalizeText(appearance)));
-        const filteredList = filteredList1.filter(word => !word.includes("Choose Two"));
+        const filteredList = appearanceList.filter(word => !word.includes(normalizeText(appearance)) || !word.includes("Choose Two"));
         const app2 = filteredList[Math.floor(Math.random() * filteredList.length)];
 
         if (app2.includes("*")) {
