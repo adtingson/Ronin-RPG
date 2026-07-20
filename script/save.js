@@ -276,4 +276,4 @@ function checkSavedGame() {
     }
 }
 
-// localStorage.removeItem("gameState");
+localStorage.removeItem("gameState");

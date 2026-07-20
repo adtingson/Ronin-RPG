@@ -13,6 +13,89 @@
             <h1>Ronin</h1>
         </header>
         <div id="game">
+            <div id="roninSheet"  class="overlayCard">
+                <span id="closeRoninSheet">✕</span>
+                <div class="overlayScrollable">
+                    <div class="wrapper">
+                        <h2>Background</h2>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Name</th>
+                                    <td><span id="displayName"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Gender</th>
+                                    <td><span id="displayGender"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Appearance</th>
+                                    <td><span id="displayAppearance"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Family</th>
+                                    <td><span id="displayFamily"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Nightmare</th>
+                                    <td><span id="displayNightmare"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Scar</th>
+                                    <td><span id="displayScar"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Meaning</th>
+                                    <td><span id="displayMeaning"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2>Stats</h2>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Honor</th>
+                                    <td><span id="displayHonor"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td><span id="displayStatus"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Reputation</th>
+                                    <td><span id="displayReputation"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Determination</th>
+                                    <td><span id="displayDetermination"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Compassion</th>
+                                    <td><span id="displayCompassion"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2>Techniques</h2>
+                        <div id="displayTechnique"></div>
+                        <h2>Equipment</h2>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Weapons</th>
+                                    <td><span id="displayWeapons"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Items</th>
+                                    <td><span id="displayItems"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2>Noble Clans</h2>
+                        <div id="displayNobleClans"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="encounter">
                 <h2 id="encounterHeader"></h2>
 
@@ -35,8 +118,36 @@
                 </div>
 
                 <div id="roninStats"></div>
-                
             </div>
+
+            <div id="roninPersons" class="hidden">
+                <span id="closePersons">✕</span>
+                <div class="overlayScrollable">
+                    <div class="wrapper">
+                        <div id="displayEncounterPersonsWrapper">
+                            <h2>In Encounter</h2>
+                            <div id="displayEncounterPersons"></div>
+                        </div>
+                        <div id="displayVillainsWrapper">
+                            <h2>Villains</h2>
+                            <div id="displayVillains"></div>
+                        </div>
+                        <div id="displayAlliesWrapper">
+                            <h2>Allies</h2>
+                            <div id="displayAllies"></div>
+                        </div>
+                        <div id="displayPossibleAlliesWrapper">
+                            <h2>Possible Allies</h2>
+                            <div id="displayPossibleAllies"></div>
+                        </div>
+                        <div id="displayEnemiesWrapper">
+                            <h2>Enemies</h2>
+                            <div id="displayEnemies"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         

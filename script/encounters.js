@@ -119,7 +119,7 @@ function renderTechniqueSelection() {
     ronin.technique.forEach(
         (technique, index) => {
         encounterButtons.innerHTML +=
-        `<button onclick="setCombatStats(${index})">${technique.desc}</button>
+        `<button onclick="setCombatStats(${index})">${technique.id} ${technique.desc}</button>
         `;
         }
     );
