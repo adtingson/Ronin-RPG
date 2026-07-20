@@ -282,21 +282,9 @@ function villainFight() {
             villainToFight.trait(villainToFight);
         }
 
-        if (villainToFight.power !== undefined) {
+        if (villainToFight.power) {
             villainToFight.power.condition();
         }
-
-        villainToFight.techniqueID = villainToFight.technique.id;
-        villainToFight.weapon = villainToFight.technique.weapon;
-        villainToFight.fight = villainToFight.technique.fight;
-
-        let villainBonusBlock = 0;
-
-        if (villainToFight.power !== undefined && villainToFight.power.blockBonus !== undefined) {
-            villainBonusBlock = villainToFight.power.blockBonus();
-        }
-
-        villainToFight.block = villainToFight.technique.block + villainBonusBlock;
 
         if (villainToFight.power?.buffer) {
             let traitor = villainToFight.power.buffer();
@@ -322,6 +310,19 @@ function villainFight() {
 
         villainsToDisplay.push(villainToFight);
     }
+
+    villainToFight.techniqueID = villainToFight.technique.id;
+    villainToFight.weapon = villainToFight.technique.weapon;
+    villainToFight.fight = villainToFight.technique.fight;
+
+    let villainBonusBlock = 0;
+
+    if (villainToFight.power?.blockBonus) {
+        villainBonusBlock = villainToFight.power.blockBonus();
+    }
+
+    villainToFight.block = villainToFight.technique.block + villainBonusBlock;
+
 
     encounterPersons.push(villainToFight);
 

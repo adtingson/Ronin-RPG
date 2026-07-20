@@ -186,7 +186,8 @@ const rooms = {
         text: "",
         buttons: [
             {
-                text: "New Game?"
+                text: "New Game?",
+                goto: "roninCreateIntro"
             }
         ]
     },

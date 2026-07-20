@@ -233,7 +233,7 @@ function roninWinCleanUp() {
 function slayEnemy() {
     let target = getTarget();
 
-    interactText.innerHTML = `${target.name} has been slain. This cold-hearted act lost ${ronin.name} 1 Compassion.<br>`;
+    interactText.innerHTML = `${target.name} has been slain. This cold-hearted act lost ${ronin.name} ${target.compassionBonus ? `${target.compassionBonus}` : `1`} Compassion.<br>`;
 
     if (target.stolenWeapons || target.stolenItems || target.stolenBrokenWeapons) {
         returnStolen(target);
@@ -265,10 +265,9 @@ function slayEnemyCleanUp() {
     target = getTarget();
 
     if (!enemies.includes(target)) {
-        roninBlock = roninSide.block;
-        roninSide.firstStrike = "available";
         interactText.innerHTML = "You now face the next person.<br>";
         encounterButtons.innerHTML = "";
+        interactButtons.innerHTML = "";
         personPreview();
         renderUI();
         return;
@@ -331,10 +330,9 @@ function spareEnemyCleanUp() {
     target = getTarget();
 
     if (!enemies.includes(target)) {
-        roninBlock = roninSide.block;
-        roninSide.firstStrike = "available";
         interactText.innerHTML = "You now face the next person.<br>";
         encounterButtons.innerHTML = "";
+        interactButtons.innerHTML = "";
         personPreview();
         renderUI();
         return;
@@ -344,6 +342,7 @@ function spareEnemyCleanUp() {
     interactText.innerHTML = "Next enemy is here. Be ready.<br>";
 
     encounterButtons.innerHTML = "";
+    interactButtons.innerHTML = "";
     renderUI();
 }
 

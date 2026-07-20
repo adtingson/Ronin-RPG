@@ -157,11 +157,11 @@ function renderCard(person) {
                 </tr>` : ``}
                 ${person.meaning ? `<tr>
                     <th>Meaning</th>
-                    <td>${person.meaning}</td>
+                    <td>${person.feeling} — ${person.text}</td>
                 </tr>` : ``}
                 <tr>
                     <th>Status</th>
-                    <td>${person.status == "dead" ? "Slain" : person.status == "lost" ? "Defeated" : "Active"}</td>
+                    <td>${person.status == "dead" ? "Slain" : person.status == "spared" ? "Defeated" : "Active"}</td>
                 </tr>
             </tbody>
         </table>`;
