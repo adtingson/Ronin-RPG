@@ -71,6 +71,11 @@ h2 {
     justify-content: center;
 }
 
+#interactText {
+    display: block;
+    padding: 8px;
+}
+
 #encounter {
     display: grid;
     grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
@@ -108,7 +113,7 @@ h2 {
 
 #encounterTextWrapper,
 #combatHeader,
-#interactText {
+#interactTextWrapper {
     padding: 8px;
     display: grid;
     justify-content: center;
@@ -236,8 +241,24 @@ p {
     padding: 16px;
 }
 
-#interactText {
+#interactTextWrapper {
     text-align: left;
+}
+
+.allyColor::after {
+    content: "(Ally)";
+}
+
+.roninColor::after {
+    content: "(You)";
+}
+
+.villainColor::after {
+    content: "(Villain)";
+}
+
+.enemyColor::after {
+    content: "(Enemy)";
 }
 
 @media (max-width: 600px) {
@@ -293,7 +314,7 @@ p {
 
     #encounterTextWrapper,
     #combatHeader,
-    #interactText {
+    #interactTextWrapper {
         padding: 8px;
         display: grid;
         justify-content: center;
@@ -301,7 +322,7 @@ p {
         overflow-y: auto;
     }
 
-    #interactText {
+    #interactTextWrapper {
         text-align: left;
     }
 
