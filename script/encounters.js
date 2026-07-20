@@ -215,7 +215,7 @@ function addEnemyToEndRoute() {
 }
 
 function endOfRouteCheck() {
-    if (["dead", "lost"].includes(finalVillain.status)) {
+    if (["dead", "spared"].includes(finalVillain.status)) {
         renderEncounter("endGame");
         return;
     }
@@ -574,4 +574,4 @@ function takeOver(index) {
     renderEncounter("allyTakeOver");
 }
 
-renderEncounter("homeScreen");
+renderEncounter("villain");
