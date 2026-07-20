@@ -574,4 +574,4 @@ function takeOver(index) {
     renderEncounter("allyTakeOver");
 }
 
-renderEncounter("villain");
+renderEncounter("homeScreen");
