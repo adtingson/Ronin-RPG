@@ -18,6 +18,10 @@ function renderDisplay() {
     renderCard("ronin");
 }
 
+function checkInteractions() {
+    renderEncounter(windowContext);
+}
+
 function renderInteractions() {
     const target = getTarget();
 

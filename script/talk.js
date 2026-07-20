@@ -71,7 +71,7 @@ function talk() {
                 enemies.splice(enemies.indexOf(target),1);
                 
                 talkMessage =
-                `${result}<br>And now that you learned their dark secret, they are now a possible ally.<br>
+                `${result}<br>After spending time to really get to know them, they became a possible ally.<br>
                 <ul>
                     <li>Name: ${newAlly.name}</li>
                     <li>Gender: ${newAlly.gender}</li>

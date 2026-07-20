@@ -239,17 +239,6 @@ function setWindowContext(destination) {
     windowContext = destination;
 }
 
-function checkInteractions() {
-    const target = getTarget();
-
-    if (target !== undefined) {
-        interactText.innerHTML = "It is rude to ignore someone that is already in front of you. Try to interact."
-    }
-    else {
-        renderEncounter(windowContext);
-    }
-}
-
 function generatePossibleAlly({name,appearance,gender,technique,occupation,background,pastInfo,darkSecret}={}) {
     const occupationList = ["Mentor", "Blacksmith", "Healer", "Fighter", "Innocent"];
     const generatedGender = gender !== undefined ? gender : genderFunc();

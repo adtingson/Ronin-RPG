@@ -136,18 +136,18 @@ h2 {
 #combatHeaderWrapper {
     display: grid;
     cursor: pointer;
+    position: relative;
 }
 
 #combatHeader {
-    grid-area: 1 / 1;
     justify-self: center;
     align-self: center;
 }
 
 #personsLeft {
-    grid-area: 1 / 1;
     justify-self: end;
     align-self: center;
+    position: absolute;
 }
 
 .persons {
@@ -171,6 +171,7 @@ table {
     table-layout: fixed;
     width: 100%;
     border-spacing: 8px;
+    margin-bottom: 16px;
 }
 
 td,
@@ -324,18 +325,18 @@ p {
     #combatHeaderWrapper {
         display: grid;
         cursor: pointer;
+        position: relative;
     }
 
     #combatHeader {
-        grid-area: 1 / 1;
         justify-self: center;
         align-self: center;
     }
 
     #personsLeft {
-        grid-area: 1 / 1;
         justify-self: end;
         align-self: center;
+        position: absolute;
     }
 
     .persons {
@@ -397,6 +398,7 @@ p {
         table-layout: fixed;
         width: 100%;
         border-spacing: 8px;
+        margin-bottom: 16px;
     }
 
     td,
