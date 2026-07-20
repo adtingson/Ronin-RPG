@@ -27,11 +27,11 @@ function renderInteractions() {
 
     interactButtons.innerHTML = "";
 
-    if (target && encounterButtons.innerHTML == "") {
+    if (!target && encounterButtons.innerHTML == "") {
         interactButtons.innerHTML += `<button onclick="checkInteractions()">Continue</button>`;
     }
 
-    if (target) {
+    if (!target) {
         return;
     }
 
