@@ -325,7 +325,7 @@ const rooms = {
             },
             {
                 text: "Continue",
-                goto: "roninCreateGender"
+                goto: "roninCreateIntro"
             }
         ]
     },
@@ -2071,7 +2071,7 @@ const rooms = {
         This journey is not about victory. It is about the choices you make, the lives you touch, and the legacy you leave behind.
         <br><br>
         But before your story can begin, we must first discover who this Ronin truly is.`,
-        function: () => {generateRonin(); hideStats(),hideCombatHeader()},
+        function: () => {hideStats(),hideCombatHeader()},
         buttons: [
             {
                 text: "Continue",
@@ -2090,7 +2090,7 @@ const rooms = {
                 goto: "roninCreateGender"
             }
         ],
-        function: () => {hideStats(),hideCombatHeader()},
+        function: () => {generateRonin();hideStats(),hideCombatHeader()},
     },
     roninCreateGender: {
         header: "The Ronin",

@@ -361,7 +361,7 @@ function renderBlockDeterminationOption() {
             target.status = "fighting";
             encounterButtons.innerHTML = "";
         }
-        else if (roninBlock == 0) {
+        else if (roninBlock <= 0) {
             interactText.innerHTML += `${roninSide.name} is already in ${roninSide.gender == "Male" ? "his" : "her"} limits and can no longer block. ${roninSide.name} is slain. You have lost a valuable ally.<br>`;
             roninSide.status = "dead";
             renderCombatHeader(target);
@@ -390,7 +390,7 @@ function extraEffort() {
         target.status = "fighting";
     }
     else if (roninSide.determination == 0) {
-        if (roninBlock == 0) {
+        if (roninBlock <= 0) {
             target.status = "facedBefore";
             roninLossCleanUp();
             return;
@@ -417,7 +417,7 @@ function blockHit() {
         target.status = "fighting";
         encounterButtons.innerHTML = "";
     }
-    else if (roninBlock == 0) {
+    else if (roninBlock <= 0) {
         if (roninSide.determination == 0) {
             target.status = "facedBefore";
             roninLossCleanUp();
@@ -587,5 +587,5 @@ function renderCombatHeader(target) {
 
 
     displayPersonsLeft();
-    combatHeader.innerHTML = `${roninSide.status == "dead" ? `<s>` : ``}<b>${roninSide.name}</b>[${roninSideWeapon}](Fight: ${roninFight}}; Block: ${roninBlock})${roninSide.status == "dead" ? `</s>` : ``} vs ${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b>[${targetWeapon}](Fight: ${enemyFight}}; Block: ${enemyBlock})${target.status == "lost" ? `</s>` : ``}<br>`;
+    combatHeader.innerHTML = `${roninSide.status == "dead" ? `<s>` : ``}<b>${roninSide.name}</b>[${roninSideWeapon}](Fight: ${roninFight}; Block: ${roninBlock})${roninSide.status == "dead" ? `</s>` : ``} vs ${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b>[${targetWeapon}](Fight: ${enemyFight}}; Block: ${enemyBlock})${target.status == "lost" ? `</s>` : ``}<br>`;
 }

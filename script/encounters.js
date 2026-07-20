@@ -319,9 +319,10 @@ function villainFight() {
                 allyInPrison.status = "prisoner";
             }
         }
+
+        villainsToDisplay.push(villainToFight);
     }
 
-    villainsToDisplay.push(villainToFight);
     encounterPersons.push(villainToFight);
 
     encounterText.innerHTML =

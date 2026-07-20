@@ -266,6 +266,8 @@ function loadGame() {
 function checkSavedGame() {
     if (localStorage.getItem("gameState") !== null) {
         loadGame();
+        showStats();
+        showCombatHeader();
     }
     else {
         interactText.innerHTML = `Notice: Your story has not yet been written. The road will remember your progress at the end of each journey.`;
