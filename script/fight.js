@@ -24,6 +24,8 @@ function targetColor(target) {
 
 function fight() {
     interactText.innerHTML = "";
+    interactButtons.innerHTML = "";
+    encounterButtons.innerHTML = "";
 
     const target = getTarget();
     roninSide = ronin;
