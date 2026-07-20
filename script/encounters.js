@@ -571,4 +571,4 @@ function takeOver(index) {
     renderEncounter("allyTakeOver");
 }
 
-renderEncounter("homeScreen");
+renderEncounter("ue14");

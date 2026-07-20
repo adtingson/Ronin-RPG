@@ -86,7 +86,7 @@ function personPreview() {
         combatHeader.innerHTML = `${target.status == "lost" ? `<s>` : ``}<b>${target.name}</b> (${target.weapon} • Fight: ${target.fight(target,ronin)}${target.morale == "emboldened" ? " + 1 for failed Intimidation" : ""} • Block: ${enemyBlock})</div>${target.status == "lost" ? `</s>` : ``}`;
     }
     else if (possibleAllies.includes(target) || allies.includes(target)) {
-        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation})</div>`;
+        combatHeader.innerHTML = `<b>${target.name}</b> (${target.occupation})`;
     }
 }
 
@@ -277,9 +277,9 @@ function renderCard(person) {
     }
     else if (enemies.includes(person)) {
         return `<tr>
-            <th>${person.status == dead ? `<s>` : ``}${person.name}${person.status == dead ? `</s>` : ``}</th>
-            <td>${person.status == dead ? `<s>` : ``}${person.fight()}${person.status == dead ? `</s>` : ``}</td>
-            <td>${person.status == dead ? `<s>` : ``}${person.block}${person.status == dead ? `</s>` : ``}</td>
+            <th>${person.status == "dead" ? `<s>` : ``}${person.name}${person.status == "dead" ? `</s>` : ``}</th>
+            <td>${person.status == "dead" ? `<s>` : ``}${person.fight()}${person.status == "dead" ? `</s>` : ``}</td>
+            <td>${person.status == "dead" ? `<s>` : ``}${person.block}${person.status == "dead" ? `</s>` : ``}</td>
         </tr>`;
     }
     else if (person == "enemies") {
@@ -355,9 +355,16 @@ function showStats() {
     roninStats.classList.remove("ghost");
 }
 
-roninStats.addEventListener("click", displayRoninSheet);
+roninStats.addEventListener("click", () => {
+    if (roninSheet.classList == "hidden") {
+        displayRoninSheet();
+    }
+    else {
+        hideRoninSheet();
+    }
+});
 
-function displayRoninSheet () {
+function displayRoninSheet() {
     roninSheet.classList.add("overlayCard");
     roninSheet.classList.remove("hidden");
 }
@@ -369,7 +376,14 @@ function hideRoninSheet() {
     roninSheet.classList.remove("overlayCard");
 }
 
-combatHeaderWrapper.addEventListener("click", displayRoninEnemies);
+combatHeaderWrapper.addEventListener("click", () => {
+    if (roninPersons.classList == "hidden") {
+        displayRoninEnemies();
+    }
+    else {
+        hideRoninPersons();
+    }
+});
 
 function displayRoninEnemies() {
     roninPersons.classList.add("overlayCard");
