@@ -235,6 +235,10 @@ p {
     padding: 16px;
 }
 
+#interactText {
+    text-align: left;
+}
+
 @media (max-width: 600px) {
     body {
         width: 100%;
