@@ -28,6 +28,7 @@ button {
     cursor: pointer;
     margin: 4px;
     font-size: 1rem;
+    white-space: nowrap;
 }
 
 .hidden {
@@ -49,6 +50,191 @@ button {
     transform: translate(-50%, -50%);
 }
 
+body {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    text-align: center;
+}
+
+h1,
+h2 {
+    margin: 16px 0;
+}
+
+#game {
+    display: grid;
+    min-height: 0;
+    position: relative;
+    justify-content: center;
+}
+
+#encounter {
+    display: grid;
+    grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
+    min-height: 0;
+    position: relative;
+    width: 600px;
+}
+
+#roninStats {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    cursor: pointer;
+}
+
+#roninStatBalls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#roninStatBalls > div {
+    margin: 0 8px;
+}
+
+#roninStatusBalls {
+    display: flex;
+}
+
+#roninStatusBalls > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#encounterTextWrapper,
+#combatHeader,
+#interactText {
+    padding: 8px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+#buttonContainer {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+#buttonWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#buttonWrapper > div {
+    display: contents;
+}
+
+#combatHeaderWrapper {
+    display: grid;
+    cursor: pointer;
+}
+
+#combatHeader {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: center;
+}
+
+#personsLeft {
+    grid-area: 1 / 1;
+    justify-self: end;
+    align-self: center;
+}
+
+.persons {
+    border: 1px solid #222;
+    border-radius: 4px;
+    margin: 0 4px;
+    height: 36px;
+    width: 36px;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+}
+
+#encounterText {
+    text-align: left;
+    display: block;
+    padding: 8px;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-spacing: 8px;
+}
+
+td,
+th {
+    vertical-align: top;
+}
+
+th {
+    text-align: right;
+    width: 35%;
+}
+
+td {
+    text-align: left;
+    width: 65%;
+}
+
+p {
+    margin: 16px 0;
+}
+
+.miniCards th,
+.miniCards td {
+    text-align: center;
+}
+
+.overlayCard {
+    width: 600px;
+    z-index: 999;
+    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    min-height: 0;
+    grid-template-rows: 1fr;
+    height: 100%;
+    text-align: left;
+    box-shadow: 0 8px 16px 0 #222;
+}
+
+.overlayScrollable {
+    display: grid;
+    overflow-y: auto;
+}
+
+#closePersons,
+#closeRoninSheet {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 44px;
+    width: 44px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.wrapper {
+    padding: 16px;
+}
+
 @media (max-width: 600px) {
     body {
         width: 100%;
@@ -64,10 +250,6 @@ button {
         margin: 16px 0;
     }
 
-    button {
-        white-space: nowrap;
-    }
-
     #game {
         display: grid;
         min-height: 0;
@@ -79,6 +261,7 @@ button {
         grid-template-rows: auto 2fr 1fr 1fr 1fr 1fr;
         min-height: 0;
         position: relative;
+        width: 100%;
     }
 
     #roninStats {
@@ -90,7 +273,6 @@ button {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 8px;
     }
 
     #roninStatusBalls {
@@ -133,6 +315,7 @@ button {
 
     #combatHeaderWrapper {
         display: grid;
+        cursor: pointer;
     }
 
     #combatHeader {
@@ -176,6 +359,7 @@ button {
         grid-template-rows: 1fr;
         height: 100%;
         text-align: left;
+        box-shadow: none;
     }
 
     .overlayScrollable {
@@ -194,10 +378,11 @@ button {
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
+        cursor: pointer;
     }
 
     .wrapper {
-        padding: 8px;
+        padding: 16px;
     }
 
     table {

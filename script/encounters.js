@@ -532,4 +532,43 @@ function hasMark() {
     }
 }
 
+function checkContinueAlly() {
+    if (!livingAllies().length) {
+        combatHeader.innerHTML = `<i>You have no living Allies to continue your journey.</i>`;
+    }
+    else {
+        renderEncounter("continueAlly");
+    }
+}
+
+function findTechnique(technique) {
+    return techniques.find(tech => tech.id === technique) ?? uncommonTechniques.find(tech => tech.id === technique)
+}
+
+function takeOver(index) {
+    const person = livingAllies()[index];
+
+    let firstTechnique = {...findTechnique(person.technique.id)};
+
+    ronin.name = person.name;
+    ronin.gender = person.gender;
+    ronin.appearance = person.appearance;
+    ronin.family = generateFamilyBG();
+    ronin.nightmare = nightmare();
+    ronin.scar = generateScar();
+    ronin.meaning = generateScarMeaning();
+    ronin.technique = [firstTechnique];
+    ronin.firstStrike = "available";
+    ronin.reputation = 0;
+    ronin.compassion = 2;
+    ronin.determination = 2;
+    ronin.weapons = [firstTechnique.weapon];
+    ronin.items = [];
+    ronin.brokenWeapons = [];
+
+    allies.splice(allies.indexOf(person), 1);
+
+    renderEncounter("allyTakeOver");
+}
+
 renderEncounter("homeScreen");

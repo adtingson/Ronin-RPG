@@ -67,6 +67,7 @@ function renderUI() {
     renderInteractions();
     renderDisplay();
     document.getElementById("encounterTextWrapper").scrollTop = 0;
+    encounterText.scrollTop = 0;
     interactText.scrollTop = 0;
 }
 
@@ -340,6 +341,14 @@ function renderRoninWeapons() {
 
 function hideStats() {
     roninStats.classList.add("ghost");
+}
+
+function hideCombatHeader() {
+    document.getElementById("combatHeaderWrapper").classList.add("ghost");
+}
+
+function showCombatHeader() {
+    document.getElementById("combatHeaderWrapper").classList.remove("ghost");
 }
 
 function showStats() {

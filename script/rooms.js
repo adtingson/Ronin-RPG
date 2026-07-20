@@ -218,7 +218,7 @@ const rooms = {
                 goto: "searchRoom"
             }
         ],
-        function: () => {setWindowContext("inDestination"); hasParcel(); hasMark()}
+        function: () => {setWindowContext("inDestination"); hasParcel(); hasMark(); saveGame()}
     },
     parcelDeliveryMission: {
         header: "Deliver Item?",
@@ -256,25 +256,88 @@ const rooms = {
     characterOver: {
         header: "The Ronin’s Death",
 	    text: () => `${ronin.name} has officially reached the end of their story and of their life. However, this is not the end of this story if you'd like.`,
+        function: () => saveGame(),
 	    buttons: [
 		    {
-			    text: "Continue Game using a New Character"
+			    text: "Continue Game using a New Character",
+                goto: "continueNewRonin"
 		    },
             {
-			    text: "Continue Game using an Ally"
+			    text: "Continue Game using an Ally",
+                function: () => {checkContinueAlly()}
 		    },
             {
-                text: "New Game"
+                text: "New Game",
+                function: () => {
+                    localStorage.removeItem("gameState");
+                    location.reload();
+                }
+            }
+        ]
+    },
+    continueAlly: {
+        header: "A Ronin's Legacy",
+        text: `A journey does not end while someone still walks its road.
+        <br><br>
+        Though your Ronin has fallen, their companions remain. They have witnessed every triumph, every failure, and every sacrifice. Now, one of them must decide whether the journey is worth carrying on.
+        <br><br>
+        Choose the ally who will inherit the road.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "characterOver"
+            }
+        ],
+        function: () => {
+            livingAllies().forEach((ally, index) => {
+                encounterButtons.innerHTML += `<button onclick="takeOver(${index})">${ally.name}(${ally.occupation})</button>`;
+            })
+        }
+    },
+    allyTakeOver: {
+        header: "A Ronin's Legacy",
+        text: () => `${ronin.name} bows one final time before the fallen Ronin.
+        <br><br>
+        The dead can walk no farther, but their ideals need not perish with them. Carrying those memories into every step, ${ally.name} sets out to finish what was left undone.
+        <br><br>
+        The journey continues.`,
+        function: () => saveGame(),
+        buttons: [
+            {
+                text: "Continue",
+                goto: "enRoute"
+            }
+        ]
+    },
+    continueNewRonin: {
+        header: "A Ronin's Legacy",
+        text: `Not every journey ends with the one who began it.
+        <br><br>
+        Though your Ronin has fallen, the road does not end here. Every life leaves behind a story, and every story has the power to inspire another.
+        <br><br>
+        Picture the one who now takes up that burden. Perhaps they seek vengeance. Perhaps they wish to honor the fallen. Or perhaps they simply refuse to let the journey end.
+        <br><br>
+        When you are ready, create the one who will carry the legacy forward.`,
+        buttons: [
+            {
+                text: "Back",
+                goto: "characterOver"
+            },
+            {
+                text: "Continue",
+                goto: "roninCreateGender"
             }
         ]
     },
     lostSomewhereLoss: {
         header: "You have been Spared.",
 	    text: "You have lost the fight, but you have been spared. You find yourself Wounded (-1 Fight until healed) in a ditch somewhere. Your Determination is set to 0.",
+        function: () => saveGame()
     },
     lostSomewhereSurrender: {
         header: "You have been Spared.",
 	    text: "You have given up the fight, but you have been spared. You find yourself Wounded (-1 Fight until healed) in a ditch somewhere.",
+        function: () => saveGame()
     },
     allyHealer: {
         header: "Saved by an Ally",
@@ -288,7 +351,8 @@ const rooms = {
                 text: "Thanks!",
                 function: () => renderEncounter(windowContext)
             }
-        ]
+        ],
+        function: () => saveGame()
     },
     destination0: {
         header: "Large City",
@@ -2007,7 +2071,7 @@ const rooms = {
         This journey is not about victory. It is about the choices you make, the lives you touch, and the legacy you leave behind.
         <br><br>
         But before your story can begin, we must first discover who this Ronin truly is.`,
-        function: () => {generateRonin(); hideStats()},
+        function: () => {generateRonin(); hideStats(),hideCombatHeader()},
         buttons: [
             {
                 text: "Continue",
@@ -2026,7 +2090,7 @@ const rooms = {
                 goto: "roninCreateGender"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateGender: {
         header: "The Ronin",
@@ -2049,7 +2113,7 @@ const rooms = {
                 goto: "roninCreateName"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateName: {
         header: "The Ronin",
@@ -2071,7 +2135,7 @@ const rooms = {
                 goto: "roninCreateAppearance"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateAppearance: {
         header: "The Ronin",
@@ -2093,7 +2157,7 @@ const rooms = {
                 goto: "roninCreateRonin"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateRonin: {
         header: "The Ronin",
@@ -2113,7 +2177,7 @@ const rooms = {
                 goto: "roninCreateFamily"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateFamily: {
         header: "The Past",
@@ -2135,7 +2199,7 @@ const rooms = {
                 goto: "roninCreateNightmare"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateNightmare: {
         header: "The Past",
@@ -2161,7 +2225,7 @@ const rooms = {
                 goto: "roninCreateScar"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateScar: {
         header: "The Past",
@@ -2187,7 +2251,7 @@ const rooms = {
                 goto: "roninCreateMeaning"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateMeaning: {
         header: "The Past",
@@ -2213,7 +2277,7 @@ const rooms = {
                 goto: "roninCreatePast"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreatePast: {
         header: "The Past",
@@ -2236,7 +2300,7 @@ const rooms = {
                 goto: "roninCreateTechnique"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateTechnique: {
         header: "The Blade",
@@ -2258,7 +2322,7 @@ const rooms = {
                 goto: "roninCreateSummary"
             }
         ],
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateSummary: {
         header: "The Ronin",
@@ -2281,7 +2345,7 @@ const rooms = {
                 goto: "roninCreateClans"
             }
         ],
-        function: () => showStats(),
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateClans: {
         header: "The Noble Clans",
@@ -2313,7 +2377,8 @@ const rooms = {
                 text: "Continue",
                 goto: "roninCreateStats"
             }
-        ]
+        ],
+        function: () => {hideStats(),hideCombatHeader()},
     },
     roninCreateStats: {
         header: "The Measure of a Ronin",
@@ -2337,7 +2402,8 @@ const rooms = {
                 text: "Continue",
                 goto: "roninCreateVillains"
             }
-        ]
+        ],
+        function: () => {showStats(),hideCombatHeader()},
     },
     roninCreateVillains: {
         header: "The Villains",
@@ -2361,7 +2427,8 @@ const rooms = {
                 text: "Continue",
                 goto: "roninCreateEmbark"
             }
-        ]
+        ],
+        function: () => {showStats(),hideCombatHeader()},
     },
     roninCreateEmbark: {
         header: "The Journey",
@@ -2383,12 +2450,13 @@ const rooms = {
                 text: "Begin",
                 goto: "enRoute"
             }
-        ]
+        ],
+        function: () => {showStats(),showCombatHeader()},
     },
     homeScreen: {
         header: "",
         text: `<h1 class="logo">浪<br>人</h1>`,
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
         buttons: [
             {
                 text: "New Game",
@@ -2413,7 +2481,7 @@ const rooms = {
         Before you set foot upon the road, you must first learn how to navigate the world before you. This tutorial will teach you the game's interface and the mechanics that will guide you throughout your journey.
         <br><br>
         When you are ready, your story begins.`,
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
         buttons: [
             {
                 text: "Exit",
@@ -2439,7 +2507,7 @@ const rooms = {
         You have been reading the Encounter Screen and using the Context Buttons since the very beginning.
         <br><br>
         The road is already teaching you.`,
-        function: () => hideStats(),
+        function: () => {hideStats(),hideCombatHeader()},
         buttons: [
             {
                 text: "Back",
@@ -2472,6 +2540,7 @@ const rooms = {
         The <b>Interaction Log</b> records the outcome of your conversations and actions with the person before you. While the Encounter Screen tells you <b>what is happening</b>, the Interaction Log tells you <b>what happened because of your choices</b>.`,
         function: () => {
             hideStats();
+            showCombatHeader();
             combatHeader.innerHTML = "<i>This is the Updates Bar.</i>",
             interactText.innerHTML = "<i>This is the Interaction Log.</i>"
         },
@@ -2503,7 +2572,7 @@ const rooms = {
         When your journey finally comes to an end, your legacy will be measured by your <b>Honor</b>, determined by your <b>Compassion</b> and <b>Determination</b>. A life lived with conviction is remembered long after the sword has fallen silent.
         <br><br>
         Should you wish to reflect upon your own story, select the <b>Status Bar</b>. There you will find a record of the Ronin you once were, and the one you have become.`,
-        function: () => showStats(),
+        function: () => {showStats();},
         buttons: [
             {
                 text: "Back",
@@ -2534,7 +2603,7 @@ const rooms = {
         buttons: [
             {
                 text: "Back",
-                goto: "tutorial2"
+                goto: "tutorial3"
             },
             {
                 text: "Exit",

@@ -262,10 +262,6 @@ function loadGame() {
     renderEncounter(lastEncounter);
 }
 
-function findTechnique(technique) {
-    return techniques.find(tech => tech.id === technique) ?? uncommonTechniques.find(tech => tech.id === technique)
-}
-
 
 function checkSavedGame() {
     if (localStorage.getItem("gameState") !== null) {
@@ -275,5 +271,3 @@ function checkSavedGame() {
         interactText.innerHTML = `Notice: Your story has not yet been written. The road will remember your progress at the end of each journey.`;
     }
 }
-
-localStorage.removeItem("gameState");
