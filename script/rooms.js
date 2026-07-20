@@ -187,7 +187,10 @@ const rooms = {
         buttons: [
             {
                 text: "New Game?",
-                goto: "roninCreateIntro"
+                function: () => {
+                    localStorage.removeItem("gameState");
+                    location.reload();
+                }
             }
         ]
     },
@@ -197,7 +200,11 @@ const rooms = {
         text: "",
         buttons: [
             {
-                text: "New Game?"
+                text: "New Game?",
+                function: () => {
+                    localStorage.removeItem("gameState");
+                    location.reload();
+                }
             }
         ]
     },
