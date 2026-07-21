@@ -139,7 +139,7 @@ const rooms = {
     endGame: {
         header: "The Redemption",
         text: () =>
-        `After defeating the Final Villain, your character may have achieved redemption. The result of ${ronin.gender == "Male" ? "his" : "her"} redemption is based on ${ronin.gender == "Male" ? "his" : "her"} honor: ${honor()}.<br><br>
+        `After defeating the Final Villain, your character may have achieved redemption. The result of ${hisher(ronin)} redemption is based on ${hisher(ronin)} honor: ${honor()}.<br><br>
         <table>
             <tbody>
                 <tr>
@@ -152,24 +152,24 @@ const rooms = {
                 </tr>
                 <tr>
                     <td>3 – 6</td>
-                    <td>Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.</td>
+                    <td>Despite what ${heshe(ronin)} did, ${hisher(ronin)} character is frustrated. ${HeShe(ronin)} ends ${hisher(ronin)} story living as a beggar on the streets.</td>
                 </tr>
                 <tr>
                     <td>7 – 10</td>
-                    <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.</td>
+                    <td>Your character feels ${heshe(ronin)} hasn’t done enough. ${HeShe(ronin)} decides to go to another continent in search of a new life.</td>
                 </tr>
                 <tr>
                     <td>11 – 14</td>
-                    <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.</td>
+                    <td>Your character feels ${heshe(ronin)} has done ${hisher(ronin)} part and decides to join ${hisher(ronin)} allies somewhere far away.</td>
                 </tr>
                 <tr>
                     <td>15 or more</td>
-                    <td>Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.</td>
+                    <td>Your character became a better person and achieved ${hisher(ronin)} redemption. No one else heard of ${himher(ronin)}.</td>
                 </tr>
             </tbody>
         <table>
         <br><br>
-        <i>If ${ronin.gender == "Male" ? "his" : "her"} honor is too low, ${ronin.gender == "Male" ? "he" : "she"} can still try one last action to achieve redemption: Seppuku. ${ronin.gender == "Male" ? "He" : "She"} then takes ${ronin.gender == "Male" ? "his" : "her"} own life, adding 2 – 12 to the result of ${ronin.gender == "Male" ? "his" : "her"} honor.</i>
+        <i>If ${hisher(ronin)} honor is too low, ${heshe(ronin)} can still try one last action to achieve redemption: Seppuku. ${HeShe(ronin)} then takes ${hisher(ronin)} own life, adding 2 – 12 to the result of ${hisher(ronin)} honor.</i>
         `,
         buttons: [
             {
@@ -260,7 +260,7 @@ const rooms = {
     },
     assassinationMission0: {
         header: "Assassination",
-        text: () => `You now face ${assassinMark.name} to kill ${assassinMark.gender == "Male" ? "him" : "her"}.`,
+        text: () => `You now face ${assassinMark.name} to kill ${himher(assassinMark)}.`,
         function: () => encounterPersons.push(assassinMark)
     },
     characterOver: {
@@ -495,7 +495,7 @@ const rooms = {
     },
     ue00: {
         header: "Urban Encounter",
-        text: () => `A Possible Ally started contacting you on the streets. ${encounterPersons[0].gender == "Male" ? "His" : "Her"} name is ${encounterPersons[0].name}. ${encounterPersons[0].gender == "Male" ? "He" : "She"} is a ${encounterPersons[0].occupation}${["Fighter", "Mentor"].includes(encounterPersons[0].occupation) ? ` (${encounterPersons[0].technique.desc})` : ``}.`,
+        text: () => `A Possible Ally started contacting you on the streets. ${HisHer(encounterPersons[0])} name is ${encounterPersons[0].name}. ${HeShe(encounterPersons[0])} is a ${encounterPersons[0].occupation}${["Fighter", "Mentor"].includes(encounterPersons[0].occupation) ? ` (${encounterPersons[0].technique.desc})` : ``}.`,
         persons: [
             {
                 class: "possibleAlly"
@@ -504,7 +504,7 @@ const rooms = {
     },
     ue01: {
         header: "Urban Encounter",
-        text: () => `A Possible Ally bumped into you in the busy streets of the city. ${encounterPersons[0].gender == "Male" ? "He" : "She"} was ${Math.random() < 0.5 ? `running from someone` : `in a hurry to go somewhere`}.`,
+        text: () => `A Possible Ally bumped into you in the busy streets of the city. ${HeShe(encounterPersons[0])} was ${Math.random() < 0.5 ? `running from someone` : `in a hurry to go somewhere`}.`,
         persons: [
             {
                 class: "possibleAlly"
@@ -530,7 +530,7 @@ const rooms = {
     },
     ue03: {
         header: "Urban Encounter",
-        text: () => `You meet someone from your past on the streets. Now ${encounterPersons[0].gender == "Male" ? "he" : "she"} is a Possible Ally.`,
+        text: () => `You meet someone from your past on the streets. Now ${heshe(encounterPersons[0])} is a Possible Ally.`,
         persons: [
             {
                 class: "possibleAlly"
@@ -1795,7 +1795,7 @@ const rooms = {
         text: () => {
             let randomAlly = livingAllies()[Math.floor(Math.random() * livingAllies().length)];
             let nextVillain = villainsList.find(villain => villain.status === "active");
-            return `You find ${randomAlly.name} by the side of the road. ${randomAlly.gender == "Male" ? "He" : "She"} is injured and says that it was ${nextVillain.name}, the next villain, who hurt ${randomAlly.gender == "Male" ? "him" : "her"}. Add 1 Reputation.`
+            return `You find ${randomAlly.name} by the side of the road. ${HeShe(randomAlly)} is injured and says that it was ${nextVillain.name}, the next villain, who hurt ${himher(randomAlly)}. Add 1 Reputation.`
         },
         function: () => updateStat("reputation", +1)
     },
@@ -2069,7 +2069,7 @@ const rooms = {
                 if (!minorDamage.some(weapon => randomWeapon.includes(weapon) || weapon.includes(randomWeapon))) {
                     minorDamage.push(randomWeapon);
                 }
-                combatHeader.innerHTML += `${ronin.name} notices some damage on ${ronin.gender == "Male" ? "his" : "her"} ${randomWeapon}<br>`;
+                combatHeader.innerHTML += `${ronin.name} notices some damage on ${hisher(ronin)} ${randomWeapon}<br>`;
             }
         },
     },

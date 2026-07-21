@@ -88,3 +88,8 @@ function randomDestinationName() {
     randomTowns.splice(randomIndex, 1);
     return destinationName;
 }
+
+let windowContext;
+let lastEncounter;
+let lastMessageBeforeRender;
+let roninLog;

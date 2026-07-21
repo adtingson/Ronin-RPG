@@ -2,10 +2,6 @@ const routeEvents = [
     nada, () => roninReputationCheck(4), () => roninReputationCheck(5), () => roninReputationCheck(6), randomRoadEncounter, randomRoadEncounter
 ];
 
-let windowContext;
-
-let lastEncounter;
-
 function renderEncounter(encounter) {
     console.log(encounter);
     lastEncounter = encounter;
@@ -100,8 +96,6 @@ function updateStat(stat,change) {
 
     ronin[stat] += change;
 }
-
-let lastMessageBeforeRender;
 
 function renderTechniqueSelection() {
     lastMessageBeforeRender = encounterText.innerHTML;

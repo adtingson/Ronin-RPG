@@ -80,7 +80,8 @@ function saveGame() {
         windowContext,
         lastEncounter,
         destinationName,
-        randomTowns
+        randomTowns,
+        roninLog
     };
 
     localStorage.setItem("gameState", JSON.stringify(gameState));
@@ -151,7 +152,9 @@ function loadGame() {
     
     destinationName = gameState.destinationName;
 
-    randomTowns = [...gameState.randomTowns]
+    randomTowns = [...gameState.randomTowns];
+
+    roninLog = gameState.roninLog;
 
     nobleClans.length = 0;
     gameState.nobleClans.forEach(clan => {
