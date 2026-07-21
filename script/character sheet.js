@@ -71,7 +71,3 @@ function getTarget() {
     }
     return encounterPersons[0];
 }
-
-let roninBlock;
-
-let enemyBlock;

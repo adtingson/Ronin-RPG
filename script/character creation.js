@@ -1,7 +1,7 @@
 function roninChange(attribute) {
     switch (attribute) {
         case "gender":
-            ronin.gender = ronin.gender == "Male" ? "Female" : "Male";
+            ronin.gender = ronin.gender === "Male" ? "Female" : "Male";
             break;
         case "name":
             ronin.name = nameFunc(ronin.gender);

@@ -137,7 +137,7 @@ function renderCard(person) {
                 </tr>
                 <tr>
                     <th>Appearance</th>
-                    <td>${person.gender == "Male" ? "He" : "She"} ${person.appearance}</td>
+                    <td>${HeShe(person)} ${person.appearance}</td>
                 </tr>
                 <tr>
                     <th>Technique</th>
@@ -244,7 +244,7 @@ function renderCard(person) {
                 </tr>
                 <tr>
                     <th>Appearance</th>
-                    <td>${person.gender == "Male" ? "He" : "She"} ${person.appearance}</td>
+                    <td>${HeShe(person)} ${person.appearance}</td>
                 </tr>
                 <tr>
                     <th>Technique</th>

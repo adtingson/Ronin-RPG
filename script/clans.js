@@ -1,7 +1,3 @@
-function rolld6() {
-    return Math.floor(Math.random() * 6);
-}
-
 const clanNames = [
     "Ukiryuu",
     "Kitsune",

@@ -261,6 +261,23 @@ p {
     content: "(Enemy)";
 }
 
+#encounterText table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+#encounterText td:first-child,
+#encounterText th:first-child {
+    text-align: right;
+    width: 25%;
+}
+
+#encounterText th:last-child,
+#encounterText td:last-child {
+    text-align: left;
+    width: 75%;
+}
+
 @media (max-width: 600px) {
     body {
         width: 100%;

@@ -1,5 +1,7 @@
 let roninSide;
 const livingInnocents = () => allies.filter(ally => ally.occupation == "Innocent" && ally.status !== "dead");
+let roninBlock;
+let enemyBlock;
 let villainBlock = 0;
 let firstStrikeDebuff = 0;
 
@@ -21,18 +23,15 @@ function targetColor(target) {
     }
 }
 
-
-function fight() {
-    interactText.innerHTML = "";
+function resetButtons() {
     interactButtons.innerHTML = "";
     encounterButtons.innerHTML = "";
+}
 
-    const target = getTarget();
-    roninSide = ronin;
-
+function isEnemyVillain(roninSide, target) {
     if (villainsList.includes(target)) {
         fighterAlliesQueue = allies.filter(
-            ally => ally.occupation == "Fighter" && !["done", "dead"].includes(ally.status)
+            ally => ally.occupation === "Fighter" && !["done", "dead"].includes(ally.status)
         );
 
         if (fighterAlliesQueue.length) {
@@ -44,14 +43,14 @@ function fight() {
             interactText.innerHTML += `${roninSideColor(roninSide)} jumps in to fight for you.<br>`;
         }
 
-        if (target == finalVillain) {
-            if (villainPrisoners.length && target.firstStrike == "available") {
+        if (target === finalVillain) {
+            if (villainPrisoners.length && target.firstStrike === "available") {
                 interactText.innerHTML += `This villain has ${villainPrisoners[0].name} as prisoner. They will block your attack with this ally. If you surrender, this villain will keep your ally as a prisoner.<br>`;
             }
         }
     }
 
-    if (roninSide == ronin && encounterPersons.some(person => villainsList.includes(person)) && livingInnocents().length && ronin.firstStrike == "available") {
+    if (roninSide === ronin && encounterPersons.some(person => villainsList.includes(person)) && livingInnocents().length && ronin.firstStrike === "available") {
         let villain = encounterPersons.find(person => villainsList.includes(person));
         livingInnocents().forEach(innocent => {
             let fateRoll = rolld6();
@@ -59,50 +58,72 @@ function fight() {
             if (fateRoll <= 1) {
                 innocent.status = "dead";
                 updateStat("determination", -2);
-                interactText.innerHTML += `<i>The villain ${villain.name} announces that ${villain.gender == "Male" ? "he" : "she"} has killed the innocent ${innocent.name}. ${ronin.name} loses 2 determination.</i><br>`;
+                interactText.innerHTML += `<i>The villain ${villain.name} announces that ${heshe(villain)} has killed the innocent ${innocent.name}. ${ronin.name} loses 2 determination.</i><br>`;
             }
         });
     }
+}
 
-    roninBlock = roninSide.firstStrike == "available" ? roninSide.block : roninBlock;
-    enemyBlock = target.firstStrike == "available" ? target.block : enemyBlock;
-    villainBlock = target.firstStrike == "available" ? 0 : villainBlock;
+function setBlockStats(roninSide, target) {
+    roninBlock = roninSide.firstStrike === "available" ? roninSide.block : roninBlock;
+    enemyBlock = target.firstStrike === "available" ? target.block : enemyBlock;
+    villainBlock = target.firstStrike === "available" ? 0 : villainBlock;
+}
 
-    const fightWinner = checkFightWinner();
-
+function resetAfterAttack(roninSide, target) {
     roninSide.blockState = "attacked";
     roninSide.firstStrike = "done";
     target.blockState = "attacked";
     target.firstStrike = "done";
     target.morale = "normal";
     firstStrikeDebuff = 0;
+}
+
+function isWeaponJitte(roninSide, target) {
+    if (roninSide.techniqueID === "Jitte" && (roninSide.weapons?.includes("Jitte") || roninSide.weapon?.includes("Jitte")) && (roninSide.brokenWeapons?.filter(weapon => weapon === "Jitte").length ?? 0) < (roninSide.weapons?.filter(weapon => weapon === "Jitte").length ?? 1)) {
+        if (!target.brokenWeapons || !target.brokenWeapons.some(weapon => weapon.includes(target.weapon))) {
+            target.brokenWeapons ??= [];
+            target.brokenWeapons.push(target.weapon);
+            interactText.innerHTML += `However, you had broken their weapon.<br>`;
+        }
+    }
+    if (target.techniqueID === "Jitte" && !target.brokenWeapons?.length) {
+        if (!roninSide.brokenWeapons?.length || roninSide.weapons?.filter(weapon => weapon.includes(roninSide.weapon)).length > roninSide.brokenWeapons?.filter(weapon => weapon.includes(roninSide.weapon)).length) {
+            roninSide.brokenWeapons ??= [];
+            roninSide.brokenWeapons.push(roninSide.weapon);
+            interactText.innerHTML += `And also, they had broken your weapon.<br>`;
+            if (roninSide === ronin && minorDamage.some(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon))) {
+                let weaponRemove = minorDamage.find(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon));
+                minorDamage. splice(minorDamage.indexOf(weaponRemove), 1);
+            }
+        }
+    }
+}
+
+function fight() {
+    interactText.innerHTML = "";
+    resetButtons();
+    
+    const target = getTarget();
+    roninSide = ronin;
+
+    isEnemyVillain(roninSide, target);
+
+    setBlockStats(roninSide, target);
+
+    const fightWinner = checkFightWinner();
+
+    resetAfterAttack(roninSide, target);
 
     if (fightWinner == "ronin") {
         const enemyBlockSuccess = checkEnemyBlock();
 
-        if (enemyBlockSuccess == "roninWin") {
+        if (enemyBlockSuccess === "roninWin") {
             roninWinCleanUp();
         }
     }
     else if (fightWinner == "draw") {
-        if (roninSide.techniqueID == "Jitte" && (roninSide.weapons?.includes("Jitte") || roninSide.weapon.includes("Jitte")) && (roninSide.brokenWeapons?.filter(weapon => weapon == "Jitte").length ?? 0) < (roninSide.weapons?.filter(weapon => weapon == "Jitte").length ?? 1)) {
-            if (target.brokenWeapons == undefined || !target.brokenWeapons.some(weapon => weapon.includes(target.weapon))) {
-                target.brokenWeapons ??= [];
-                target.brokenWeapons.push(target.weapon);
-                interactText.innerHTML += `However, you had broken their weapon.<br>`;
-            }
-        }
-        if (target.techniqueID == "Jitte" && !target.brokenWeapons?.length) {
-            if (!roninSide.brokenWeapons?.length || roninSide.weapons?.filter(weapon => weapon.includes(roninSide.weapon)).length > roninSide.brokenWeapons?.filter(weapon => weapon.includes(roninSide.weapon)).length) {
-                roninSide.brokenWeapons ??= [];
-                roninSide.brokenWeapons.push(roninSide.weapon);
-                interactText.innerHTML += `And also, they had broken your weapon.<br>`;
-                if (roninSide == ronin && minorDamage.some(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon))) {
-                    let weaponRemove = minorDamage.find(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon));
-                    minorDamage. splice(minorDamage.indexOf(weaponRemove), 1);
-                }
-            }
-        }
+        isWeaponJitte(roninSide, target);
         renderCombatHeader(target);
     }
     else if (fightWinner == "enemy") {
@@ -114,18 +135,16 @@ function fight() {
 
 function checkFightWinner() {
     const target = getTarget();
-
     let enemyFightStat = target.fight(target, roninSide);
     let roninSideFightStat = roninSide.fight(roninSide, target);
-
     let villainFightBonus = 0;
     let roninFightBonus = 0;
 
-    if ((target.power?.fightBonus !== undefined && roninSide.scar !== undefined)) {
+    if ((target.power?.fightBonus && roninSide.scar)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
-    if (roninSide == ronin) {
+    if (roninSide === ronin) {
         let weaponsBonus = 0;
 
         weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0);
@@ -168,11 +187,11 @@ function checkFightWinner() {
         }
     }
 
-    if (roninSide.firstStrike == "available") {
+    if (roninSide.firstStrike === "available") {
         roninFightBonus -= firstStrikeDebuff;
     }
 
-    const roninFight = rolld6() + roninSideFightStat - (roninSide.status == "wounded" ? 1:0) + roninFightBonus;
+    const roninFight = rolld6() + roninSideFightStat - (roninSide.status === "wounded" ? 1:0) + roninFightBonus;
     const enemyFight = rolld6() + enemyFightStat + villainFightBonus;
 
     if (roninFight > enemyFight) {
@@ -206,7 +225,7 @@ function checkEnemyBlock() {
         renderCombatHeader(target);
         interactText.innerHTML += `${targetColor(target)} blocked your hit.<br>`;
 
-        if (target == finalVillain && finalVillain.power?.prisoner && villainPrisoners.length && finalVillain.status !== "facedBefore") {
+        if (target === finalVillain && finalVillain.power?.prisoner && villainPrisoners.length && finalVillain.status !== "facedBefore") {
             interactText.innerHTML += `${villainPrisoners[0].name} took the hit. This Ally is now dead.<br>`;
             villainPrisoners[0].status = "dead";
             villainPrisoners.length = 0;
@@ -226,7 +245,7 @@ function checkEnemyBlock() {
 function roninWinCleanUp() {
     const target = getTarget();
 
-    if (target.background == "hater") {
+    if (target.background === "hater") {
         target.background = "hater";
     }
     else if (target.pastInfo) {
@@ -270,14 +289,18 @@ function slayEnemy() {
     }
 
     renderUI();
-    interactButtons.innerHTML = "";
+    resetButtons();
     encounterButtons.innerHTML = `<button onclick="slayEnemyCleanUp()">Continue</button>`;
 }
 
+function resetRonin(roninSide) {
+    roninBlock = roninSide.block;
+    roninSide.firstStrike = "available";
+}
+
 function slayEnemyCleanUp() {
-    if (encounterPersons.length === 0) {
-        roninBlock = roninSide.block;
-        roninSide.firstStrike = "available";
+    if (!encounterPersons.length) {
+        resetRonin(roninSide);
         renderEncounter(windowContext);
         return;
     }
@@ -286,34 +309,24 @@ function slayEnemyCleanUp() {
 
     if (!enemies.includes(target)) {
         interactText.innerHTML = "You now face the next person.<br>";
-        encounterButtons.innerHTML = "";
-        interactButtons.innerHTML = "";
+        resetButtons();
         personPreview();
         renderUI();
         return;
     }
 
-    renderCombatHeader(target);
     interactText.innerHTML = "Next enemy is here. Be ready.<br>";
-
-    encounterButtons.innerHTML = "";
+    renderCombatHeader(target);
+    resetButtons();
     renderUI();
 }
 
-function spareEnemy() {
-    let target = getTarget();
-
-    interactText.innerHTML = `${targetColor(target)} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.<br>`;
-
+function resetTargetForRelease(target) {
     target.status = "active";
     target.firstStrike = "available"
     target.brokenWeapons = undefined;
-    
-    if (villainsList.includes(target)) {
-        target.status = "spared";
-    }
 
-    if (target.background == "hater") {
+    if (target.background === "hater") {
         target.background = "hater";
     }
     else if (target.pastInfo) {
@@ -325,6 +338,18 @@ function spareEnemy() {
     else {
         target.background = "interactedWith";
     }
+}
+
+function spareEnemy() {
+    let target = getTarget();
+
+    interactText.innerHTML = `${targetColor(target)} has been knocked out. This act of mercy towards your opponent has gained ${ronin.name} 1 Reputation.<br>`;
+
+    resetTargetForRelease(target);
+    
+    if (villainsList.includes(target)) {
+        target.status = "spared";
+    }
 
     if (target.stolenWeapons || target.stolenItems || target.stolenBrokenWeapons) {
         returnStolen(target);
@@ -335,14 +360,13 @@ function spareEnemy() {
     updateStat("reputation",+1);
     
     renderUI();
-    interactButtons.innerHTML = "";
+    resetButtons();
     encounterButtons.innerHTML = `<button onclick="spareEnemyCleanUp()">Continue</button>`;
 }
 
 function spareEnemyCleanUp() {
-    if (encounterPersons.length === 0) {
-        roninBlock = roninSide.block;
-        roninSide.firstStrike = "available";
+    if (!encounterPersons.length) {
+        resetRonin(roninSide);
         renderEncounter(windowContext);
         return;
     }
@@ -351,8 +375,7 @@ function spareEnemyCleanUp() {
 
     if (!enemies.includes(target)) {
         interactText.innerHTML = "You now face the next person.<br>";
-        encounterButtons.innerHTML = "";
-        interactButtons.innerHTML = "";
+        resetButtons();
         personPreview();
         renderUI();
         return;
@@ -361,8 +384,7 @@ function spareEnemyCleanUp() {
     renderCombatHeader(target);
     interactText.innerHTML = "Next enemy is here. Be ready.<br>";
 
-    encounterButtons.innerHTML = "";
-    interactButtons.innerHTML = "";
+    resetButtons();
     renderUI();
 }
 
@@ -378,10 +400,10 @@ function renderBlockDeterminationOption() {
             renderCombatHeader(target);
             interactText.innerHTML += `${roninSideColor(roninSide)} blocks the blow. The fight continues.<br>`;
             target.status = "fighting";
-            encounterButtons.innerHTML = "";
+            resetButtons();
         }
         else if (roninBlock <= 0) {
-            interactText.innerHTML += `${roninSideColor(roninSide)} is already in ${roninSide.gender == "Male" ? "his" : "her"} limits and can no longer block. ${roninSideColor(roninSide)} is slain. You have lost a valuable ally.<br>`;
+            interactText.innerHTML += `${roninSideColor(roninSide)} is already in ${hisher(roninSide)} limits and can no longer block. ${roninSideColor(roninSide)} is slain. You have lost a valuable ally.<br>`;
             roninSide.status = "dead";
             renderCombatHeader(target);
             target.status = "fighting";
@@ -405,10 +427,10 @@ function extraEffort() {
         updateStat("determination",-1);
 
         renderCombatHeader(target);
-        interactText.innerHTML = `${roninSideColor(roninSide)} pushed ${roninSide.gender == "Male" ? "his" : "her"} limits to avoid this hit.<br>`;
+        interactText.innerHTML = `${roninSideColor(roninSide)} pushed ${hisher(roninSide)} limits to avoid this hit.<br>`;
         target.status = "fighting";
     }
-    else if (roninSide.determination == 0) {
+    else if (roninSide.determination === 0) {
         if (roninBlock <= 0) {
             target.status = "facedBefore";
             roninLossCleanUp();
@@ -419,7 +441,7 @@ function extraEffort() {
         encounterButtons.innerHTML = `<button onclick="blockHit()">Block</button>`;
     }
 
-    encounterButtons.innerHTML = "";
+    resetButtons();
     renderUI();
 }
 
@@ -427,14 +449,14 @@ function blockHit() {
     const target = getTarget();
 
     if (roninBlock > 0) {
-        roninBlock += -1;
+        roninBlock -= 1;
 
         roninSide.blockState = "blocked";
 
         renderCombatHeader(target);
         interactText.innerHTML = `${roninSideColor(roninSide)} blocks the blow. The fight continues.<br>`;
         target.status = "fighting";
-        encounterButtons.innerHTML = "";
+        resetButtons();
     }
     else if (roninBlock <= 0) {
         if (roninSide.determination == 0) {
@@ -454,13 +476,13 @@ function roninLossCleanUp() {
     const lossOutcome = rolld6();
     const target = getTarget();
 
-    if (target.type == "finisher") {
+    if (target.type === "finisher") {
         roninSide.status = "dead";
         renderEncounter("characterOver");
         return;
     }
 
-    if (target.type == "arrester") {
+    if (target.type === "arrester") {
         renderEncounter("re33a0");
         return;
     }
@@ -471,7 +493,7 @@ function roninLossCleanUp() {
         renderEncounter("lostSomewhereLoss");
     }
     else {
-        if (allies.some(ally => ally.occupation == "Healer" && ally.status !== "dead")) {
+        if (allies.some(ally => ally.occupation === "Healer" && ally.status !== "dead")) {
             renderEncounter("allyHealer");
             roninSide.status = "wounded";
             return;
@@ -487,7 +509,7 @@ function surrenderFight() {
     const target = getTarget();
     target.status = "facedBefore";
 
-    if (target.type == "finisher") {
+    if (target.type === "finisher") {
         roninSide.status = "dead";
         renderEncounter("characterOver");
         return;
@@ -498,7 +520,7 @@ function surrenderFight() {
         renderEncounter("lostSomewhereSurrender");
     }
     else {
-        if (allies.some(ally => ally.occupation == "Healer" && ally.status !== "dead")) {
+        if (allies.some(ally => ally.occupation === "Healer" && ally.status !== "dead")) {
             renderEncounter("allyHealer");
             roninSide.status = "wounded";
             return;
@@ -528,18 +550,16 @@ function healWounds() {
 function renderCombatHeader(target) {
     let targetWeaponModifier = "";
     let weaponModifier = "";
-
     let enemyFightStat = target.fight(target, roninSide);
     let roninSideFightStat = roninSide.fight(roninSide, target);
-
     let villainFightBonus = 0;
     let roninFightBonus = 0;
 
-    if ((target.power?.fightBonus !== undefined && roninSide.scar !== undefined)) {
+    if ((target.power?.fightBonus && roninSide.scar)) {
         villainFightBonus = target.power.fightBonus(target, roninSide);
     }
 
-    if (roninSide == ronin) {
+    if (roninSide === ronin) {
         let weaponsBonus = 0;
 
         weaponsBonus = (ronin.weapons.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length - 1) - (ronin.brokenWeapons?.filter(weapon => weapon.includes(ronin.weapon) || ronin.weapon.includes(weapon)).length ?? 0);

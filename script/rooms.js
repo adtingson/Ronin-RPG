@@ -141,30 +141,32 @@ const rooms = {
         text: () =>
         `After defeating the Final Villain, your character may have achieved redemption. The result of ${ronin.gender == "Male" ? "his" : "her"} redemption is based on ${ronin.gender == "Male" ? "his" : "her"} honor: ${honor()}.<br><br>
         <table>
-            <tr>
-                <th>HONOR</th>
-                <th>DESCRIPTION</th>
-            </tr>
-            <tr>
-                <td>2 or less</td>
-                <td>Your character has become a spiteful person or even the villain in someone else’s story.</td>
-            </tr>
-            <tr>
-                <td>3 – 6</td>
-                <td>Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.</td>
-            </tr>
-            <tr>
-                <td>7 – 10</td>
-                <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.</td>
-            </tr>
-            <tr>
-                <td>11 – 14</td>
-                <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.</td>
-            </tr>
-            <tr>
-                <td>15 or more</td>
-                <td>Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th>HONOR</th>
+                    <th>DESCRIPTION</th>
+                </tr>
+                <tr>
+                    <td>2 or less</td>
+                    <td>Your character has become a spiteful person or even the villain in someone else’s story.</td>
+                </tr>
+                <tr>
+                    <td>3 – 6</td>
+                    <td>Despite what ${ronin.gender == "Male" ? "he" : "she"} did, ${ronin.gender == "Male" ? "his" : "her"} character is frustrated. ${ronin.gender == "Male" ? "He" : "She"} ends ${ronin.gender == "Male" ? "his" : "her"} story living as a beggar on the streets.</td>
+                </tr>
+                <tr>
+                    <td>7 – 10</td>
+                    <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender == "Male" ? "He" : "She"} decides to go to another continent in search of a new life.</td>
+                </tr>
+                <tr>
+                    <td>11 – 14</td>
+                    <td>Your character feels ${ronin.gender == "Male" ? "he" : "she"} has done ${ronin.gender == "Male" ? "his" : "her"} part and decides to join ${ronin.gender == "Male" ? "his" : "her"} allies somewhere far away.</td>
+                </tr>
+                <tr>
+                    <td>15 or more</td>
+                    <td>Your character became a better person and achieved ${ronin.gender == "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender == "Male" ? "him" : "her"}.</td>
+                </tr>
+            </tbody>
         <table>
         <br><br>
         <i>If ${ronin.gender == "Male" ? "his" : "her"} honor is too low, ${ronin.gender == "Male" ? "he" : "she"} can still try one last action to achieve redemption: Seppuku. ${ronin.gender == "Male" ? "He" : "She"} then takes ${ronin.gender == "Male" ? "his" : "her"} own life, adding 2 – 12 to the result of ${ronin.gender == "Male" ? "his" : "her"} honor.</i>

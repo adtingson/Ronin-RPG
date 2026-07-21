@@ -1,12 +1,12 @@
 function intimidate() {
     const target = getTarget();
 
-    if (target == undefined) {
+    if (!target) {
         interactText.innerHTML = "There is no one left to intimidate.<br>";
         return;
     }
 
-    if (target.type == "tricky") {
+    if (target.type === "tricky") {
         interactText.innerHTML = "This creature can't be intimidated.<br>";
         return;
     }
@@ -16,22 +16,22 @@ function intimidate() {
         return;
     }
 
-    if(target.morale == "emboldened") {
-        interactText.innerHTML = `You cannot intimidate ${target.name}. ${target.gender == "Male" ? "He" : "She"} is emboldened to fight you!<br>`;
+    if(target.morale === "emboldened") {
+        interactText.innerHTML = `You cannot intimidate ${target.name}. ${HeShe(target)} is emboldened to fight you!<br>`;
         return;
     }
 
     const result = intimidateAttempt();
     let intimidateMessage;
 
-    if (result == "Intimidated") {
+    if (result === "Intimidated") {
         intimidateMessage = `${target.name} realizes that it is not worth fighting you and leaves.`;
         intimidationSucessCleanUp();
         interactText.innerHTML = `${intimidateMessage}<br>`;
         return;
     }
     else {
-        intimidateMessage = `${target.name} is not intimidated by you. ${target.gender == "Male" ? "He" : "She"} becomes emboldened to fight!<br>(${target.name} gets +1 to their next Fight roll)`;
+        intimidateMessage = `${target.name} is not intimidated by you. ${HeShe(target)} becomes emboldened to fight!<br>(${target.name} gets +1 to their next Fight roll)`;
         target.morale = "emboldened";
     }
 
@@ -66,22 +66,7 @@ function intimidationSucessCleanUp() {
 function cleanUp() {
     let target = getTarget();
 
-    target.status = "active";
-    target.firstStrike = "available"
-    target.brokenWeapons = undefined;
-    
-    if (target.background == "hater") {
-        target.background = "hater";
-    }
-    else if (target.pastInfo) {
-        target.background = "pastInfo";
-    }
-    else if (target.darkSecret) {
-        target.background = "darkSecret";
-    }
-    else {
-        target.background = "interactedWith";
-    }
+    resetTargetForRelease(target);
 
     encounterPersons.splice(0,1);
     

@@ -12,5 +12,5 @@ function motherFather() {
 }
 
 function generateFamilyBG() {
-    return familyVals[Math.floor(Math.random() * familyVals.length)]();
+    return familyVals[rolld6()]();
 }

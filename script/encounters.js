@@ -326,7 +326,7 @@ function villainFight() {
     encounterPersons.push(villainToFight);
 
     encounterText.innerHTML = `${generateExoticLocation()}.<br><br>
-    Before you stands ${villainToFight.name}. ${villainToFight.gender === "Male" ? "He" : "She"} ${villainToFight.appearance}.<br><br>
+    Before you stands ${villainToFight.name}. ${HeShe(villainToFight)} ${villainToFight.appearance}.<br><br>
     ${villainToFight.trait}<br><br>
     ${villainToFight.power ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}<br><br>` : ``}
     Without another word, the villain reaches for their weapon.`;
@@ -343,23 +343,23 @@ function endGameCheck(isSeppuku) {
         conclusionText = `Your character has become a spiteful person or even the villain in someone else’s story.`;
     }
     else if (3 <= honorScore && honorScore <= 6) {
-        conclusionText = `Despite what ${ronin.gender === "Male" ? "he" : "she"} did, ${ronin.gender === "Male" ? "his" : "her"} character is frustrated. ${ronin.gender === "Male" ? "He" : "She"} ends ${ronin.gender === "Male" ? "his" : "her"} story living as a beggar on the streets.`;
+        conclusionText = `Despite what ${heshe(ronin)} did, ${hisher(ronin)} character is frustrated. ${HeShe(ronin)} ends ${hisher(ronin)} story living as a beggar on the streets.`;
     }
     else if (7 <= honorScore && honorScore <= 10) {
-        conclusionText = `Your character feels ${ronin.gender === "Male" ? "he" : "she"} hasn’t done enough. ${ronin.gender === "Male" ? "He" : "She"} decides to go to another continent in search of a new life.`;
+        conclusionText = `Your character feels ${heshe(ronin)} hasn’t done enough. ${HeShe(ronin)} decides to go to another continent in search of a new life.`;
     }
     else if (11 <= honorScore && honorScore <= 14) {
-        conclusionText = `Your character feels ${ronin.gender === "Male" ? "he" : "she"} has done ${ronin.gender === "Male" ? "his" : "her"} part and decides to join ${ronin.gender === "Male" ? "his" : "her"} allies somewhere far away.`;
+        conclusionText = `Your character feels ${heshe(ronin)} has done ${hisher(ronin)} part and decides to join ${hisher(ronin)} allies somewhere far away.`;
     }
     else if (15 <= honorScore) {
-        conclusionText = `Your character became a better person and achieved ${ronin.gender === "Male" ? "his" : "her"} redemption. No one else heard of ${ronin.gender === "Male" ? "him" : "her"}.`;
+        conclusionText = `Your character became a better person and achieved ${hisher(ronin)} redemption. No one else heard of ${himher(ronin)}.`;
     }
 
     let seppukuText = ``;
 
     if (isSeppuku) {
         seppukuText = `${ronin.name} decided to commit Seppuku. Because of this, he gained ${seppukuBonus} honor.<br><br>`;
-        conclusionText += `<br><br>In the end, ${ronin.gender === "Male" ? "he" : "she"} felt ${ronin.gender === "Male" ? "he" : "she"} hasn't done enough and committed Seppuku to save ${ronin.gender === "Male" ? "his" : "her"} honor.`;
+        conclusionText += `<br><br>In the end, ${heshe(ronin)} felt ${heshe(ronin)} hasn't done enough and committed Seppuku to save ${hisher(ronin)} honor.`;
         ronin.status = "dead";
     }
 

@@ -7,7 +7,7 @@ function charm() {
         allies.push(target);
         const index = possibleAllies.indexOf(target);
         possibleAllies.splice(index,1);
-        interactText.innerHTML = `${target.name} is now your ally! Since ${target.gender == "Male" ? "he" : "she"} is ${target.occupation == "Innocent" ? `an Innocent` : `a ${target.occupation}`}, ${target.gender == "Male" ? "he" : "she"} gives you the following benefits:<br><br>${allyRoleDesc(target, target.occupation)}<br><br>`;
+        interactText.innerHTML = `${target.name} is now your ally! Since ${heshe(target)} is ${target.occupation == "Innocent" ? `an Innocent` : `a ${target.occupation}`}, ${heshe(target)} gives you the following benefits:<br><br>${allyRoleDesc(target, target.occupation)}<br><br>`;
         applyAllyBuff(target);
         interactButtons.innerHTML = `<button onclick="cleanUp()">Thanks!</button>`;
     }
@@ -31,10 +31,10 @@ function charmAttempt() {
 
 function allyRoleDesc(target, occupation) {
     const allyRoleTable = {
-        Mentor: () => `You can be trained by ${target.gender == "Male" ? "him" : "her"} and add ${target.gender == "Male" ? "his" : "her"} technique to your card (so you can choose which technique to use when you fight enemies or villains).`,
-        Blacksmith: () => `${target.gender == "Male" ? "He" : "She"} can manufacture a Special Weapon (same as yours, but with a +1 Fight bonus) that will be delivered to you in the next “city” you encounter.`,
+        Mentor: () => `You can be trained by ${himher(target)} and add ${hisher(target)} technique to your card (so you can choose which technique to use when you fight enemies or villains).`,
+        Blacksmith: () => `${HeShe(target)} can manufacture a Special Weapon (same as yours, but with a +1 Fight bonus) that will be delivered to you in the next “city” you encounter.`,
         Healer: () => `You cannot die when you are defeated in combat.`,
-        Fighter: () => `When you encounter a Villain, this ally will appear and fight before you. If ${target.gender == "Male" ? "he" : "she"} defeats the Villain, ${target.gender == "Male" ? "he" : "she"} will abandon you and follow ${target.gender == "Male" ? "his" : "her"} own path, but if ${target.gender == "Male" ? "he" : "she"} is defeated, ${target.gender == "Male" ? "he" : "she"} will be dead.`,
+        Fighter: () => `When you encounter a Villain, this ally will appear and fight before you. If ${heshe(target)} defeats the Villain, ${heshe(target)} will abandon you and follow ${hisher(target)} own path, but if ${heshe(target)} is defeated, ${heshe(target)} will be dead.`,
         Innocent: () => `You will always get +1 in Fight. However, when you encounter a Villain, roll a die. If the result is 1 or 2, the villain killed this ally and you lose 2 of Determination.`
     }
 
@@ -83,7 +83,7 @@ function weaponsDeliveryCheck() {
 
         ronin.weapons.push(...weaponsDelivery);
 
-        combatHeader.innerHTML += `As ${ronin.name} arrives at the city, ${ronin.gender == "Male" ? "he" : "she"} gets approached by a courier. The courier delivers the special weapons from ${ronin.name}'s blacksmith allies. Each type of weapon is crafted better than the last: ${weaponsDelivery.join(", ")}<br>`;
+        combatHeader.innerHTML += `As ${ronin.name} arrives at the city, ${heshe(ronin)} gets approached by a courier. The courier delivers the special weapons from ${ronin.name}'s blacksmith allies. Each type of weapon is crafted better than the last: ${weaponsDelivery.join(", ")}<br>`;
 
         weaponsDelivery = [];
     }

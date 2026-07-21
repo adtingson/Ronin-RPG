@@ -12,8 +12,7 @@ function finalName() {
 }
 
 function genderFunc() {
-    const arr = ["Male", "Female"];
-    return arr[Math.floor(Math.random() * 2)];
+    return Math.random() < 0.5 ? "Male" : "Female";
 }
 
 function nameFunc(roninGender) {
