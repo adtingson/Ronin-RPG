@@ -79,7 +79,8 @@ function saveGame() {
         firstStrikeDebuff,
         windowContext,
         lastEncounter,
-        destinationName
+        destinationName,
+        randomTowns
     };
 
     localStorage.setItem("gameState", JSON.stringify(gameState));
@@ -149,6 +150,8 @@ function loadGame() {
     const gameState = JSON.parse(saveText);
     
     destinationName = gameState.destinationName;
+
+    randomTowns = [...gameState.randomTowns]
 
     nobleClans.length = 0;
     gameState.nobleClans.forEach(clan => {
