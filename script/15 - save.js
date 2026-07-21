@@ -78,7 +78,8 @@ function saveGame() {
         villainsToDisplayClone,
         firstStrikeDebuff,
         windowContext,
-        lastEncounter
+        lastEncounter,
+        destinationName
     };
 
     localStorage.setItem("gameState", JSON.stringify(gameState));
@@ -146,7 +147,8 @@ function transformVillains(villain) {
 function loadGame() {
     const saveText = localStorage.getItem("gameState");
     const gameState = JSON.parse(saveText);
-    console.log(gameState);
+    
+    destinationName = gameState.destinationName;
 
     nobleClans.length = 0;
     gameState.nobleClans.forEach(clan => {

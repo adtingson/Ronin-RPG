@@ -14,7 +14,7 @@ function renderEncounter(encounter) {
     encounterPersons = [];
     encounterButtons.innerHTML = "";
 
-    encounterHeader.innerHTML = rooms[encounter].header;
+    encounterHeader.innerHTML = typeof rooms[encounter].header === "function" ? rooms[encounter].header() : rooms[encounter].header;
     
     if (rooms[encounter].persons) {
         rooms[encounter].persons.forEach(
@@ -45,7 +45,7 @@ function renderEncounter(encounter) {
         );
     }
 
-    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text():rooms[encounter].text;
+    encounterText.innerHTML = typeof rooms[encounter].text === "function" ? rooms[encounter].text() : rooms[encounter].text;
 
     if(!rooms[encounter].buttons || !rooms[encounter].buttons.length) {
         if(rooms[encounter].function){

@@ -104,22 +104,22 @@ const rooms = {
         function: () => {setWindowContext("endRoute");villainFight()}
     },
     enRoute: {
-        header: "En Route",
+        header: () => `En Route to ${randomDestinationName()}`,
 	    text: "",
         function: () => {routeBuilder();setWindowContext("endRoute")}
     },
     endRoute: {
-        header: "End of Route",
+        header: () => `Before ${destinationName}`,
         text: "",
         function: () => {endOfRouteCheck()}
     },
     endRouteFight: {
-        header: "End of Route",
+        header: () => `Before ${destinationName}`,
         text: "There are some enemies that are waiting you.",
         function: () => {setWindowContext("endRoute0")}
     },
     endRoute0: {
-        header: "End of Route",
+        header: () => `Before ${destinationName}`,
         text: "You have reached the end of the route.",
         function: () => {
             saveGame();
@@ -216,7 +216,7 @@ const rooms = {
         function: () => {setWindowContext("inDestination"); renderEncounter(["destination0", "destination1", "destination2", "destination3", "destination4", "destination4"][rolld6()]);},
     },
     inDestination: {
-        header: "In Location",
+        header: () => `In ${destinationName}`,
         text: "What do you do?",
         buttons: [
             {
@@ -365,8 +365,8 @@ const rooms = {
         function: () => saveGame()
     },
     destination0: {
-        header: "Large City",
-        text: () => `You have arrived in a large city led by ${randomNobleClan()}.`,
+        header: () => `The Large City of ${destinationName}`,
+        text: () => `You have arrived in the city of ${destinationName}. ${destinationName} is a large city led by ${randomNobleClan()}.`,
         buttons: [
             {
                 text: "Next",
@@ -376,7 +376,7 @@ const rooms = {
         function: () => {healWounds(); weaponsDeliveryCheck();}
     },
     destination0a: {
-        header: "At the Gates",
+        header: () => `At the Gates of ${destinationName}`,
         text: "Two soldiers recognized you from the stories they have heard of a wandering ronin. The soldiers approached you.",
         persons: [
             {
@@ -391,8 +391,8 @@ const rooms = {
         function: () => setWindowContext("destination0b")
     },
     destination0b: {
-        header: "Roaming Around",
-        text: `As you moved around the place, people started talking about you. This increased your reputation by 1. Here you also had an encounter.`,
+        header: () => `Roaming Around ${destinationName}`,
+        text: () => `As you moved around ${destinationName}, people started talking about you. This increased your reputation by 1. Here you also had an encounter.`,
         function: () => {updateStat("reputation", +1), setWindowContext("inDestination")},
         buttons: [
             {
@@ -402,8 +402,8 @@ const rooms = {
         ]
     },
     destination1: {
-        header: "Town",
-        text: `You have arrived in a town.`,
+        header: () => `The Town of ${destinationName}`,
+        text: () => `You have arrived in the town of ${destinationName}.`,
         buttons: [
             {
                 text: "Next",
@@ -413,8 +413,8 @@ const rooms = {
         function: () => {healWounds()}
     },
     destination2: {
-        header: "Small Town",
-        text: "You have arrived in a small town.",
+        header: () => `The Small Town of ${destinationName}`,
+        text: () => `You have arrived in the small town of ${destinationName}.`,
         buttons: [
             {
                 text: "Next",
@@ -424,7 +424,7 @@ const rooms = {
         function: () => {healWounds()}
     },
     destination2a: {
-        header: "At the gates",
+        header: () => `At the Gates of ${destinationName}`,
         text: "A soldier recognized you from the stories they have heard of a wandering ronin. The soldier approached you.",
         persons: [
             {
@@ -438,8 +438,8 @@ const rooms = {
         function: () => setWindowContext("destination2b")
     },
     destination2b: {
-        header: "Roaming around",
-        text: `As you moved around the place, you had an encounter.`,
+        header: () => `Roaming Around ${destinationName}`,
+        text: () => `As you moved around ${destinationName}, you had an encounter.`,
         function: () => setWindowContext("inDestination"),
         buttons: [
             {
@@ -449,8 +449,8 @@ const rooms = {
         ]
     },
     destination3: {
-        header: "Port City",
-        text: "You have reached a port city.",
+        header: () => `The Port City of ${destinationName}`,
+        text: () => `You have reached the port city of ${destinationName}.`,
         buttons: [
             {
                 text: "Roam around",
@@ -464,13 +464,13 @@ const rooms = {
         function: () => {healWounds(); weaponsDeliveryCheck()}
     },
     destination3a: {
-        header: "Taking a shelter",
+        header: () => `Taking a Shelter at ${destinationName}`,
         function: () => updateStat("determination", +1),
-        text: "Sometimes, the best way for us to move forward is to stop and gather ourself. You gained 1 determination."
+        text: () => `You spent your time attending to yourself. This gained you 1 Determination.`
     },
     destination4: {
-        header: "Village",
-        text: "You have reached a village.",
+        header: () => `The Village of ${destinationName}`,
+        text: () => `You have reached the village of ${destinationName}.`,
         buttons: [
             {
                 text: "Help around",
@@ -484,9 +484,9 @@ const rooms = {
         function: () => {healWounds()}
     },
     destination4a: {
-        header: "Lending a hand",
+        header: "Lending a Hand",
         function: () => updateStat("compassion", +1),
-        text: "Who knew helping lift others' burdens lightens the heart? You gained 1 compassion."
+        text: () => `You spent time helping the people of ${destinationName}. This kind action gained you 1 compassion.`
     },
     randomUrbanEncounter: {
         header: "",
