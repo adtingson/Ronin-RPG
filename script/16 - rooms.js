@@ -120,7 +120,7 @@ const rooms = {
     },
     endRoute0: {
         header: () => `Before ${destinationName}`,
-        text: "You have reached the end of the route.",
+        text: () => `You are about to arrive in ${destinationName}.`,
         function: () => {
             saveGame();
         },
@@ -594,7 +594,8 @@ const rooms = {
         text: () => {
             let livingEnemies = enemies.filter(enemy => enemy.status !== "dead");
             if (livingEnemies.length) {
-                livingEnemies.splice(Math.floor(Math.random() * livingEnemies.length), 1);
+                let turned = livingEnemies[Math.floor(Math.random() * livingEnemies.length)];
+                enemies.splice(enemies.indexOf(turned), 1);
                 return `You find an enemy you let live in the locality. But now he is a Possible Ally.`
             }
             else {
