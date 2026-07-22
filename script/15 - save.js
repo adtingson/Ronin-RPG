@@ -81,7 +81,6 @@ function saveGame() {
         lastEncounter,
         destinationName,
         randomTowns,
-        roninLog,
         saveVersion
     };
 
@@ -154,8 +153,6 @@ function loadGame() {
     destinationName = gameState.destinationName;
 
     randomTowns = [...gameState.randomTowns];
-
-    roninLog = gameState.roninLog;
 
     nobleClans.length = 0;
     gameState.nobleClans.forEach(clan => {

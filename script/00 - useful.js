@@ -92,5 +92,4 @@ function randomDestinationName() {
 let windowContext;
 let lastEncounter;
 let lastMessageBeforeRender;
-let roninLog;
-let saveVersion = 1.2;
+let saveVersion = 1.1;

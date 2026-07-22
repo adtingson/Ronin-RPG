@@ -498,7 +498,6 @@ function roninLossCleanUp() {
             roninSide.status = "wounded";
             return;
         }
-
         roninSide.status = "dead";
         renderEncounter("characterOver");
     }

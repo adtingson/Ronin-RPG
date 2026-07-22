@@ -48,8 +48,6 @@ function renderEncounter(encounter) {
             rooms[encounter].function();
         }
 
-        log(rooms[encounter].log);
-
         personPreview();
         renderUI();
         return;
@@ -79,8 +77,6 @@ function renderEncounter(encounter) {
     if(rooms[encounter].function){
         rooms[encounter].function();
     }
-
-    log(rooms[encounter].log);
 
     personPreview();
     renderUI();
@@ -171,11 +167,12 @@ function nada() {
 
 function roninReputationCheck(rep) {
     if (ronin.reputation >= rep) {
-        if (villainsList.length > 1) {
-            encounterText.innerHTML = `Your victories have become the talk of every survivor you left behind. Their stories have reached ${villainsList[0].name}, who now seeks you out. The duel you could not avoid has finally arrived.`;
+        let villainToFight = villainsList.find(villain => ["active", "facedBefore"].includes(villain.status));
+        if (villainToFight !== finalVillain) {
+            encounterText.innerHTML = `Your victories have become the talk of every survivor you left behind. Their stories have reached ${villainToFight.name}, who now seeks you out. The duel you could not avoid has finally arrived.`;
         }
         else {
-            encounterText.innerHTML = `From one defeated foe to the next, rumors of your blade have spread across the land. At last, they have reached ${villainsList[0].name}. The one who cast the longest shadow over your life has finally come to face you. There will be no road beyond this one.`;
+            encounterText.innerHTML = `From one defeated foe to the next, rumors of your blade have spread across the land. At last, they have reached ${finalVillain.name}. The one who cast the longest shadow over your life has finally come to face you. There will be no road beyond this one.`;
         }
         
         encounterButtons.innerHTML =
@@ -202,9 +199,7 @@ function randomRoadEncounter() {
     const randomTitle = roadEncounters[randomIndex];
 
     encounterText.innerHTML = "A random road encounter happens!";
-    encounterButtons.innerHTML =
-    `<button onclick="renderEncounter('${randomTitle}')">What is it?</button>
-    `;
+    encounterButtons.innerHTML = `<button onclick="renderEncounter('${randomTitle}')">What is it?</button>`;
 }
 
 function addEnemyToEndRoute() {
@@ -273,6 +268,7 @@ function generatePossibleAlly({name,appearance,gender,technique,occupation,backg
 
 function villainFight() {
     const villainToFight = villainsList.find(villain => ["active", "facedBefore"].includes(villain.status));
+    const villainLocation = generateExoticLocation();
 
     if (villainToFight.status !== "facedBefore") {
         if (typeof villainToFight.trait === "function") {
@@ -323,7 +319,7 @@ function villainFight() {
 
     encounterPersons.push(villainToFight);
 
-    encounterText.innerHTML = `${generateExoticLocation()}.<br><br>
+    encounterText.innerHTML = `${villainLocation}.<br><br>
     Before you stands ${villainToFight.name}. ${HeShe(villainToFight)} ${villainToFight.appearance}.<br><br>
     ${villainToFight.trait}<br><br>
     ${villainToFight.power ? `But it is not only their past that makes them dangerous. ${villainToFight.power.text()}<br><br>` : ``}
@@ -568,13 +564,6 @@ function takeOver(index) {
     allies.splice(allies.indexOf(person), 1);
 
     renderEncounter("allyTakeOver");
-}
-
-function log(text) {
-    if (!text) {
-        return;
-    }
-    roninLog += `${typeof text === "function" ? text() : text}`;
 }
 
 renderEncounter("homeScreen");
