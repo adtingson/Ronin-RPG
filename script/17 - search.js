@@ -58,7 +58,9 @@ function searchResult(quarry) {
                 encounterText.innerHTML += `<br><br>You found ${newCorrectPossibleAlly.name}. ${newCorrectPossibleAlly.gender == "Male" ? "He" : "She"} is ${newCorrectPossibleAlly.occupation == "Innocent" ? "an Innocent" : `a ${newCorrectPossibleAlly.occupation}`}.`;
                 break;
             case "mixed":
-                let newPossibleAlly = generatePossibleAlly();
+                let randomJobList = ["Blacksmith", "Mentor", "Healer", "Fighter", "Innocent"].filter(job => job !== quarry);
+                let randomJob = randomJobList[Math.floor(Math.random() * randomJobList.length)];
+                let newPossibleAlly = generatePossibleAlly({occupation: randomJob});
                 encounterPersons.push(newPossibleAlly);
                 encounterText.innerHTML += `<br><br>You found ${newPossibleAlly.name} instead. ${newPossibleAlly.gender == "Male" ? "He" : "She"} is ${newPossibleAlly.occupation == "Innocent" ? "an Innocent" : `a ${newPossibleAlly.occupation}`}.`;
                 break;

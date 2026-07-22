@@ -81,7 +81,8 @@ function saveGame() {
         lastEncounter,
         destinationName,
         randomTowns,
-        roninLog
+        roninLog,
+        saveVersion
     };
 
     localStorage.setItem("gameState", JSON.stringify(gameState));
@@ -273,6 +274,12 @@ function loadGame() {
 
 function checkSavedGame() {
     if (localStorage.getItem("gameState") !== null) {
+        const gameState = JSON.parse(localStorage.getItem("gameState"));
+        if (gameState.saveVersion !== saveVersion) {
+            interactText.innerHTML = `Notice: We cannot load your file. Your save file is from an older version of the game.`;
+            return;
+        }
+
         loadGame();
         showStats();
         showCombatHeader();

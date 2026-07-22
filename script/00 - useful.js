@@ -93,3 +93,4 @@ let windowContext;
 let lastEncounter;
 let lastMessageBeforeRender;
 let roninLog;
+let saveVersion = 1.2;

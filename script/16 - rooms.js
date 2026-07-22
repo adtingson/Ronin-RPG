@@ -2459,6 +2459,7 @@ const rooms = {
             },
             {
                 text: "Begin",
+                function: () => log(`<h2>The Chronicles of ${ronin.name}</h2>`),
                 goto: "enRoute"
             }
         ],

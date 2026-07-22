@@ -48,6 +48,8 @@ function renderEncounter(encounter) {
             rooms[encounter].function();
         }
 
+        log(rooms[encounter].log);
+
         personPreview();
         renderUI();
         return;
@@ -77,6 +79,8 @@ function renderEncounter(encounter) {
     if(rooms[encounter].function){
         rooms[encounter].function();
     }
+
+    log(rooms[encounter].log);
 
     personPreview();
     renderUI();
@@ -564,6 +568,13 @@ function takeOver(index) {
     allies.splice(allies.indexOf(person), 1);
 
     renderEncounter("allyTakeOver");
+}
+
+function log(text) {
+    if (!text) {
+        return;
+    }
+    roninLog += `${typeof text === "function" ? text() : text}`;
 }
 
 renderEncounter("homeScreen");
